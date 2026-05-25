@@ -1,10 +1,10 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getAllInvoices } from "@/lib/stripe";
 import { readCustomerMetadata } from "@/lib/sheets";
 
 export const revalidate = 300;
 
-const INR_PER_USD = 96;
+const INR_PER_USD = 95;
 const EUR_PER_USD = 1.17;
 
 function toUsd(amount: number, currency: string): number {
