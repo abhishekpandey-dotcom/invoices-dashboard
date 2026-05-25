@@ -1,6 +1,9 @@
 ﻿import { google } from "googleapis";
 import type { InvoiceRow, CustomerDSO } from "./stripe";
 
+interface InvoiceRowWithUsd extends InvoiceRow { amount_usd: number; }
+interface CustomerDSOWithUsd extends CustomerDSO { total_outstanding_usd: number; dso_days: number; }
+
 function getAuth() {
   const jsonEnv = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
   if (jsonEnv) {
@@ -12,7 +15,7 @@ function getAuth() {
   }
   const email  = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const rawKey = process.env.GOOGLE_PRIVATE_KEY;
-  if (!email || !rawKey) throw new Error("Set GOOGLE_SERVICE_ACCOUNT_JSON (or GOOGLE_SERVICE_ACCOUNT_EMAIL + GOOGLE_PRIVATE_KEY).");
+  if (!email || !rawKey) throw new Error("Set GOOGLE_SERVICE_ACCOUNT_JSON.");
   return new google.auth.JWT(
     email, undefined, rawKey.replace(/\\n/g, "\n"),
     ["https://www.googleapis.com/auth/spreadsheets"]
@@ -68,61 +71,94 @@ export async function readCustomerMetadata(): Promise<CustomerMetaMap> {
 }
 
 async function ensureTabsExist(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, tabNames: string[]) {
-  const meta = await sheets.spreadsheets.get({ spreadsheetId });
+  const meta     = await sheets.spreadsheets.get({ spreadsheetId });
   const existing = new Set((meta.data.sheets ?? []).map(s => s.properties?.title ?? ""));
   const toCreate = tabNames.filter(t => !existing.has(t));
   if (toCreate.length === 0) return;
   await sheets.spreadsheets.batchUpdate({
     spreadsheetId,
-    requestBody: {
-      requests: toCreate.map(title => ({ addSheet: { properties: { title } } })),
-    },
+    requestBody: { requests: toCreate.map(title => ({ addSheet: { properties: { title } } })) },
   });
 }
 
-export async function exportToSheets(invoices: InvoiceRow[], dso: CustomerDSO[]): Promise<{ url: string }> {
+export async function exportToSheets(
+  invoices: InvoiceRowWithUsd[],
+  dso: CustomerDSOWithUsd[]
+): Promise<{ url: string }> {
   const sheetId = process.env.GOOGLE_EXPORT_SHEET_ID ?? process.env.GOOGLE_SHEET_ID;
   if (!sheetId) throw new Error("Missing GOOGLE_SHEET_ID env var.");
 
   const auth   = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
 
-  // Create Invoices and DSO tabs if they don't exist yet
-  await ensureTabsExist(sheets, sheetId, ["Invoices", "DSO"]);
+  await ensureTabsExist(sheets, sheetId, ["Outstanding Invoices"]);
 
   const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
 
-  const invoiceHeaders = [
-    "Account","Invoice #","Customer Name","Customer Email","Stripe Customer ID",
-    "Domain","Status","Business","CS Owner",
-    "Invoice Status","Amount Due","Currency",
-    "Due Date","Days Overdue","Aging Bucket","Description","Invoice URL",
-  ];
-  const invoiceRows = invoices.map(inv => [
-    inv.account, inv.invoice_number, inv.customer_name, inv.customer_email, inv.customer_id,
-    inv.domain, inv.customer_status, inv.business, inv.cs_email,
-    inv.status, inv.amount_due, inv.currency,
-    inv.due_date ?? "", inv.days_overdue, inv.aging_bucket, inv.description, inv.invoice_url ?? "",
-  ]);
+  // Build customer-wise rows from invoices (same logic as dashboard)
+  interface CustAgg {
+    customer_name: string; customer_email: string; domain: string;
+    customer_status: string; business: string; cs_email: string;
+    account: string; b0_30: number; b31_60: number; b61_90: number;
+    b90plus: number; total: number; invoice_count: number;
+  }
+  const custMap = new Map<string, CustAgg>();
+  for (const inv of invoices) {
+    const key = `${inv.account}::${inv.customer_id}`;
+    if (!custMap.has(key)) custMap.set(key, {
+      customer_name: inv.customer_name, customer_email: inv.customer_email,
+      domain: inv.domain, customer_status: inv.customer_status,
+      business: inv.business, cs_email: inv.cs_email, account: inv.account,
+      b0_30: 0, b31_60: 0, b61_90: 0, b90plus: 0, total: 0, invoice_count: 0,
+    });
+    const c = custMap.get(key)!;
+    c.total += inv.amount_usd; c.invoice_count++;
+    if (inv.aging_bucket === "0-30")       c.b0_30   += inv.amount_usd;
+    else if (inv.aging_bucket === "31-60") c.b31_60  += inv.amount_usd;
+    else if (inv.aging_bucket === "61-90") c.b61_90  += inv.amount_usd;
+    else                                   c.b90plus += inv.amount_usd;
+  }
 
-  const dsoHeaders = [
-    "Account","Customer Name","Customer Email","Stripe Customer ID",
-    "Domain","Status","Business","CS Owner",
-    "Currency","Total Outstanding","DSO (Days)","Invoice Count",
-  ];
-  const dsoRows = dso.map(d => [
-    d.account, d.customer_name, d.customer_email, d.customer_id,
-    d.domain, d.customer_status, d.business, d.cs_email,
-    d.currency, d.total_outstanding, d.dso_days, d.invoice_count,
-  ]);
+  // DSO from the already-correctly-calculated dso array
+  const dsoMap = new Map(dso.map(d => [`${d.account}::${d.customer_id}`, d.dso_days]));
 
-  await sheets.spreadsheets.values.batchUpdate({
+  const fmt = (n: number) => Math.round(n * 100) / 100;
+
+  const headers = [
+    "Domain", "Customer Name", "Email", "Account", "Status", "Business", "CS Owner",
+    "0-30 Days (USD)", "31-60 Days (USD)", "61-90 Days (USD)", "90+ Days (USD)",
+    "Total Outstanding (USD)", "DSO (Days)", "Invoice Count",
+  ];
+
+  const dataRows = Array.from(custMap.entries())
+    .map(([key, c]) => [
+      c.domain || "", c.customer_name, c.customer_email, c.account,
+      c.customer_status || "", c.business || "", c.cs_email || "",
+      fmt(c.b0_30), fmt(c.b31_60), fmt(c.b61_90), fmt(c.b90plus),
+      fmt(c.total), dsoMap.get(key) ?? c.invoice_count * 30, c.invoice_count,
+    ])
+    .sort((a, b) => (b[11] as number) - (a[11] as number));
+
+  const totals = [
+    "TOTAL", "", "", "", "", "", "",
+    fmt(dataRows.reduce((s, r) => s + (r[7] as number), 0)),
+    fmt(dataRows.reduce((s, r) => s + (r[8] as number), 0)),
+    fmt(dataRows.reduce((s, r) => s + (r[9] as number), 0)),
+    fmt(dataRows.reduce((s, r) => s + (r[10] as number), 0)),
+    fmt(dataRows.reduce((s, r) => s + (r[11] as number), 0)),
+    "", dataRows.reduce((s, r) => s + (r[13] as number), 0),
+  ];
+
+  await sheets.spreadsheets.values.update({
     spreadsheetId: sheetId,
+    range: "Outstanding Invoices!A1",
+    valueInputOption: "USER_ENTERED",
     requestBody: {
-      valueInputOption: "USER_ENTERED",
-      data: [
-        { range: "Invoices!A1", values: [[`Last updated: ${timestamp}`, ...Array(invoiceHeaders.length - 1).fill("")], invoiceHeaders, ...invoiceRows] },
-        { range: "DSO!A1",      values: [[`Last updated: ${timestamp}`, ...Array(dsoHeaders.length - 1).fill("")],      dsoHeaders,     ...dsoRows] },
+      values: [
+        [`Last updated: ${timestamp} · ${dataRows.length} customers`, ...Array(headers.length - 1).fill("")],
+        headers,
+        ...dataRows,
+        totals,
       ],
     },
   });
