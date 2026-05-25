@@ -4,7 +4,6 @@ import { google } from "googleapis";
 export async function GET() {
   const log: Record<string, unknown> = {};
 
-  // 1. Check env var exists
   const jsonEnv = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
   log.env_var_present = !!jsonEnv;
   log.env_var_length = jsonEnv?.length ?? 0;
@@ -13,7 +12,6 @@ export async function GET() {
     return NextResponse.json({ error: "GOOGLE_SERVICE_ACCOUNT_JSON is not set", log });
   }
 
-  // 2. Try JSON.parse
   let creds: Record<string, string>;
   try {
     creds = JSON.parse(jsonEnv);
@@ -27,8 +25,8 @@ export async function GET() {
     return NextResponse.json({ error: "JSON.parse failed", log });
   }
 
-  // 3. Try building auth
-  let auth: ReturnType<typeof google.auth.JWT>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let auth: any;
   try {
     auth = new google.auth.JWT(
       creds.client_email,
@@ -43,7 +41,6 @@ export async function GET() {
     return NextResponse.json({ error: "Auth build failed", log });
   }
 
-  // 4. Try reading the sheet
   const sheetId = process.env.GOOGLE_SHEET_ID;
   const tabName = process.env.GOOGLE_BIZ_TAB_NAME ?? "Customer Domain Name";
   log.sheet_id = sheetId ?? "NOT SET";
@@ -64,7 +61,6 @@ export async function GET() {
     log.total_rows = rows.length;
     log.headers = rows[0] ?? [];
     log.first_data_row = rows[1] ?? [];
-    log.sample_customer_id = rows[1]?.[1] ?? "N/A";
   } catch (e: unknown) {
     log.sheet_read = "FAILED";
     log.sheet_error = e instanceof Error ? e.message : String(e);
