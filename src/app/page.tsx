@@ -46,7 +46,7 @@ export default function Dashboard() {
       </div>
       {exportMsg&&<div style={S.exportMsg}>{exportMsg}</div>}
       <div style={S.statsRow}>
-        {[{label:"Total Outstanding",value:fmtCurrency(totalAmt,currency),sub:`${invoices.length} invoices`,color:"#6366f1"},{label:"Past Due",value:String(pastDueCnt),sub:"invoices overdue",color:"#ef4444"},...BUCKETS.map(b=>({label:`${b} days`,value:fmtCurrency(agingTot[b],currency),color:agingColor(b)}))].map(({label,value,sub,color})=>(
+        {[{label:"Total Outstanding",value:fmtCurrency(totalAmt,currency),sub:`${invoices.length} invoices`,color:"#6366f1"},{label:"Past Due",value:String(pastDueCnt),sub:"invoices overdue",color:"#ef4444"},...BUCKETS.map(b=>({label:`${b} days`,value:fmtCurrency(agingTot[b],currency),color:agingColor(b),sub:""}))].map(({label,value,sub,color})=>(
           <div key={label} style={S.card}><div style={{fontSize:13,color:"#6b7280",marginBottom:4}}>{label}</div><div style={{fontSize:22,fontWeight:700,color}}>{value}</div>{sub&&<div style={{fontSize:12,color:"#9ca3af",marginTop:2}}>{sub}</div>}</div>
         ))}
       </div>
@@ -135,3 +135,4 @@ const S:Record<string,React.CSSProperties>={
   center:{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",height:"100vh",gap:8},
   spin:{width:36,height:36,border:"4px solid #e5e7eb",borderTop:"4px solid #6366f1",borderRadius:"50%",animation:"spin 0.8s linear infinite"},
 };
+
