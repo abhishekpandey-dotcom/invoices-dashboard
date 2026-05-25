@@ -1,13 +1,11 @@
 ﻿import { google } from "googleapis";
 import type { InvoiceRow, CustomerDSO } from "./stripe";
 
-// Fixed exchange rates
 const INR_PER_USD = 95;
 const EUR_PER_USD = 1.17;
 
 function toUsd(amount: number, currency: string): number {
   const c = (currency ?? "").toUpperCase();
-  if (c === "USD") return amount;
   if (c === "INR") return amount / INR_PER_USD;
   if (c === "EUR") return amount * EUR_PER_USD;
   return amount;
@@ -19,19 +17,13 @@ function getAuth() {
     const creds = JSON.parse(jsonEnv);
     return new google.auth.JWT(creds.client_email, undefined, creds.private_key, ["https://www.googleapis.com/auth/spreadsheets"]);
   }
-  const email  = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
   const rawKey = process.env.GOOGLE_PRIVATE_KEY;
-  if (!email || !rawKey) throw new Error("Set GOOGLE_SERVICE_ACCOUNT_JSON (or both GOOGLE_SERVICE_ACCOUNT_EMAIL and GOOGLE_PRIVATE_KEY).");
+  if (!email || !rawKey) throw new Error("Set GOOGLE_SERVICE_ACCOUNT_JSON or GOOGLE_SERVICE_ACCOUNT_EMAIL + GOOGLE_PRIVATE_KEY.");
   return new google.auth.JWT(email, undefined, rawKey.replace(/\\n/g, "\n"), ["https://www.googleapis.com/auth/spreadsheets"]);
 }
 
-export interface CustomerMeta {
-  customer_name_sheet: string;
-  domain: string;
-  status: string;
-  business: string;
-  cs_email: string;
-}
+export interface CustomerMeta { customer_name_sheet: string; domain: string; status: string; business: string; cs_email: string; }
 export type CustomerMetaMap = Map<string, CustomerMeta>;
 
 function findCol(headers: string[], aliases: string[]): number {
@@ -42,9 +34,9 @@ export async function readCustomerMetadata(): Promise<CustomerMetaMap> {
   const sheetId = process.env.GOOGLE_BIZ_SHEET_ID ?? process.env.GOOGLE_SHEET_ID;
   if (!sheetId) throw new Error("Missing GOOGLE_SHEET_ID env var.");
   const tabName = process.env.GOOGLE_BIZ_TAB_NAME ?? "Customer Domain Name";
-  const auth    = getAuth();
-  const sheets  = google.sheets({ version: "v4", auth });
-  const res  = await sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: tabName });
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const res = await sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: tabName });
   const rows = res.data.values ?? [];
   if (rows.length < 2) return new Map();
   const headers = rows[0].map((h: string) => String(h).toLowerCase().trim());
@@ -54,13 +46,13 @@ export async function readCustomerMetadata(): Promise<CustomerMetaMap> {
   const statusCol = findCol(headers, ["status"]);
   const bizCol    = findCol(headers, ["business"]);
   const csCol     = findCol(headers, ["cs name", "cs email"]);
-  if (idCol === -1) { console.warn(`[readCustomerMetadata] No customer-ID column found. Headers: ${headers.join(", ")}`); return new Map(); }
+  if (idCol === -1) { console.warn("[readCustomerMetadata] No customer-ID column found."); return new Map(); }
   const map: CustomerMetaMap = new Map();
   for (let i = 1; i < rows.length; i++) {
-    const row    = rows[i];
+    const row = rows[i];
     const custId = String(row[idCol] ?? "").trim();
     if (!custId) continue;
-    const raw   = (c: number) => c >= 0 ? String(row[c] ?? "").trim() : "";
+    const raw = (c: number) => c >= 0 ? String(row[c] ?? "").trim() : "";
     const clean = (v: string) => ["#N/A","N/A","#VALUE!","#REF!"].includes(v) ? "" : v;
     map.set(custId, { customer_name_sheet: clean(raw(nameCol)), domain: clean(raw(domainCol)), status: clean(raw(statusCol)), business: clean(raw(bizCol)), cs_email: clean(raw(csCol)) });
   }
@@ -79,8 +71,8 @@ async function ensureTabExists(sheets: any, sheetId: string, tabName: string) {
 
 export async function exportToSheets(invoices: InvoiceRow[], dso: CustomerDSO[]): Promise<{ url: string }> {
   const sheetId = process.env.GOOGLE_EXPORT_SHEET_ID ?? process.env.GOOGLE_SHEET_ID;
-  if (!sheetId) throw new Error("Missing GOOGLE_EXPORT_SHEET_ID or GOOGLE_SHEET_ID env var.");
-  const auth   = getAuth();
+  if (!sheetId) throw new Error("Missing GOOGLE_EXPORT_SHEET_ID env var.");
+  const auth = getAuth();
   const sheets = google.sheets({ version: "v4", auth });
   const TAB = "Outstanding Invoices";
   await ensureTabExists(sheets, sheetId, TAB);
@@ -107,12 +99,12 @@ export async function exportToSheets(invoices: InvoiceRow[], dso: CustomerDSO[])
     else c.b90plus += usd;
   }
 
-  const custRows = Array.from(custMap.values()).sort((a, b) => b.total - a.total);
+  const rows = Array.from(custMap.values()).sort((a, b) => b.total - a.total);
   const fmt = (n: number) => Math.round(n * 100) / 100;
   const headers = ["Domain","Customer Name","Email","Account","Status","Business","CS Owner","0-30 Days (USD)","31-60 Days (USD)","61-90 Days (USD)","90+ Days (USD)","Total Outstanding (USD)","DSO (Days)","Invoice Count"];
-  const dataRows = custRows.map(r => [r.domain, r.customer_name, r.customer_email, r.account, r.customer_status, r.business, r.cs_email, fmt(r.b0_30), fmt(r.b31_60), fmt(r.b61_90), fmt(r.b90plus), fmt(r.total), r.dso_days, r.invoice_count]);
-  const totals = custRows.reduce((acc,r) => ({ b0_30:acc.b0_30+r.b0_30, b31_60:acc.b31_60+r.b31_60, b61_90:acc.b61_90+r.b61_90, b90plus:acc.b90plus+r.b90plus, total:acc.total+r.total }), {b0_30:0,b31_60:0,b61_90:0,b90plus:0,total:0});
-  const totalsRow = ["TOTAL","","","","","","",fmt(totals.b0_30),fmt(totals.b31_60),fmt(totals.b61_90),fmt(totals.b90plus),fmt(totals.total),"",""];
+  const dataRows = rows.map(r => [r.domain, r.customer_name, r.customer_email, r.account, r.customer_status, r.business, r.cs_email, fmt(r.b0_30), fmt(r.b31_60), fmt(r.b61_90), fmt(r.b90plus), fmt(r.total), r.dso_days, r.invoice_count]);
+  const tot = rows.reduce((a,r) => ({ b0_30:a.b0_30+r.b0_30, b31_60:a.b31_60+r.b31_60, b61_90:a.b61_90+r.b61_90, b90plus:a.b90plus+r.b90plus, total:a.total+r.total }), {b0_30:0,b31_60:0,b61_90:0,b90plus:0,total:0});
+  const totalsRow = ["TOTAL","","","","","","",fmt(tot.b0_30),fmt(tot.b31_60),fmt(tot.b61_90),fmt(tot.b90plus),fmt(tot.total),"",""];
   const timestamp = new Date().toISOString().replace("T"," ").slice(0,19);
   const allValues = [[`Last updated: ${timestamp}`, ...Array(headers.length-1).fill("")], headers, ...dataRows, totalsRow];
 
