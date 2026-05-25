@@ -1,13 +1,11 @@
 ﻿import { NextResponse } from "next/server";
-import { exportToSheets } from "@/lib/sheets";
+import { getAllInvoices } from "@/lib/stripe";
+import { readCustomerMetadata, exportToSheets } from "@/lib/sheets";
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
-    const host  = request.headers.get("host") ?? "localhost:3000";
-    const proto = host.includes("localhost") ? "http" : "https";
-    const apiRes = await fetch(`${proto}://${host}/api/invoices`, { cache: "no-store" });
-    if (!apiRes.ok) throw new Error(`Invoices API returned ${apiRes.status}`);
-    const { invoices, dso } = await apiRes.json();
+    const metaMap = await readCustomerMetadata().catch(() => new Map<string, import("@/lib/sheets").CustomerMeta>());
+    const { invoices, dso } = await getAllInvoices(metaMap);
     const result = await exportToSheets(invoices, dso);
     return NextResponse.json(result);
   } catch (err: unknown) {
