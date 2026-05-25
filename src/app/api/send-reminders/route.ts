@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+ï»¿import { NextResponse } from "next/server";
 import { getAllInvoices } from "@/lib/stripe";
 import { readCustomerMetadata } from "@/lib/sheets";
 
@@ -54,10 +54,10 @@ export async function POST() {
         <tr>
           <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-weight:500">${c.customer_name}</td>
           <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#6b7280;font-size:13px">${c.domain||c.customer_email}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#22c55e;font-weight:600">${c.b0_30>0?fmtUSD(c.b0_30):"—"}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#f59e0b;font-weight:600">${c.b31_60>0?fmtUSD(c.b31_60):"—"}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#f97316;font-weight:600">${c.b61_90>0?fmtUSD(c.b61_90):"—"}</td>
-          <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#ef4444;font-weight:600">${c.b90plus>0?fmtUSD(c.b90plus):"—"}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#22c55e;font-weight:600">${c.b0_30>0?fmtUSD(c.b0_30):"&mdash;"}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#f59e0b;font-weight:600">${c.b31_60>0?fmtUSD(c.b31_60):"&mdash;"}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#f97316;font-weight:600">${c.b61_90>0?fmtUSD(c.b61_90):"&mdash;"}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#ef4444;font-weight:600">${c.b90plus>0?fmtUSD(c.b90plus):"&mdash;"}</td>
           <td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-weight:700;color:#4f46e5">${fmtUSD(c.total)}</td>
         </tr>`).join("");
 
@@ -65,7 +65,7 @@ export async function POST() {
         <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:800px;margin:0 auto;background:#f0f2f5;padding:24px">
           <div style="background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:12px;padding:24px;margin-bottom:20px">
             <h1 style="color:#fff;margin:0;font-size:20px">Outstanding Invoice Reminder</h1>
-            <p style="color:#c7d2fe;margin:6px 0 0;font-size:14px">As of ${today} · All amounts in USD</p>
+            <p style="color:#c7d2fe;margin:6px 0 0;font-size:14px">As of ${today} &middot; All amounts in USD</p>
           </div>
           <div style="background:#fff;border-radius:12px;padding:20px;margin-bottom:16px">
             <p style="margin:0 0 16px;color:#374151">Hi, here is a summary of outstanding invoices for your customers:</p>
@@ -73,9 +73,9 @@ export async function POST() {
               <thead><tr style="background:#f8fafc">
                 <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb">Customer</th>
                 <th style="padding:10px 12px;text-align:left;border-bottom:2px solid #e5e7eb">Domain</th>
-                <th style="padding:10px 12px;text-align:left;color:#22c55e;border-bottom:2px solid #e5e7eb">0–30d</th>
-                <th style="padding:10px 12px;text-align:left;color:#f59e0b;border-bottom:2px solid #e5e7eb">31–60d</th>
-                <th style="padding:10px 12px;text-align:left;color:#f97316;border-bottom:2px solid #e5e7eb">61–90d</th>
+                <th style="padding:10px 12px;text-align:left;color:#22c55e;border-bottom:2px solid #e5e7eb">0-30d</th>
+                <th style="padding:10px 12px;text-align:left;color:#f59e0b;border-bottom:2px solid #e5e7eb">31-60d</th>
+                <th style="padding:10px 12px;text-align:left;color:#f97316;border-bottom:2px solid #e5e7eb">61-90d</th>
                 <th style="padding:10px 12px;text-align:left;color:#ef4444;border-bottom:2px solid #e5e7eb">90+d</th>
                 <th style="padding:10px 12px;text-align:left;color:#4f46e5;border-bottom:2px solid #e5e7eb">Total</th>
               </tr></thead>
@@ -86,7 +86,7 @@ export async function POST() {
               </tr></tfoot>
             </table>
           </div>
-          <p style="text-align:center;color:#9ca3af;font-size:12px">Sent by Gushwork Finance · Data from Stripe</p>
+          <p style="text-align:center;color:#9ca3af;font-size:12px">Sent by Gushwork Finance &middot; Data from Stripe</p>
         </div>`;
 
       const res = await fetch("https://api.resend.com/emails",{
@@ -97,7 +97,7 @@ export async function POST() {
           to:[cs_email],
           cc: CC_EMAILS,
           reply_to:"finance.abhishek@gushwork.ai",
-          subject:`Outstanding Invoices — Your Portfolio — ${today}`,
+          subject:`Outstanding Invoices â€” Your Portfolio â€” ${today}`,
           html
         })
       });
