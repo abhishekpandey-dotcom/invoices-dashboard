@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAllInvoices } from "@/lib/stripe";
 import { readCustomerMetadata } from "@/lib/sheets";
 
-export const revalidate = 300;
+export const dynamic = "force-dynamic"; // always fetch fresh data — no Vercel cache
 
 const INR_PER_USD = 95;
 const EUR_PER_USD = 1.17;
@@ -19,29 +19,21 @@ export async function GET() {
       console.warn("[/api/invoices] Metadata unavailable:", err.message);
       return new Map();
     });
-
     const { invoices, dso } = await getAllInvoices(metaMap);
-
     const invoicesWithUsd = invoices.map(inv => ({
       ...inv,
       amount_usd: toUsd(inv.amount_due, inv.currency),
     }));
-
     const dsoWithUsd = dso.map(d => {
       const total_outstanding_usd = toUsd(d.total_outstanding, d.currency);
-
-      // MRR = avg outstanding invoice amount = total_outstanding / invoice_count
-      // DSO = total_outstanding / (MRR / 30) = invoice_count * 30
       const avg_invoice_usd = d.invoice_count > 0
         ? total_outstanding_usd / d.invoice_count
         : 0;
       const dso_days = avg_invoice_usd > 0
         ? Math.round(total_outstanding_usd / (avg_invoice_usd / 30))
         : 0;
-
       return { ...d, total_outstanding_usd, dso_days };
     });
-
     return NextResponse.json({
       invoices: invoicesWithUsd,
       dso: dsoWithUsd,
