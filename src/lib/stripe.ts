@@ -143,6 +143,9 @@ interface PaidSummary {
   total_3m: number;
   currency: string;
   collection_method: "charge_automatically" | "send_invoice";
+  /** Customer display name — captured so paid-only customers can appear in the full list */
+  customer_name: string;
+  customer_email: string;
 }
 
 async function fetchPaidSales(
@@ -178,8 +181,11 @@ async function fetchPaidSales(
         | "charge_automatically"
         | "send_invoice";
 
+      const cName  = cObj?.name  ?? inv.customer_name  ?? inv.customer_email ?? "Unknown";
+      const cEmail = cObj?.email ?? inv.customer_email ?? "";
+
       if (!map.has(key)) {
-        map.set(key, { total_12m: 0, total_3m: 0, currency, collection_method: cm });
+        map.set(key, { total_12m: 0, total_3m: 0, currency, collection_method: cm, customer_name: cName, customer_email: cEmail });
       }
       const s = map.get(key)!;
       s.total_12m += amount;
@@ -266,6 +272,34 @@ export async function getAllInvoices(
     c.totalOutstanding += inv.amount_due;
     c.weightedDaysSum  += inv.amount_due * inv.days_overdue;
     c.count++;
+  }
+
+  // ── Add paid-only customers (no open invoices, but active in last 12m) ────
+  //   These appear in the Auto Pay / Manual tabs even though outstanding = $0.
+  for (const [salesKey, paid] of salesMap.entries()) {
+    const parts     = salesKey.split("::");
+    const account   = parts[0] as "India" | "US";
+    const custId    = parts[1];
+    const key       = `${account}::${custId}::${paid.currency}`;
+    if (custMap.has(key)) continue; // already added from open invoices
+    const meta = metaMap.get(custId);
+    custMap.set(key, {
+      customer_id:      custId,
+      customer_name:    paid.customer_name,
+      customer_email:   paid.customer_email,
+      domain:           meta?.domain   ?? "",
+      business:         meta?.business ?? "",
+      cs_email:         meta?.cs_email ?? "",
+      customer_status:  meta?.status   ?? "",
+      account,
+      currency:         paid.currency,
+      totalOutstanding: 0,
+      count:            0,
+      total_sales_12m:  paid.total_12m,
+      sales_3m:         paid.total_3m,
+      collection_method: paid.collection_method,
+      weightedDaysSum:  0,
+    });
   }
 
   // ── Compute DSO — weighted average age of open invoices ─────────────────
