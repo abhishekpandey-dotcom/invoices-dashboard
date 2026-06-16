@@ -423,47 +423,38 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* ── PAYMENT MODE BREAKDOWN (Active / Inactive tabs) ── */}
+      {/* ── ACTIVE / INACTIVE QUICK FILTERS ── */}
       {activeTab !== "all" && (
-        <div style={{ marginBottom: 20 }}>
-          <div style={S.sectionLabel}>
-            Payment Mode Breakdown · {activeTab === "active" ? "Active" : "Inactive"} customers
+        <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 16, background: "#fff", padding: "14px 18px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", flexWrap: "wrap" }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.6 }}>
+            Filter {activeTab === "active" ? "Active" : "Inactive"} Customers:
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Business Type</label>
+            <select style={{ ...sel, width: 160 }} value={bizF} onChange={e => setBizF(e.target.value)}>
+              <option value="All">All</option>
+              {bizTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: 12 }}>
-            {bizStats.map(({ biz, count, dso, total, autoPay, manualPay, autoPayPct, manualPayPct, sales_3m }) => {
-              const [fg, bg, border] = bizColor(biz);
-              return (
-                <div key={biz} style={{ background: "#fff", borderRadius: 12, padding: "16px 18px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: `1px solid ${border}` }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                    <span style={{ background: bg, color: fg, border: `1px solid ${border}`, borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{biz}</span>
-                    {dso > 0 && <span style={{ background: dsoBg(dso), color: dsoColor(dso), borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700, border: `1px solid ${dsoColor(dso)}44` }}>DSO {dso}d</span>}
-                  </div>
-                  <div style={{ fontSize: 21, fontWeight: 800, color: "#0f172a", marginBottom: 2 }}>{fmtUSD(total)}</div>
-                  <div style={{ fontSize: 12, color: "#64748b", marginBottom: 10 }}>
-                    {count} customer{count !== 1 ? "s" : ""} · Sales 3M: <strong>{fmtUSD(sales_3m)}</strong>
-                  </div>
-                  {/* Payment mode bar */}
-                  {count > 0 && (
-                    <>
-                      <div style={{ display: "flex", height: 8, borderRadius: 4, overflow: "hidden", gap: 1, marginBottom: 8 }}>
-                        {autoPay  > 0 && <div style={{ flex: autoPay,  background: "#6366f1", minWidth: 4 }} />}
-                        {manualPay > 0 && <div style={{ flex: manualPay, background: "#f59e0b", minWidth: 4 }} />}
-                      </div>
-                      <div style={{ display: "flex", gap: 14, fontSize: 12 }}>
-                        <span style={{ color: "#6366f1", fontWeight: 600 }}>🤖 Auto Pay: {autoPay} ({autoPayPct}%)</span>
-                        <span style={{ color: "#d97706", fontWeight: 600 }}>📧 Manual: {manualPay} ({manualPayPct}%)</span>
-                      </div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Payment Mode</label>
+            <select style={{ ...sel, width: 140 }} value={pmF} onChange={e => setPmF(e.target.value)}>
+              <option value="All">All</option>
+              <option value="auto">🤖 Auto Pay</option>
+              <option value="manual">📧 Manual</option>
+            </select>
           </div>
+          {(bizF !== "All" || pmF !== "All") && (
+            <button onClick={() => { setBizF("All"); setPmF("All"); }}
+              style={{ fontSize: 12, color: "#ef4444", background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 20, padding: "5px 14px", cursor: "pointer", fontWeight: 600 }}>
+              ✕ Clear filters
+            </button>
+          )}
         </div>
       )}
 
-      {/* ── BUSINESS TYPE BREAKDOWN ── */}
-      <div style={{ marginBottom: 20 }}>
+      {/* ── BUSINESS TYPE BREAKDOWN (All tab only) ── */}
+      {activeTab === "all" && <div style={{ marginBottom: 20 }}>
         <div style={S.sectionLabel}>
           Business Type Breakdown
           {hasActiveFilters && <span style={{ fontWeight: 400, color: "#94a3b8", textTransform: "none", fontSize: 12, marginLeft: 6 }}>· filtered view</span>}
@@ -508,7 +499,7 @@ export default function Dashboard() {
             );
           })}
         </div>
-      </div>
+      </div>}
 
       {/* ── SEARCH + FILTER BAR ── */}
       <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
@@ -697,7 +688,7 @@ export default function Dashboard() {
       </div>
 
       <div style={{ textAlign: "center", padding: "16px 0", color: "#94a3b8", fontSize: 12 }}>
-        Click ⟳ for live data · Click Total to expand invoices · DSO = Outstanding ÷ Daily-sales-rate (3M window)
+        Click ⟳ for live data · Click Total to expand invoices · DSO = weighted average age of open invoices
       </div>
     </div>
   );
