@@ -50,7 +50,7 @@ export interface CustomerDSO {
   account: "India" | "US";
   total_outstanding: number;
   currency: string;
-  /** DSO = outstanding / (sales_3m / 90) or fallback to (sales_12m / 365) */
+  /** DSO = weighted average age of open invoices: Σ(amount × days_overdue) / Σ(amount) */
   dso_days: number;
   invoice_count: number;
   /** Sum of paid invoices in the last 12 months (native currency) */
@@ -143,8 +143,6 @@ interface PaidSummary {
   total_3m: number;
   currency: string;
   collection_method: "charge_automatically" | "send_invoice";
-  /** Unix seconds of the EARLIEST paid invoice found in the 12-month window */
-  first_paid_sec: number;
 }
 
 async function fetchPaidSales(
@@ -181,13 +179,12 @@ async function fetchPaidSales(
         | "send_invoice";
 
       if (!map.has(key)) {
-        map.set(key, { total_12m: 0, total_3m: 0, currency, collection_method: cm, first_paid_sec: inv.created });
+        map.set(key, { total_12m: 0, total_3m: 0, currency, collection_method: cm });
       }
       const s = map.get(key)!;
       s.total_12m += amount;
       if (inv.created >= since3m) s.total_3m += amount;
       s.collection_method = cm; // keep most-recent invoice's value
-      if (inv.created < s.first_paid_sec) s.first_paid_sec = inv.created; // track earliest in window
     }
 
     hasMore = page.has_more;
@@ -234,8 +231,8 @@ export async function getAllInvoices(
     totalOutstanding: number; count: number;
     total_sales_12m: number; sales_3m: number;
     collection_method: "charge_automatically" | "send_invoice";
-    /** Earliest paid invoice timestamp in the 12-month window — used to measure actual customer tenure */
-    first_paid_sec: number;
+    /** Σ(amount_due × days_overdue) — numerator for weighted-average DSO */
+    weightedDaysSum: number;
   }
 
   const custMap = new Map<string, CustAgg>();
@@ -262,33 +259,29 @@ export async function getAllInvoices(
         total_sales_12m:  paid?.total_12m     ?? 0,
         sales_3m:         paid?.total_3m      ?? 0,
         collection_method: paid?.collection_method ?? inv.collection_method,
-        first_paid_sec:   paid?.first_paid_sec ?? 0,
+        weightedDaysSum:  0,
       });
     }
     const c = custMap.get(key)!;
     c.totalOutstanding += inv.amount_due;
+    c.weightedDaysSum  += inv.amount_due * inv.days_overdue;
     c.count++;
   }
 
-  // ── Compute DSO using tenure-aware formula ───────────────────────────────
-  //   DSO = (Outstanding / Avg Monthly Revenue) × 30
+  // ── Compute DSO — weighted average age of open invoices ─────────────────
+  //   DSO = Σ(invoice_amount × days_overdue) / Σ(invoice_amount)
   //
-  //   Avg Monthly Revenue = total_sales_12m / months_active
-  //   where months_active = months between the customer's EARLIEST paid invoice
-  //   in the 12-month window and now.  This avoids inflating DSO for recently
-  //   onboarded customers (e.g. CloudTech, 2 months old → divide by 2, not 12).
+  //   This is the most rational measure: it directly answers "on average, how
+  //   many days old is the money we're owed?"
   //
-  //   No cap is applied — genuinely delinquent customers will show high DSO,
-  //   which is correct.  Customers with no Stripe payment history show 0 ("--").
-  const nowSec = Math.floor(Date.now() / 1000);
+  //   • Never inflated by customers paying outside Stripe
+  //   • Never affected by onboarding date or tenure
+  //   • Bounded by the actual age of the oldest invoice — cannot give 657d
+  //   • Invoices not yet due contribute 0 days (days_overdue = 0)
   const dso: CustomerDSO[] = Array.from(custMap.values()).map(c => {
-    let dso_days = 0;
-    if (c.total_sales_12m > 0 && c.first_paid_sec > 0) {
-      // How many months has this customer been paying (within our 12m window)?
-      const monthsActive = Math.max(1, (nowSec - c.first_paid_sec) / (30.5 * 24 * 3600));
-      const avgMonthly   = c.total_sales_12m / monthsActive;
-      dso_days = avgMonthly > 0 ? Math.round((c.totalOutstanding / avgMonthly) * 30) : 0;
-    }
+    const dso_days = c.totalOutstanding > 0
+      ? Math.round(c.weightedDaysSum / c.totalOutstanding)
+      : 0;
 
     return {
       customer_id:     c.customer_id,
