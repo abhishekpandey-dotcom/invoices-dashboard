@@ -97,7 +97,7 @@ export default function Dashboard() {
   const [expanded, setExpanded]       = useState<Set<string>>(new Set());
   const [sortCol, setSortCol]         = useState<keyof CustRow>("total");
   const [sortDir, setSortDir]         = useState<"asc" | "desc">("desc");
-  const [activeTab, setActiveTab]     = useState<"all" | "active" | "inactive">("all");
+  const [activeTab, setActiveTab]     = useState<"all" | "active" | "inactive" | "autopay" | "manual">("all");
 
   // Filters
   const [search,    setSearch]    = useState("");
@@ -131,6 +131,21 @@ export default function Dashboard() {
   useEffect(() => { loadData(false); }, [loadData]);
 
   const allInvoices = useMemo(() => data?.invoices ?? [], [data]);
+
+  // Global auto pay stats — computed from ALL invoices regardless of filters
+  // Used to show "X% of all customers are on auto pay" on the payment mode tabs
+  const autoPayStats = useMemo(() => {
+    const allCust    = new Set<string>();
+    const autoPayCust = new Set<string>();
+    for (const inv of allInvoices) {
+      const key = `${inv.account}::${inv.customer_id}`;
+      allCust.add(key);
+      if (inv.collection_method === "charge_automatically") autoPayCust.add(key);
+    }
+    const total   = allCust.size;
+    const autoPay = autoPayCust.size;
+    return { total, autoPay, manual: total - autoPay, autoPayPct: total > 0 ? Math.round(autoPay / total * 100) : 0 };
+  }, [allInvoices]);
 
   // DSO data map — keyed by "account::customer_id"
   const dsoDataMap = useMemo(() => {
@@ -184,10 +199,15 @@ export default function Dashboard() {
             .some(v => v?.toLowerCase().includes(q))) continue;
       }
       // Tab pre-filter
-      if (activeTab === "active"   && inv.customer_status !== "Active")   continue;
-      if (activeTab === "inactive" && inv.customer_status !== "Inactive") continue;
-      if (pmF === "auto"   && inv.collection_method !== "charge_automatically") continue;
-      if (pmF === "manual" && inv.collection_method !== "send_invoice")         continue;
+      if (activeTab === "active"   && inv.customer_status !== "Active")              continue;
+      if (activeTab === "inactive" && inv.customer_status !== "Inactive")            continue;
+      if (activeTab === "autopay"  && inv.collection_method !== "charge_automatically") continue;
+      if (activeTab === "manual"   && inv.collection_method !== "send_invoice")      continue;
+      // pmF only applies on tabs where payment mode isn't already locked by the tab
+      if (activeTab !== "autopay" && activeTab !== "manual") {
+        if (pmF === "auto"   && inv.collection_method !== "charge_automatically") continue;
+        if (pmF === "manual" && inv.collection_method !== "send_invoice")         continue;
+      }
 
       const key = `${inv.account}::${inv.customer_id}`;
       if (!map.has(key)) {
@@ -389,10 +409,17 @@ export default function Dashboard() {
       {msg && <div style={S.toast}>{msg}</div>}
 
       {/* ── TABS ── */}
-      <div style={S.tabBar}>
-        {(["all", "active", "inactive"] as const).map(t => (
-          <button key={t} onClick={() => setActiveTab(t)} style={{ ...S.tab, ...(activeTab === t ? S.tabActive : {}) }}>
-            {t === "all" ? "All Customers" : t === "active" ? "Active" : "Inactive"}
+      <div style={{ ...S.tabBar, width: "auto" }}>
+        {([
+          { key: "all",      label: "All Customers" },
+          { key: "active",   label: "Active" },
+          { key: "inactive", label: "Inactive" },
+          { key: "autopay",  label: "🤖 Auto Pay" },
+          { key: "manual",   label: "📧 Manual" },
+        ] as const).map(({ key, label }) => (
+          <button key={key} onClick={() => { setActiveTab(key); setBizF("All"); }}
+            style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
+            {label}
           </button>
         ))}
       </div>
@@ -423,12 +450,33 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* ── ACTIVE / INACTIVE QUICK FILTERS ── */}
+      {/* ── TAB QUICK FILTERS (all tabs except "All") ── */}
       {activeTab !== "all" && (
         <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 16, background: "#fff", padding: "14px 18px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", flexWrap: "wrap" }}>
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase", letterSpacing: 0.6 }}>
-            Filter {activeTab === "active" ? "Active" : "Inactive"} Customers:
+
+          {/* Auto Pay % summary — shown on autopay / manual tabs */}
+          {(activeTab === "autopay" || activeTab === "manual") && (
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginRight: 8 }}>
+              <div style={{ fontSize: 12, color: "#64748b" }}>
+                <strong style={{ color: "#0f172a" }}>{autoPayStats.autoPay}</strong> of{" "}
+                <strong style={{ color: "#0f172a" }}>{autoPayStats.total}</strong> total customers on auto pay
+              </div>
+              {/* Auto vs Manual bar */}
+              <div style={{ display: "flex", width: 120, height: 8, borderRadius: 4, overflow: "hidden", gap: 1 }}>
+                <div style={{ flex: autoPayStats.autoPay, background: "#6366f1", minWidth: 4 }} />
+                <div style={{ flex: autoPayStats.manual, background: "#f59e0b", minWidth: 4 }} />
+              </div>
+              <span style={{ background: "#ede9fe", color: "#6366f1", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700, border: "1px solid #c4b5fd" }}>
+                {autoPayStats.autoPayPct}% auto pay
+              </span>
+            </div>
+          )}
+
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" as const, letterSpacing: 0.6 }}>
+            Filter:
           </span>
+
+          {/* Business Type — always shown */}
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Business Type</label>
             <select style={{ ...sel, width: 160 }} value={bizF} onChange={e => setBizF(e.target.value)}>
@@ -436,18 +484,23 @@ export default function Dashboard() {
               {bizTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Payment Mode</label>
-            <select style={{ ...sel, width: 140 }} value={pmF} onChange={e => setPmF(e.target.value)}>
-              <option value="All">All</option>
-              <option value="auto">🤖 Auto Pay</option>
-              <option value="manual">📧 Manual</option>
-            </select>
-          </div>
+
+          {/* Payment Mode — only on Active / Inactive tabs (autopay/manual tabs already lock this) */}
+          {(activeTab === "active" || activeTab === "inactive") && (
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Payment Mode</label>
+              <select style={{ ...sel, width: 150 }} value={pmF} onChange={e => setPmF(e.target.value)}>
+                <option value="All">All</option>
+                <option value="auto">🤖 Auto Pay</option>
+                <option value="manual">📧 Manual</option>
+              </select>
+            </div>
+          )}
+
           {(bizF !== "All" || pmF !== "All") && (
             <button onClick={() => { setBizF("All"); setPmF("All"); }}
               style={{ fontSize: 12, color: "#ef4444", background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 20, padding: "5px 14px", cursor: "pointer", fontWeight: 600 }}>
-              ✕ Clear filters
+              ✕ Clear
             </button>
           )}
         </div>
