@@ -264,20 +264,16 @@ export async function getAllInvoices(
     c.count++;
   }
 
-  // ── Compute DSO using proper formula ─────────────────────────────────────
-  //   DSO = outstanding / daily_sales_rate
-  //   daily_sales_rate: prefer 3-month window (÷90d), fallback to 12-month (÷365d)
-  //   This correctly handles inactive customers — their DSO reflects how many
-  //   days of historical revenue is currently unpaid, not an arbitrary overdue count.
+  // ── Compute DSO using standard annual formula ────────────────────────────
+  //   DSO = (Outstanding / Annual Sales) × 365
+  //   Uses 12-month paid invoice total as the denominator (most stable window).
+  //   Capped at 365 — values above that are displayed as ">365d" in the UI.
+  //   Falls back to 0 (shown as "--") when no Stripe paid-invoice history exists.
   const dso: CustomerDSO[] = Array.from(custMap.values()).map(c => {
-    const dailyRate =
-      c.sales_3m > 0
-        ? c.sales_3m / 90
-        : c.total_sales_12m > 0
-          ? c.total_sales_12m / 365
-          : 0;
-
-    const dso_days = dailyRate > 0 ? Math.round(c.totalOutstanding / dailyRate) : 0;
+    const dso_days =
+      c.total_sales_12m > 0
+        ? Math.min(365, Math.round((c.totalOutstanding / c.total_sales_12m) * 365))
+        : 0;
 
     return {
       customer_id:     c.customer_id,
