@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-16T10:09:43.071Z",
+  "lastUpdated": "2026-06-16T10:09:48.393Z",
   "rowCount": 412,
   "data": [
     {
@@ -3294,7 +3294,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_NbB7Um1GSFlAb2",
       "Domain name": "tristateassetrecovery.com",
-      "Status": "#N/A",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     }
