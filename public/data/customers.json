@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-16T08:45:17.869Z",
-  "rowCount": 411,
+  "lastUpdated": "2026-06-16T08:53:04.288Z",
+  "rowCount": 412,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -3284,11 +3284,19 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_UPYfwM2oN0PTp0",
+      "Stripe Customer ID": "",
       "Domain name": "https://www.dograh.com/",
       "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UPYfwM2oN0PTp0",
+      "Domain name": "",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
