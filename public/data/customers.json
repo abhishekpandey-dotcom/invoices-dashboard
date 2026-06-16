@@ -1,0 +1,3294 @@
+{
+  "lastUpdated": "2026-06-16T08:45:17.869Z",
+  "rowCount": 411,
+  "data": [
+    {
+      "Customer Name": "A&B Ingredients",
+      "Stripe Customer ID": "cus_TM8DNh9edE3LBy",
+      "Domain name": "https://abingredients.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Abba HVAC Inc",
+      "Stripe Customer ID": "cus_TBj5AjAtb6lcdw",
+      "Domain name": "https://www.abbahvac.com/",
+      "Status": "Inactive",
+      "Business": "AI Agents",
+      "CS Name": "nb@gushwork.ai"
+    },
+    {
+      "Customer Name": "Acadia Stairs, LLC",
+      "Stripe Customer ID": "cus_TuEE97heAoOyEn",
+      "Domain name": "https://www.acadiastairs.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Accurate Automatic Mfg",
+      "Stripe Customer ID": "cus_U3CCpdKSqdlAa5",
+      "Domain name": "https://www.accurateautomaticmfg.com/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "ACH Engineering Inc.",
+      "Stripe Customer ID": "cus_TeRWiy4bzirRvl",
+      "Domain name": "https://www.achengineering.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "AiPrise Inc",
+      "Stripe Customer ID": "cus_QjPrC0bj9Iv7rF",
+      "Domain name": "www.aiprise.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Akiflow Inc",
+      "Stripe Customer ID": "cus_Rr6PS3UsPUqIbu",
+      "Domain name": "https://akiflow.com/",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "ALAANPAY TECHNOLOGY FZCO",
+      "Stripe Customer ID": "cus_QrbHZNg7EohXnc",
+      "Domain name": "alaan.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Albert W Miller Jr",
+      "Stripe Customer ID": "cus_U2iY3iEPxNLq8q",
+      "Domain name": "https://awmiller.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Apollo Optical Systems",
+      "Stripe Customer ID": "cus_Ta203zIesV89Ll",
+      "Domain name": "https://www.apollooptical.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Aqua Poly",
+      "Stripe Customer ID": "cus_Tnw7bS0LgfnobC",
+      "Domain name": "https://aquapoly.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "AQUARIUM PARADISE",
+      "Stripe Customer ID": "cus_SPHX5FXSuOZ41q",
+      "Domain name": "theaquariumparadise.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Artemisia College of Art & Design (ACAD)",
+      "Stripe Customer ID": "cus_SX8clLngv1Hkus",
+      "Domain name": "https://www.artemisiacollege.com/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "BCD ROYALE LLP",
+      "Stripe Customer ID": "cus_R4NxLbKegRpGU8",
+      "Domain name": "bcdindia.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Bear Cave Storage",
+      "Stripe Customer ID": "cus_TExNpPxadlvq27",
+      "Domain name": "https://www.bearcavestorage.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Bourbon Science Inc.",
+      "Stripe Customer ID": "cus_RzhWnEzkSWOHo1",
+      "Domain name": "https://www.zoko.io/",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Bulgin",
+      "Stripe Customer ID": "cus_TUlqItlKQawSuY",
+      "Domain name": "https://www.bulgin.com/en/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "CA Home Solar",
+      "Stripe Customer ID": "cus_TeX5J2xlu5G7Oi",
+      "Domain name": "https://cahomesolar.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "CandorIQ Inc.",
+      "Stripe Customer ID": "cus_SE4zF3M1Rh00t2",
+      "Domain name": "https://www.candoriq.com/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Carnes-Miller Gear Co., Inc.",
+      "Stripe Customer ID": "cus_TxZqI6XaMCOe4G",
+      "Domain name": "https://www.cmgear.us/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Central Air & Refrigeration",
+      "Stripe Customer ID": "cus_TN88s2LJFDw5FX",
+      "Domain name": "https://centralairandrefrigeration.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "CHEMITEK PROCESS EQUIPMENTS PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_SdaE2Cg5SS7ge7",
+      "Domain name": "https://www.chemitek.co.in/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Cipher Group Technologies Inc.",
+      "Stripe Customer ID": "cus_S0yUPTThGn7TrC",
+      "Domain name": "lumenci.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Clockwise, Inc",
+      "Stripe Customer ID": "cus_RDLNzQTt2PRqpy",
+      "Domain name": "www.getclockwise.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "cnsrv inc",
+      "Stripe Customer ID": "cus_U11WBH3SgzrLj8",
+      "Domain name": "https://cnsrv.com/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "CODEWAVE TECHNOLOGIES PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_Se0W3elFIkwNwN",
+      "Domain name": "codewave.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "COFFYE INNOVATIONS PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_TeLWLVJkAGJzH8",
+      "Domain name": "appmaker.xyz",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Commenda Technologies, Inc",
+      "Stripe Customer ID": "cus_RdLvsbAYfe490h",
+      "Domain name": "commenda.io",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Corey Fontenot",
+      "Stripe Customer ID": "cus_TMqAY3GeX1q5xj",
+      "Domain name": "https://fiama-us.com/",
+      "Status": "Churned",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Coverage Now Insurance Agency LLC",
+      "Stripe Customer ID": "cus_QN6g8B1DMCNtR4",
+      "Domain name": "skhan@twfg.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "#N/A"
+    },
+    {
+      "Customer Name": "Criterion Precision Machining",
+      "Stripe Customer ID": "cus_TUli1gDrZabyC4",
+      "Domain name": "https://www.criterionprecision.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "CuriousRubik Pte Ltd",
+      "Stripe Customer ID": "cus_SqyHwY9VA5kjC9",
+      "Domain name": "https://riooapp.com/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "DASHVERSE CORP",
+      "Stripe Customer ID": "cus_PuYe1gORRG9b2h",
+      "Domain name": "frameo.ai",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Detroit Sealing Components",
+      "Stripe Customer ID": "cus_TaLjFzz5as1357",
+      "Domain name": "https://detroitsealing.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Douglas Machine & Engineering LLC",
+      "Stripe Customer ID": "cus_U0yHWZBBhAbWat",
+      "Domain name": "https://doug-machine.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "DRK Research Solutions SARL",
+      "Stripe Customer ID": "cus_Sz9dnUGzMQthay",
+      "Domain name": "https://drkresearch.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "EMA UNLIMITED, INC.",
+      "Stripe Customer ID": "cus_QmsbxnxGyGzc0n",
+      "Domain name": "ema.co",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "EMINENCE CPA PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_S4IEFA6Yzkckfd",
+      "Domain name": "https://www.vjmglobal.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Entelligence AI INC",
+      "Stripe Customer ID": "cus_TEWpP67lyfJNOX",
+      "Domain name": "https://www.entelligence.ai/",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Evok Polymers",
+      "Stripe Customer ID": "cus_Tso5UYWuzRoehC",
+      "Domain name": "https://evokpoly.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Excellerant, Inc",
+      "Stripe Customer ID": "cus_TzVj8Mca462rXY",
+      "Domain name": "https://excellerant-mfg.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Expanda Stand Private Limited",
+      "Stripe Customer ID": "cus_SQnKJ4BQMgwhNL",
+      "Domain name": "https://www.expandastands.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Field Flower Collective",
+      "Stripe Customer ID": "cus_TuWXTjw5wYegOW",
+      "Domain name": "https://www.fieldflowercollective.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "fielddrive BV",
+      "Stripe Customer ID": "cus_RNEWiJu9BoW83C",
+      "Domain name": "fielddrive.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Founderlink Technologies Private Limited",
+      "Stripe Customer ID": "cus_QWLTG9SZgi3Dcd",
+      "Domain name": "www.recurclub.com/",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "FSR Radiators & Racing Products",
+      "Stripe Customer ID": "cus_TZBrCaKSq6hGJD",
+      "Domain name": "https://www.fsrproducts.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "FUN WORLD AND RESORTS INDIA PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_S2llvel9YeIiNP",
+      "Domain name": "https://www.funworldblr.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Funfox",
+      "Stripe Customer ID": "cus_ONSWhvsUl5e5Hd",
+      "Domain name": "https://funfoxprogram.com.au/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "FX PCB",
+      "Stripe Customer ID": "cus_U2XIwuscUvsJKO",
+      "Domain name": "https://sfxpcb.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "GANNAYAK PACKAGING PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_TZ9gTaPIHRG362",
+      "Domain name": "https://gannayakpackaging.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "GMS Industries Inc.",
+      "Stripe Customer ID": "cus_TMtJ1qZ368pVKX",
+      "Domain name": "https://gmsindustries.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Greg Jones",
+      "Stripe Customer ID": "cus_TJbOelWid2nNVX",
+      "Domain name": "https://midwestpowerproducts.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "GrowthDuty Inc.",
+      "Stripe Customer ID": "cus_RSSCvoe2SlEMT2",
+      "Domain name": "segwise.ai",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "H&H Design & Manufacturing, LLC",
+      "Stripe Customer ID": "cus_TI4IsWsTJ8GjzV",
+      "Domain name": "https://www.hhdesignmfg.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Hal Simplify",
+      "Stripe Customer ID": "cus_RAZu2fGwKBbAbM",
+      "Domain name": "halsimplify.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Halsted Financial Services LLC",
+      "Stripe Customer ID": "cus_PLhpYyU8dywmb3",
+      "Domain name": "halstedfinancialservices.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Hammer-IMS",
+      "Stripe Customer ID": "cus_TP0rOZLyDwww9I",
+      "Domain name": "https://www.hammer-ims.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Higginbotham Design LLC",
+      "Stripe Customer ID": "cus_Tsniuctw5wcXR0",
+      "Domain name": "https://www.higginbothamdesignllcofga.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Humphries Casters",
+      "Stripe Customer ID": "cus_THfjhhlKVeAI70",
+      "Domain name": "https://www.humphriescasters.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Inventive AI Inc.",
+      "Stripe Customer ID": "cus_S8Ll2OQWwgO1cG",
+      "Domain name": "https://www.inventive.ai/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "iOrders Technology Services Inc.",
+      "Stripe Customer ID": "cus_R9dZOBmnXzMmqR",
+      "Domain name": "iorders.ca",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "JAIRAJ ANCILLARIES PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_Su5Ya9ZPjN0UAG",
+      "Domain name": "https://www.jairajgroup.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "JAMES CALVERT",
+      "Stripe Customer ID": "cus_T5JS1OQ27j8kz8",
+      "Domain name": "https://www.apg-go.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Jesica Williams",
+      "Stripe Customer ID": "cus_TCU9ZO37bh9sJL",
+      "Domain name": "https://www.aircraftwindshield.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "JOEY YOUNGER",
+      "Stripe Customer ID": "cus_PQcnPCuExLURjP",
+      "Domain name": "https://www.theforesthillmanagement.com/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "John Maye Company Inc",
+      "Stripe Customer ID": "cus_SdsFoVUjyvQRmF",
+      "Domain name": "https://www.johnmayecompany.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Keyaro Edutech Private Limited",
+      "Stripe Customer ID": "cus_QiJgC4R8yVO9YV",
+      "Domain name": "seekho.in",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Lashley, Cohen and Associates, Inc.",
+      "Stripe Customer ID": "cus_TudmHwhvh6ZGkf",
+      "Domain name": "https://lashleycohen.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Law Offices of Sweta Khandelwal",
+      "Stripe Customer ID": "cus_Ned7fm4LWJImzV",
+      "Domain name": "khandelwalaw.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Level Solutions Corp.",
+      "Stripe Customer ID": "cus_TuzeWeKDF5c7P2",
+      "Domain name": "https://levelsolutionsusa.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Local Air HVAC",
+      "Stripe Customer ID": "cus_TnYoAAVXA8Qxlq",
+      "Domain name": "https://www.localairhvac.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Machine Applications Corporation",
+      "Stripe Customer ID": "cus_TZFNoTasMcq0Zt",
+      "Domain name": "https://macinstruments.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Md Plastics Inc.",
+      "Stripe Customer ID": "cus_TF3U2Msvy7VQEY",
+      "Domain name": "https://mdplastics.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "MedSource, LLC",
+      "Stripe Customer ID": "cus_SOX8MbmcxlfjAq",
+      "Domain name": "https://insurancecoveredbreastpumps.com/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "metro wholesale,inc",
+      "Stripe Customer ID": "cus_TuJjVRlB9jMoLh",
+      "Domain name": "https://www.metrowholesalesd.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Mideast Equipment Auctions, LLC",
+      "Stripe Customer ID": "cus_TuH2yu6X1KbW4G",
+      "Domain name": "https://www.mideastequip.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Mixing Systems, Inc.",
+      "Stripe Customer ID": "cus_TwpvPohly3AfD4",
+      "Domain name": "https://mixing.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Nesho Entertainment Private Limited",
+      "Stripe Customer ID": "cus_TsdxwK2eiEeyDy",
+      "Domain name": "https://www.madverse.co/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "New American Reel Company",
+      "Stripe Customer ID": "cus_Toz2MD2HIlYg6G",
+      "Domain name": "https://www.narco.us/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Ni-Cad Systems, Inc.",
+      "Stripe Customer ID": "cus_TwtZ5uSb9HwXCi",
+      "Domain name": "https://www.nicadsystems.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Nurix Labs Private Limited",
+      "Stripe Customer ID": "cus_QUV1D8MSIXcQ2r",
+      "Domain name": "nurix.ai",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "On Line Controls, Inc.",
+      "Stripe Customer ID": "cus_TZYOCCAonjLmEA",
+      "Domain name": "https://onlinecontrols.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Opus KSD, Inc.",
+      "Stripe Customer ID": "cus_TyKDksb34THHxX",
+      "Domain name": "https://www.subq-it.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Orion Cordage",
+      "Stripe Customer ID": "cus_TznAWf3VWRpIid",
+      "Domain name": "https://orioncordage.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Pacific Wood and Iron, LLC",
+      "Stripe Customer ID": "cus_TZG3PhXeIcu5LS",
+      "Domain name": "https://pacificwoodandiron.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "PAYGLOCAL TECHNOLOGIES PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_QcMGTCzeiN6ss1",
+      "Domain name": "payglocal.in",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Pazago Inc",
+      "Stripe Customer ID": "cus_PTCgGpbIjM9PEk",
+      "Domain name": "pazago.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Percy's Lawn Care and Sons",
+      "Stripe Customer ID": "cus_RPNFNQ2QvgnCh6",
+      "Domain name": "https://www.percyslawncare.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Pico Systems",
+      "Stripe Customer ID": "cus_TWv3XeT8rmNFU7",
+      "Domain name": "https://picosystems.store/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "SPEEL FINANCE COMPANY PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_QeChVPLnMcxrot",
+      "Domain name": "pocketly.in",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Poison-Free LLC",
+      "Stripe Customer ID": "cus_Tt5rK0WPSeJQ4x",
+      "Domain name": "https://www.privatelabelmanufacturing.biz/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Powell Systems, Inc.",
+      "Stripe Customer ID": "cus_Tn9xs4t6wT3mUn",
+      "Domain name": "https://www.powellsystems.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Pro Coffee Gear LLC",
+      "Stripe Customer ID": "cus_Ri5jUXgqQsVpYx",
+      "Domain name": "procoffeegear.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Proponitis Tech Private Limited",
+      "Stripe Customer ID": "cus_POIURu9qrpYeJL",
+      "Domain name": "simply.coach",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Quality Comfort Solutions",
+      "Stripe Customer ID": "cus_TWhFFxDGGZuXO6",
+      "Domain name": "https://quality-comfortsolutions.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Resemble AI",
+      "Stripe Customer ID": "cus_QbzSXcFDDhGyao",
+      "Domain name": "resemble.ai",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Robert Wilson",
+      "Stripe Customer ID": "cus_TJHDrUdhhZRuMy",
+      "Domain name": "https://www.valuadd.net/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Rodgers Ent.  Dist. Inc.",
+      "Stripe Customer ID": "cus_U3bdrtib0aT2AV",
+      "Domain name": "https://redsafetyids.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Sarkinen Calibrating llc",
+      "Stripe Customer ID": "cus_Twuor4Zb7Ec5tF",
+      "Domain name": "https://www.sarkinencalibrating.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Scan Sound, Inc.",
+      "Stripe Customer ID": "cus_TZYHHoK4zV0kNx",
+      "Domain name": "https://scansound.com/",
+      "Status": "Churned",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "SCRUB UP CAR WASH L.L.C",
+      "Stripe Customer ID": "cus_S4Hzp0biqJTUsq",
+      "Domain name": "https://www.scrubup.ae/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Segmind Inc.",
+      "Stripe Customer ID": "cus_QmQtCJo5sxiURj",
+      "Domain name": "segmind.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Seven Billion Technologies Pvt Ltd",
+      "Stripe Customer ID": "cus_SOroww5ch472Yg",
+      "Domain name": "https://www.nector.io/",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Shepherd Outsourcing",
+      "Stripe Customer ID": "cus_PLoEcYM8Ai7eNb",
+      "Domain name": "shepherdoutsourcing.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "SHRIDHAM GLOBAL VENTURES PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_TLOi1aECUZsvpO",
+      "Domain name": "https://www.graintraderindia.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Simon Lee",
+      "Stripe Customer ID": "cus_T7my0p6vHrof32",
+      "Domain name": "https://vantagebranding.com.sg/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "SKO Development LLC",
+      "Stripe Customer ID": "cus_RG1Djgb646OUuv",
+      "Domain name": "https://planacan.io/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "skybox Systems",
+      "Stripe Customer ID": "cus_TyO1zKSYZyFUI0",
+      "Domain name": "https://skyboxsystems.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "SMALLEST INC",
+      "Stripe Customer ID": "cus_RPRTKAK6IHkiRW",
+      "Domain name": "Smallest.ai",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Softrol Systems, Inc.",
+      "Stripe Customer ID": "cus_TJxXY22MfIgXYA",
+      "Domain name": "https://softrol.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Source Equipment",
+      "Stripe Customer ID": "cus_SyBtubd8M0SMvl",
+      "Domain name": "https://www.sourceequipment.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "South East Client Services",
+      "Stripe Customer ID": "cus_OeBewfAsk3Zf3V",
+      "Domain name": "southeastclientservicesinc.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Spire Recovery Solutions",
+      "Stripe Customer ID": "cus_O6hxXticxfPMvj",
+      "Domain name": "spirerec.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "STEEL ON CALL SERVICES (INDIA) PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_Svt42x5njCwvlA",
+      "Domain name": "https://steeloncall.com/",
+      "Status": "Churned",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "STERLING SINTERED TECHNOLOGIES, INC.",
+      "Stripe Customer ID": "cus_TkwAdPgUFGTG1u",
+      "Domain name": "sterlingsintered.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Steven T Fisher",
+      "Stripe Customer ID": "cus_THyadwdSdhnapy",
+      "Domain name": "https://cuttingedgeplasma.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Sure-loc Edging/Wolverine Tools",
+      "Stripe Customer ID": "cus_U0Gy3cQXZZRyg8",
+      "Domain name": "https://surelocedging.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "SURELOCK PLASTICS PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_S3XSFkenmoybNc",
+      "Domain name": "https://www.surelock.in/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "SYNERGITA SOFTWARE PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_Sg2SKskwaha4ii",
+      "Domain name": "https://www.synergita.com/",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "TBWS, LLC",
+      "Stripe Customer ID": "cus_SilDlTmAIzyEbk",
+      "Domain name": "https://twobrokewatchsnobs.com/",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "the flexo factor",
+      "Stripe Customer ID": "cus_TozOsCsX592hJ0",
+      "Domain name": "https://www.theflexofactor.com/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "Services",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Tim LuMaye",
+      "Stripe Customer ID": "cus_T6Sj1ZO3vLImQq",
+      "Domain name": "https://www.aerovacalloyforge.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "ToDo Robotics LLC",
+      "Stripe Customer ID": "cus_TZqU4j52nIdaud",
+      "Domain name": "https://todorobotics.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "TorcSill Foundations LLC",
+      "Stripe Customer ID": "cus_TdMSqcnOsHtsNJ",
+      "Domain name": "https://torcsill.com/",
+      "Status": "Churned",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Trash Truck Rental Inc",
+      "Stripe Customer ID": "cus_SYicYotz01Eb14",
+      "Domain name": "https://trashtruckrental.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Tratta",
+      "Stripe Customer ID": "cus_NYb0h6UleGYgIq",
+      "Domain name": "tratta.io",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "TriNu Powder Coating LLC",
+      "Stripe Customer ID": "cus_TxFVzI2SmssdO9",
+      "Domain name": "http://www.trinupowdercoating.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Truecost Group LLC",
+      "Stripe Customer ID": "cus_TuAm3xWc579076",
+      "Domain name": "https://truecostgroup.us/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "TSH Anywhere",
+      "Stripe Customer ID": "cus_QhHYAnFHc2jUOH",
+      "Domain name": "theschoolhouse.org",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Ulabs Inc",
+      "Stripe Customer ID": "cus_RSNjpVWm1p4WzE",
+      "Domain name": "udext.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "VComply Technologies, Inc",
+      "Stripe Customer ID": "cus_PIG2tJJCPdFhI6",
+      "Domain name": "v-comply.com",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "VELANTIS DERMATOLOGY (OPC) PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_TaLR52yIrmD4ZT",
+      "Domain name": "velantisdermatology.com",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Victor J Perrillo",
+      "Stripe Customer ID": "cus_TDAWT9RU8mWhfL",
+      "Domain name": "https://www.consolidateddesignwest.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "What if Design",
+      "Stripe Customer ID": "cus_Tui7kHe1ZweoEl",
+      "Domain name": "https://www.whatifdesign.co/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "William Bedillion",
+      "Stripe Customer ID": "cus_T6QVtbAiF1bpCY",
+      "Domain name": "https://meridianpkg.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Wintegral Engineering Pvt. Ltd.",
+      "Stripe Customer ID": "cus_ThnpWw2Ue7dlOa",
+      "Domain name": "https://www.wintegral.co.in/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "ZOHO CORPORATION PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_SIw2Qewne0uWvp",
+      "Domain name": "https://www.zoho.com/creator/",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Buffalo Computer Graphics",
+      "Stripe Customer ID": "cus_UFZ4TUQkPB6Waz",
+      "Domain name": "https://www.buffalocomputergraphics.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Innovative Machine Tool Solutions",
+      "Stripe Customer ID": "cus_UB5svhFViPIzq8",
+      "Domain name": "https://www.imtsny.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Terrapin",
+      "Stripe Customer ID": "cus_U7kzgZDJzUu1Cv",
+      "Domain name": "https://terrapin-industrial.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Innovus Power",
+      "Stripe Customer ID": "cus_UFzPcF1tZmu50V",
+      "Domain name": "https://www.innovus-power.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Icon Material Handling LLC",
+      "Stripe Customer ID": "cus_U57WtdNoRyTucL",
+      "Domain name": "https://www.icon-mh.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Vuroyal Pharmaceutical Company LLC",
+      "Stripe Customer ID": "cus_UAiQpVrS9mKCF2",
+      "Domain name": "https://vuroyal.com/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "DT Utility and Safety Supply",
+      "Stripe Customer ID": "cus_U9uQS7HzkZ2JAO",
+      "Domain name": "https://dttexas.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "ahshydraulics",
+      "Stripe Customer ID": "cus_UCblkhkHxIrhFx",
+      "Domain name": "https://ahshydraulics.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Cygnet Infotech Private Limited",
+      "Stripe Customer ID": "cus_UDGD9hNDEImmeQ",
+      "Domain name": "https://cygnet.one/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Providence Metallizing Co., Inc.",
+      "Stripe Customer ID": "cus_UD0fqBt8oN2SMC",
+      "Domain name": "https://www.providencemetallizing.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Pillars FinCrime Advisory",
+      "Stripe Customer ID": "cus_UCzlYpPPc4OEA8",
+      "Domain name": "https://pillarsfincrimeadvisory.com/ ",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Level-EZE",
+      "Stripe Customer ID": "cus_UCuGowwKJaq2FX",
+      "Domain name": "https://level-ladder.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "WarrantyRE",
+      "Stripe Customer ID": "cus_UCf1lKUIwEJz7I",
+      "Domain name": "https://warranty-re.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "DealerRE and WarrantyRE",
+      "Stripe Customer ID": "cus_UCeiYuuOAPULXF",
+      "Domain name": "https://dealerre.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "AHS Hydraulics",
+      "Stripe Customer ID": "cus_UCblkhkHxIrhFx",
+      "Domain name": "https://ahshydraulics.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Accutech Packaging",
+      "Stripe Customer ID": "cus_UCYg1QetaqhRyw",
+      "Domain name": "https://accutechpkg.com/",
+      "Status": "Pre Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "NoPigNeva",
+      "Stripe Customer ID": "cus_UCXGVojdzughQQ",
+      "Domain name": "https://nopigneva.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Gude Corp",
+      "Stripe Customer ID": "cus_UBUIw3QtFoNuKG",
+      "Domain name": "gudecorp.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Alori International Holdings",
+      "Stripe Customer ID": "cus_UBSGXFm2UYmr6B",
+      "Domain name": "https://aloriinternationalholdings.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Innovative Machine Tool Solutions, Inc",
+      "Stripe Customer ID": "cus_UB5svhFViPIzq8",
+      "Domain name": "https://www.imtsny.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "vuRoyal Pharmaceutical Co",
+      "Stripe Customer ID": "cus_UAiQpVrS9mKCF2",
+      "Domain name": "https://vuroyal.com/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "NV Mechanics Design Ltd",
+      "Stripe Customer ID": "cus_UARJw72vBY6gD8",
+      "Domain name": "https://underwateractuators.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "T.R. Wigglesworth Machinery Company",
+      "Stripe Customer ID": "cus_UANSzjdwKid8ao",
+      "Domain name": "https://wigglesworth.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "AMS Retail Solutions",
+      "Stripe Customer ID": "cus_UALy9uoUKxVV2L",
+      "Domain name": "https://amsretail.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Distil",
+      "Stripe Customer ID": "cus_UAJVZ0wDPtTCeM",
+      "Domain name": "https://www.distil.market/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "DT Utility & Safety Supply",
+      "Stripe Customer ID": "cus_U9uQS7HzkZ2JAO",
+      "Domain name": "https://dttexas.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Soma Insurance Services Inc",
+      "Stripe Customer ID": "cus_U8roZUy6cJkkE8",
+      "Domain name": "https://www.somainsure.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Clean Cutter Flail & Tiller Blades Co.",
+      "Stripe Customer ID": "cus_U8qLxRDkkEsM0u",
+      "Domain name": "https://cleancutter.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Morex Corp",
+      "Stripe Customer ID": "cus_U8ACukzw5fRWhJ",
+      "Domain name": "https://morexribbon.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Vorstel Technologies",
+      "Stripe Customer ID": "cus_U88LHZ7CVAtBfZ",
+      "Domain name": "https://vorstel.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Custom Metal Home, LLC",
+      "Stripe Customer ID": "cus_U87wlWyqIPePo5",
+      "Domain name": "https://custommetalhome.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Seneca Cost Segregation",
+      "Stripe Customer ID": "cus_U87uJsw1u9PoVU",
+      "Domain name": "senecacostseg.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "VaporKote Inc",
+      "Stripe Customer ID": "cus_U86aXZKJTOSWz1",
+      "Domain name": "vaporkote.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Wolverine Products",
+      "Stripe Customer ID": "cus_U7pADXhKTgCEQC",
+      "Domain name": "https://wolverinehandtools.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Terrapin Industrial LLC",
+      "Stripe Customer ID": "cus_U7kzgZDJzUu1Cv",
+      "Domain name": "https://terrapin-industrial.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Shipmate Plus",
+      "Stripe Customer ID": "cus_U7jocmCvnDTXPA",
+      "Domain name": "www.shipmateplus.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Sylus AI",
+      "Stripe Customer ID": "cus_U7eWNMRblQXT5l",
+      "Domain name": "https://www.sylus.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Planko Ltd t/a Keel",
+      "Stripe Customer ID": "cus_U7RfrWzI75EqrR",
+      "Domain name": "https://keel.so/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Assembly Industries",
+      "Stripe Customer ID": "cus_U78sUuK9nDPgvj",
+      "Domain name": "https://assembly-industries.com/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Althire AI LLC",
+      "Stripe Customer ID": "cus_U5v2bRRAk6kgWM",
+      "Domain name": "althire.ai",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Denair Hvac Inc.",
+      "Stripe Customer ID": "cus_U5sbMDh8ItTtFk",
+      "Domain name": "https://denairhvac.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Electropin Technologies LLC",
+      "Stripe Customer ID": "cus_U5oFCnnnxvz6jq",
+      "Domain name": "https://electropintech.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Codiot Infotech",
+      "Stripe Customer ID": "cus_U5azazCk7Ee4xY",
+      "Domain name": "https://codiot.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Controlink Systems LLC",
+      "Stripe Customer ID": "cus_U5SdtSxpuWTZX6",
+      "Domain name": "https://www.controlinksystems.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Sure-loc Edging",
+      "Stripe Customer ID": "cus_U0Gy3cQXZZRyg8",
+      "Domain name": "https://surelocedging.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Blare Video",
+      "Stripe Customer ID": "cus_UFzFR7DEmqELri",
+      "Domain name": "https://blarevideo.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "ePortID",
+      "Stripe Customer ID": "cus_UFePiHAk8g3cDJ",
+      "Domain name": "https://www.eportid.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Rossini Equipment Corp",
+      "Stripe Customer ID": "cus_UFc7JLuiK3fbD2",
+      "Domain name": "https://rossiniequipmentcorp.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Pelopidas, LLC dba 7 Brown Farms",
+      "Stripe Customer ID": "cus_UGHWuJAI3mgzNK",
+      "Domain name": "https://7brown.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Wood Products and Services, LLC",
+      "Stripe Customer ID": "cus_UFMLOgXVhM8k2U",
+      "Domain name": "https://qualitymadecabinets.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "CTO Input",
+      "Stripe Customer ID": "cus_UFdh7dW8QbEObD",
+      "Domain name": "https://tysonmartin.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Filter Process & Supply",
+      "Stripe Customer ID": "cus_UFespcwQS2KoHV",
+      "Domain name": "https://filterprocess.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Hill Plastics, Inc.",
+      "Stripe Customer ID": "cus_UFXO7tJ8rGuLcV",
+      "Domain name": "https://www.hillplastics.com/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "All Pro Computer Solutions",
+      "Stripe Customer ID": "cus_UFHPzIMsYIWfNd",
+      "Domain name": "allprocs.net",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "New customer",
+      "Stripe Customer ID": "cus_UDgenxAoTIgWYE",
+      "Domain name": "https://optenpower.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Perfect Imprints",
+      "Stripe Customer ID": "cus_UDkZAMrSlPrkLw",
+      "Domain name": "https://www.perfectimprints.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Zircon Industries",
+      "Stripe Customer ID": "cus_UDLKaVLFYrW4dq",
+      "Domain name": "https://www.liquidheat.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Sabertooth Tech Group, LLC.",
+      "Stripe Customer ID": "cus_UDjXXW5b73Vbac",
+      "Domain name": "https://sabertoothpro.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "CIVICGRID TECHNOLOGIES PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_UfSVI6QcAaSdYc",
+      "Domain name": "https://letspickquick.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Lumara Systems",
+      "Stripe Customer ID": "cus_UDMO0gIPc1CIQR",
+      "Domain name": "https://lumarasystems.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Bestway products company",
+      "Stripe Customer ID": "cus_UCaHsxODhl1Rso",
+      "Domain name": "https://spyralsaw.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Eninence CPA",
+      "Stripe Customer ID": "cus_S4IEFA6Yzkckfd",
+      "Domain name": "https://www.vjmglobal.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Cybic",
+      "Stripe Customer ID": "cus_UGJQyeinGmMql9",
+      "Domain name": "https://cybic.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Chelsis Financial",
+      "Stripe Customer ID": "cus_UDKZuADVnn6MBK",
+      "Domain name": "chelsis.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Edvantage Career Partners Private Limited",
+      "Stripe Customer ID": "cus_UDz0l441Q4R4rK",
+      "Domain name": "www.admitbeacon.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "ALORI",
+      "Stripe Customer ID": "cus_UBSGXFm2UYmr6B",
+      "Domain name": "https://aloriinternationalholdings.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "MetaModels",
+      "Stripe Customer ID": "cus_UHkG7n2GXyTdGT",
+      "Domain name": "https://metamodels.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "The Brickyard, Inc.",
+      "Stripe Customer ID": "cus_UDh1VnZDSjoAp9",
+      "Domain name": "https://www.thebrickyardwi.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "SEDONA ALM SRL",
+      "Stripe Customer ID": "cus_UFYcXYHIl2eiJY",
+      "Domain name": "https://sedonatec.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Osto Cybersecurity INC.",
+      "Stripe Customer ID": "cus_UDfbgPoZyvCoTA",
+      "Domain name": "https://www.osto.one/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "BLUEBONNET MEDICAL SUPPLIES",
+      "Stripe Customer ID": "cus_UDTdSXA43Wx5Gt",
+      "Domain name": "https://bluebonnetmedicalsupplies.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "HubEngage, Inc.",
+      "Stripe Customer ID": "cus_UFgbg1kysiC8Y5",
+      "Domain name": "www.hubengage.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "AllCare Medical Transport",
+      "Stripe Customer ID": "cus_UIGYegV6M3ILtB",
+      "Domain name": "https://allcaremedicaltransport.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "BKP Metal Concepts",
+      "Stripe Customer ID": "cus_UGwotwQRAwvglx",
+      "Domain name": "themeshnest.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Cambrian Biotech",
+      "Stripe Customer ID": "cus_UKLZ7hbmjx2p01",
+      "Domain name": "https://www.cambrianbioworks.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Daedalus Distribution, LLC",
+      "Stripe Customer ID": "cus_UN32N5xV9PCjqo",
+      "Domain name": "https://www.daedalusdistribution.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Inzure ApS",
+      "Stripe Customer ID": "cus_UL6d1duB1Anf1W",
+      "Domain name": "https://www.inzure.dk/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Nextlevel Consulting",
+      "Stripe Customer ID": "cus_ULeeElHP9tVPoS",
+      "Domain name": "#N/A",
+      "Status": "#N/A",
+      "Business": "AI Agents",
+      "CS Name": "#N/A"
+    },
+    {
+      "Customer Name": "Omnisafe Co.",
+      "Stripe Customer ID": "cus_UKUIdQN8Tb5spb",
+      "Domain name": "https://greenlaunch.space/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Rargus Inc DBA Trussed AI",
+      "Stripe Customer ID": "cus_UIRPZCYPycg4TY",
+      "Domain name": "https://trussed.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Activated Scale Inc.",
+      "Stripe Customer ID": "cus_Ptg98Qov77WZxP",
+      "Domain name": "activatedscale.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Hixson Incorporated",
+      "Stripe Customer ID": "cus_USi6DpxDBMoWfW",
+      "Domain name": "https://hixson-inc.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "NEXTBILLION.AI PTE. LTD.",
+      "Stripe Customer ID": "cus_ULw3uT787N3oLI",
+      "Domain name": "https://nextbillion.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Sagravia LLC",
+      "Stripe Customer ID": "cus_UI0isrv30PZKFs",
+      "Domain name": "https://www.houseofsummary.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "HealthFront Ventures",
+      "Stripe Customer ID": "cus_UPd0SGDKo25xTG",
+      "Domain name": "https://healthfrontventures.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Nutritional Oncology Research Institute",
+      "Stripe Customer ID": "cus_UHrDBPVRlXwVQW",
+      "Domain name": "https://nutritionaloncology.net/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "Sentinel Asset Management LLC",
+      "Stripe Customer ID": "cus_UFwjMJ4SOgjktY",
+      "Domain name": "https://sentinelassetmanagementllc.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "OmniVue Marketing Inc.",
+      "Stripe Customer ID": "cus_UOGhX6neC3lAFB",
+      "Domain name": "https://omnivuemarketing.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Telusion Inc",
+      "Stripe Customer ID": "cus_UOEdwWm6mHqolX",
+      "Domain name": "tossabledigits.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "CNC Programming Solutions LLC",
+      "Stripe Customer ID": "cus_UG1czqYNOiNbrs",
+      "Domain name": "https://www.cncprogrammingsolutions.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Publive Mediatech Private Limited",
+      "Stripe Customer ID": "cus_UNN3qXpWHct6E8",
+      "Domain name": "https://www.thepublive.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "DEI Power Inc.",
+      "Stripe Customer ID": "cus_UJNRapSR7IxAe7",
+      "Domain name": "https://deipower.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Pifini",
+      "Stripe Customer ID": "cus_UN2xJr6hctq3XM",
+      "Domain name": "https://pifini.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "mtsforgepa.com",
+      "Stripe Customer ID": "cus_UN3dRT6aUPWp8P",
+      "Domain name": "https://www.mtsforgepa.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Integra Electrical",
+      "Stripe Customer ID": "cus_UIH82XxG6Ir2wi",
+      "Domain name": "https://www.integraelectrical.co/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sana.shaik@gushwork.ai"
+    },
+    {
+      "Customer Name": "Transjovan Capital",
+      "Stripe Customer ID": "cus_ULRlNyB7SW9Aj2",
+      "Domain name": "https://transjovancap.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Candid Research Inc",
+      "Stripe Customer ID": "cus_USoERCmGrpNusJ",
+      "Domain name": "https://candidresearch.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "PEOPLE COMBINE BASICS PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_UO5Hf0v5gqwDBC",
+      "Domain name": "https://www.coschool.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Specgas",
+      "Stripe Customer ID": "cus_UIwuFqefAGpLGI",
+      "Domain name": "specgasinc.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Fraxtional LLC",
+      "Stripe Customer ID": "cus_S0TQICxXOaKCq8",
+      "Domain name": "fraxtional.co",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "WORKPLACE MODULAR SYSTEMS, LLC",
+      "Stripe Customer ID": "cus_UKrEibgtL5C1Oa",
+      "Domain name": "https://workplacenh.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "ESG International Suppliers Inc",
+      "Stripe Customer ID": "cus_UL8kF45qduUKRe",
+      "Domain name": "https://www.esg-intl.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Newmail SA",
+      "Stripe Customer ID": "cus_RXDVKLFbISulud",
+      "Domain name": "https://www.newmail.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "MARS ENGINEERING",
+      "Stripe Customer ID": "cus_ULAiZXVvxxpV27",
+      "Domain name": "https://www.marseng.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Hexaview",
+      "Stripe Customer ID": "cus_UUlBeuvrTx8YKz",
+      "Domain name": "https://www.hexaviewtech.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Gross Consulting, Inc.",
+      "Stripe Customer ID": "cus_ULxyKPJdNbwGhr",
+      "Domain name": "https://www.grossconsultinginc.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Artesian Systems LLC",
+      "Stripe Customer ID": "cus_ULHzw2EtepXWJI",
+      "Domain name": "https://www.artesian-systems.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "Wayoh",
+      "Stripe Customer ID": "cus_UOJ4IcCEWY05YW",
+      "Domain name": "https://wayoh.co/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Design One Printing",
+      "Stripe Customer ID": "cus_UQ4mOiGIhf62Eh",
+      "Domain name": "https://designoneprinting.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Leher Sustainable Agri Pvt Ltd",
+      "Stripe Customer ID": "cus_SLU70srkyN7amv",
+      "Domain name": "https://www.leher.ag",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Lumistar Inc",
+      "Stripe Customer ID": "cus_USKMXnWaOjcIsy",
+      "Domain name": "https://lumi-star.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Engineered Roofing Systems",
+      "Stripe Customer ID": "cus_UG15XjpFhmm3hQ",
+      "Domain name": "https://engineeredroofingsystems.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Tornqvist",
+      "Stripe Customer ID": "cus_UNrM5NTps2p2HP",
+      "Domain name": "https://jerseycrusher.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Bindbee Inc.",
+      "Stripe Customer ID": "cus_SMCTdTFzI2zotf",
+      "Domain name": "bindbee.dev",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Obra, Inc",
+      "Stripe Customer ID": "cus_UOBdb41ocI9peX",
+      "Domain name": "https://obra.co/hire",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "DEXIF FINTECH PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_SX5VB5FAE9iuQf",
+      "Domain name": "https://s45.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "SAMYAK INFOTECH PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_UTJ2tkHckxXCIh",
+      "Domain name": "https://www.samyak.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "moviTHERM",
+      "Stripe Customer ID": "cus_UPgjmpTwYbodzW",
+      "Domain name": "https://movitherm.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "A-SPARK MANUFACTURING VIETNAM COMPANY LIMITED",
+      "Stripe Customer ID": "cus_UUrErOJDewfB4M",
+      "Domain name": "https://a-sparkvn.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "InVision Technology Solutions",
+      "Stripe Customer ID": "cus_UQ5QbpQKeOQt9U",
+      "Domain name": "https://www.invisionaz.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "GAUTAM ADVERTISING",
+      "Stripe Customer ID": "cus_UQgY3qb8MaIOZt",
+      "Domain name": "https://www.gautamad.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "ADI Aubrey Daniels International",
+      "Stripe Customer ID": "cus_UODGviDjTaZLdO",
+      "Domain name": "https://www.aubreydaniels.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "i Ventures Capital Private Limited",
+      "Stripe Customer ID": "cus_UQJ0R7AlDKR6KK",
+      "Domain name": "https://iventurescapital.in/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Mansfield Engineered Components",
+      "Stripe Customer ID": "cus_UJHY8JWBn2esJl",
+      "Domain name": "https://mansfieldec.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Nomad Holdings Inc",
+      "Stripe Customer ID": "cus_UPfHffEGVWMcOM",
+      "Domain name": "https://nomadgroup.io/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Mark Dunaway",
+      "Stripe Customer ID": "cus_UQtTchJjK9FrJd",
+      "Domain name": "https://storageproductscompany.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Storylane",
+      "Stripe Customer ID": "cus_UQprZWhogJRgQg",
+      "Domain name": "https://www.storylane.io/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Daniel Kershaw",
+      "Stripe Customer ID": "cus_USgD2YWUnh6nKm",
+      "Domain name": "https://www.zooby-promotional.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Bristola",
+      "Stripe Customer ID": "cus_USGmlGYaCmrz3X",
+      "Domain name": "https://bristola2.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "V3 STAFFING SOLUTIONS INDIA PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_Sr25zYxlH9qp3f",
+      "Domain name": "v3staffing.in",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Ken Orenstein",
+      "Stripe Customer ID": "cus_UQqmP4AmmcnAnN",
+      "Domain name": "https://www.bcfinserv.com/home",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Lucidity",
+      "Stripe Customer ID": "cus_UQhPJ9KE7S4oG3",
+      "Domain name": "Lucidity.cloud",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "StarApps Studio LLP",
+      "Stripe Customer ID": "cus_S9SbJUV8WSTPz0",
+      "Domain name": "https://www.starapps.io/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Prudential Associates",
+      "Stripe Customer ID": "cus_USgymN8nnhPhQp",
+      "Domain name": "https://prudentialassociates.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "PROTECTT.AI LABS PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_UTIDGDhAboO5ui",
+      "Domain name": "https://www.protectt.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Your Interior Design Coach",
+      "Stripe Customer ID": "cus_UTFUzG1awtrkkW",
+      "Domain name": "https://yourinteriordesigncoach.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Nippon Doors General Trading LLC",
+      "Stripe Customer ID": "cus_S95nIGim3CSSoX",
+      "Domain name": "",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Facteye Tech Labs Pvt Ltd,",
+      "Stripe Customer ID": "cus_QqC5vxakNunaO9",
+      "Domain name": "",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "shavi.goyal@gushwork.ai"
+    },
+    {
+      "Customer Name": "KNOWBAL GROUP PTY LTD",
+      "Stripe Customer ID": "cus_R49NCILcXbCkVL",
+      "Domain name": "",
+      "Status": "Inactive",
+      "Business": "Services",
+      "CS Name": "milind.goswami@gushwork.ai"
+    },
+    {
+      "Customer Name": "Asylum Innovation Private Limited",
+      "Stripe Customer ID": "cus_UWOkZsMw386jo2",
+      "Domain name": "https://www.makersasylum.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Master Matchmakers",
+      "Stripe Customer ID": "cus_UWUVBjosY9qZrW",
+      "Domain name": "https://www.mastermatchmakers.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "WICKEDRIDE ADVENTURE SERVICES PRIVATE",
+      "Stripe Customer ID": "cus_UW2K3KEXoqM4ty",
+      "Domain name": "bouncedaily.in",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "Liam Alexander",
+      "Stripe Customer ID": "cus_P6MuigvipG7w1x",
+      "Domain name": "",
+      "Status": "Active",
+      "Business": "Services",
+      "CS Name": "#N/A"
+    },
+    {
+      "Customer Name": "Industrial Process Services, Inc.",
+      "Stripe Customer ID": "cus_USIH1uZReNHnMf",
+      "Domain name": "https://ipsinc.info/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Ndatastor_dummy",
+      "Domain name": "https://www.ndatastor.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Impact Risk Advisors",
+      "Stripe Customer ID": "cus_USKNJzNdkgrFQH",
+      "Domain name": "https://impactriskadvisor.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Cybriant",
+      "Stripe Customer ID": "cus_UUwE9IIcmWaYm3",
+      "Domain name": "https://cybriant.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UaASh5nTLk9pYo",
+      "Domain name": "https://fastrouter.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Solutions in the Land, LLC",
+      "Stripe Customer ID": "cus_UW39kainGyb6Ae",
+      "Domain name": "https://www.solutionsintheland.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "One Abacus Advisory LLC",
+      "Stripe Customer ID": "cus_UTodt02V3uq7Xg",
+      "Domain name": "https://oneabacusadvisory.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://luxuriousHomes.com",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UbLbDzSNhucpxL",
+      "Domain name": "https://widefoc.us/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UY0m4NXdn5HvFp",
+      "Domain name": "https://www.broadwaykitchens.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Brandon Olsen",
+      "Stripe Customer ID": "cus_UTaQ57rHuyglBh",
+      "Domain name": "https://www.thelocalguy.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Elisa Mula",
+      "Stripe Customer ID": "cus_UTqEgjxhu6sfsh",
+      "Domain name": "emdnyc.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Personalwarehouse_dummy",
+      "Domain name": "https://personalwarehouse.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://baycopyanddata.com",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Evaspeaks_dummy",
+      "Domain name": "https://evaspeaks.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Shield and supply",
+      "Stripe Customer ID": "cus_UVJscMxC06Fh7u",
+      "Domain name": "https://shieldandsupply.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "David Fannon",
+      "Stripe Customer ID": "cus_UVKnOSbpsIu30r",
+      "Domain name": "https://fannoninfrared.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Business Solutions Group Corporation",
+      "Stripe Customer ID": "cus_UWS9NBPvdL6LyZ",
+      "Domain name": "https://businesssolutionsus.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UbfK1uUQsFpT23",
+      "Domain name": "xalmaxtravel.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Carveddoorsusa",
+      "Domain name": "https://carveddoors.net/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "Optical Scientific Inc",
+      "Stripe Customer ID": "cus_UVkgXkYja2T6jS",
+      "Domain name": "https://www.opticalscientific.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Udf6XfyAvG2anG",
+      "Domain name": "https://www.sergiosprinting.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UVHP1d341l9xk8",
+      "Domain name": "https://americanfiberglasstank.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "Dynamic Data LLC",
+      "Stripe Customer ID": "cus_UWATgh8mupC1zO",
+      "Domain name": "https://dynamicdata.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Krevera_dummy",
+      "Domain name": "https://krevera.com/",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "QRStuff",
+      "Stripe Customer ID": "cus_UW0SfgYYCzKVsR",
+      "Domain name": "https://www.qrstuff.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UfSx5mZuk1JG6W",
+      "Domain name": "https://www.colab91.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UWUVBjosY9qZrW",
+      "Domain name": "https://www.mastermatchmakers.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "Tect App, Inc.",
+      "Stripe Customer ID": "cus_UW2PrmxSP6Ertn",
+      "Domain name": "https://www.tect.com/earthsmart",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "OraClaim, Inc",
+      "Stripe Customer ID": "cus_UWX23rzT4j5xZ1",
+      "Domain name": "https://oraclaim.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Applewoodspa_dummy",
+      "Domain name": "https://applewoodspa.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UegDkTHz4JSBgv",
+      "Domain name": "take2directllc.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "Patrick Rafferty",
+      "Stripe Customer ID": "cus_UWWv37KhklLBW2",
+      "Domain name": "https://www.raffertyweiss.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UcrZo6JRq51NJf",
+      "Domain name": "https://www.printworksetc.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Rotocastmold_dummy",
+      "Domain name": "http://rotocastmold.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Uax3sJYyMh8dx7",
+      "Domain name": "https://www.waynepernell.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UYiKsEfHFb8lIN",
+      "Domain name": "combustionresearch.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UYQtqoDwn5OoSd",
+      "Domain name": "https://hallettleadership.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "MARCUS HI-TECH ENGINEERING PRIVATE LIMITED",
+      "Stripe Customer ID": "cus_UUqztRo60ovne9",
+      "Domain name": "www.marcusmanufacturing.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "AI Tech Global FZ-LLC",
+      "Stripe Customer ID": "cus_UaASh5nTLk9pYo",
+      "Domain name": "https://fastrouter.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_USIH1uZReNHnMf",
+      "Domain name": "https://ipsinc.info/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UVJscMxC06Fh7u",
+      "Domain name": "https://shieldandsupply.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UVKnOSbpsIu30r",
+      "Domain name": "https://fannoninfrared.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Ndatastor_dummy",
+      "Domain name": "https://www.ndatastor.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Personalwarehouse_dummy",
+      "Domain name": "https://personalwarehouse.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Evaspeaks_dummy",
+      "Domain name": "https://evaspeaks.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UWUVBjosY9qZrW",
+      "Domain name": "https://www.mastermatchmakers.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Colab91_dummy",
+      "Domain name": "https://www.colab91.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Uft8psXmpxk9Q9",
+      "Domain name": "https://comp-airohio.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UdADzUASRl8t09",
+      "Domain name": "https://vellumlifegroup.com/#",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UbkRVMCnDOF1w8",
+      "Domain name": "https://greenislandhomes.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sukhdev.singh@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_S4Hzp0biqJTUsq",
+      "Domain name": "https://www.scrubup.ae/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_QhHYAnFHc2jUOH",
+      "Domain name": "https://www.tshanywhere.org/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "shubham.Kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Udf6XfyAvG2anG",
+      "Domain name": "https://www.sergiosprinting.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Applewoodspa_dummy",
+      "Domain name": "https://applewoodspa.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Rotocastmold_dummy",
+      "Domain name": "http://rotocastmold.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UaASh5nTLk9pYo",
+      "Domain name": "https://fastrouter.ai/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UaB4CC7KPRtttl",
+      "Domain name": "www.femmeworkssolutionsllc.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UYiKsEfHFb8lIN",
+      "Domain name": "combustionresearch.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UZ84tbaxMmsai9",
+      "Domain name": "https://ascenttrainings.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sarvesh.shetty@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_R4NxLbKegRpGU8",
+      "Domain name": "https://ashwinderrsingh.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "shubham.kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UVkgXkYja2T6jS",
+      "Domain name": "https://www.opticalscientific.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UXyMFmMvJB5RpT",
+      "Domain name": "https://tariffrefunds.priceridge.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UcnVEPsCQ2rUZ2",
+      "Domain name": "https://www.marker-law.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UXtsHa8jhvvtKY",
+      "Domain name": "everwise-inc.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Toplead_dummy",
+      "Domain name": "https://www.toplead.io/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Yushinamerica_dummy",
+      "Domain name": "https://www.yushinamerica.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UYlal6XRPrdNvq",
+      "Domain name": "https://www.acsbonding.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UaYi75MYzDJWeo",
+      "Domain name": "https://www.quantem.io/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UW0SfgYYCzKVsR",
+      "Domain name": "https://www.qrstuff.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Uax3sJYyMh8dx7",
+      "Domain name": "https://www.waynepernell.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UYQtqoDwn5OoSd",
+      "Domain name": "https://hallettleadership.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UcrZo6JRq51NJf",
+      "Domain name": "https://www.printworksetc.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UegDkTHz4JSBgv",
+      "Domain name": "take2directllc.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UVHP1d341l9xk8",
+      "Domain name": "https://americanfiberglasstank.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UWATgh8mupC1zO",
+      "Domain name": "https://dynamicdata.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UWX23rzT4j5xZ1",
+      "Domain name": "https://oraclaim.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UW2PrmxSP6Ertn",
+      "Domain name": "https://www.tect.com/earthsmart",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UYaBNz0zEwIr6k",
+      "Domain name": "https://anonymoose.co/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UWS9NBPvdL6LyZ",
+      "Domain name": "https://businesssolutionsus.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Writerrelocations_dummy",
+      "Domain name": "https://writerrelocations.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UTqEgjxhu6sfsh",
+      "Domain name": "emdnyc.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UTodt02V3uq7Xg",
+      "Domain name": "https://oneabacusadvisory.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "amitesh.girotiya@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UW39kainGyb6Ae",
+      "Domain name": "https://www.solutionsintheland.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UbLbDzSNhucpxL",
+      "Domain name": "https://widefoc.us/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UUwE9IIcmWaYm3",
+      "Domain name": "https://cybriant.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UXahoarOu5HIMm",
+      "Domain name": "sunhavencollection.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_USKNJzNdkgrFQH",
+      "Domain name": "https://impactriskadvisor.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Wooqer_dummy",
+      "Domain name": "https://www.wooqer.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UXwI2qo1sDqHqk",
+      "Domain name": "https://centralfloridacraneservice.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UXafZVuZhAhWXc",
+      "Domain name": "https://blockbattery.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UZ5QR4vH7TRS6X",
+      "Domain name": "https://www.datateer.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UdZckL20RrN3kq",
+      "Domain name": "https://www.evpleadership.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Austinsignfactory_dummy",
+      "Domain name": "https://www.austinsignfactory.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UZ5zzVJwkN1O1A",
+      "Domain name": "https://drdtg.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UYLy0NCXIfdvaf",
+      "Domain name": "https://scatterplot.co/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UaHSqYJv8GE1xv",
+      "Domain name": "https://foundersworkshop.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UcpIJUozXWvjlU",
+      "Domain name": "https://skidmanagementservices.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UYMJfRVLLz0o1b",
+      "Domain name": "https://www.endeavorfg.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UahwpDUBbUZhVl",
+      "Domain name": "ikonsearch.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Ucac5ep4n1AiG1",
+      "Domain name": "pciconsultantsllc.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UcpyoGbaguq15H",
+      "Domain name": "https://eltcoolerdoors.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sarvesh.shetty@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UabbtHLjSXbTT1",
+      "Domain name": "http://www.e-ssy.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sarvesh.shetty@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UdCuyihgwCvbXl",
+      "Domain name": "https://prompthalo.ai",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Seizsigns_dummy",
+      "Domain name": "https://seizsigns.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UY0m4NXdn5HvFp",
+      "Domain name": "https://www.broadwaykitchens.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UTaQ57rHuyglBh",
+      "Domain name": "https://www.thelocalguy.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Algorithmshift_dummy",
+      "Domain name": "https://www.algorithmshift.ai",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "alfia.k@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UbfK1uUQsFpT23",
+      "Domain name": "xalmaxtravel.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Cambercredit_dummy",
+      "Domain name": "https://www.cambercredit.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Ud7IsDoFFWv5a8",
+      "Domain name": "https://harmoni.io/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sarvesh.shetty@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UatYPF3TXA4qtd",
+      "Domain name": "colemanmoorecompany.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Exjudicata_dummy",
+      "Domain name": "https://exjudicata.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UWWv37KhklLBW2",
+      "Domain name": "https://www.raffertyweiss.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_RG1Djgb646OUuv",
+      "Domain name": "Planacan.io",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Stainlesssteelfloatballs_dummy",
+      "Domain name": "https://stainlesssteelfloatballs.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UZ4cwfIALE9eUr",
+      "Domain name": "https://mmpeastdallas.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Ub0dCw7V2zYGoj",
+      "Domain name": "https://www.thepilatesroomnyc.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Specdata_dummy",
+      "Domain name": "https://specdata.co/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sarvesh.shetty@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UbpXgcTPncTugm",
+      "Domain name": "https://www.vectorcare.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sarvesh.shetty@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UflhRfrghkDSXg",
+      "Domain name": "https://ecoairflow.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UabSa2RzyjY76o",
+      "Domain name": "https://frontgoosewellbeing.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "piyush.sinha@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Panameramedical_dummy",
+      "Domain name": "https://www.panameramedical.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UdExozBNYe58xl",
+      "Domain name": "https://jacintadevlin.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UfU4Vk1LEsdIxJ",
+      "Domain name": "https://www.neural-revolution.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UddOkHFZ6Zhvhu",
+      "Domain name": "https://depersico.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Mediafurrate_dummy",
+      "Domain name": "www.mediafurrate.com ",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "piyush.sinha@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_SX4DjpD067z9yT",
+      "Domain name": "https://www.cloudtech.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UfmxCBu81heC9a",
+      "Domain name": "ravensretreathockinghills.com",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_Theredpen_dummy",
+      "Domain name": "https://theredpen.in/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "rishab.r@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UPYfwM2oN0PTp0",
+      "Domain name": "https://www.dograh.com/",
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "harikrishnan.en@gushwork.ai"
+    }
+  ]
+}
