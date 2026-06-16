@@ -112,6 +112,7 @@ export default function Dashboard() {
   const [b180plusF, setB180plusF] = useState("All");
   const [dsoF,      setDsoF]      = useState("All");
   const [totalF,    setTotalF]    = useState("All");
+  const [pmF,       setPmF]       = useState("All"); // payment mode filter
 
   const loadData = useCallback((isRefresh = false) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
@@ -185,6 +186,8 @@ export default function Dashboard() {
       // Tab pre-filter
       if (activeTab === "active"   && inv.customer_status !== "Active")   continue;
       if (activeTab === "inactive" && inv.customer_status !== "Inactive") continue;
+      if (pmF === "auto"   && inv.collection_method !== "charge_automatically") continue;
+      if (pmF === "manual" && inv.collection_method !== "send_invoice")         continue;
 
       const key = `${inv.account}::${inv.customer_id}`;
       if (!map.has(key)) {
@@ -239,7 +242,7 @@ export default function Dashboard() {
           : String(av ?? "").localeCompare(String(bv ?? ""));
         return sortDir === "asc" ? cmp : -cmp;
       });
-  }, [allInvoices, dsoDataMap, acctF, bizF, csF, statF, search, activeTab,
+  }, [allInvoices, dsoDataMap, acctF, bizF, csF, statF, search, activeTab, pmF,
       b0_30F, b31_60F, b61_90F, b90_180F, b180plusF, dsoF, totalF, sortCol, sortDir]);
 
   const invoicesByKey = useMemo(() => {
@@ -306,13 +309,13 @@ export default function Dashboard() {
     setExpanded(prev => { const n = new Set(prev); n.has(key) ? n.delete(key) : n.add(key); return n; });
   }
   function resetFilters() {
-    setSearch(""); setAcctF("All"); setStatF("All"); setBizF("All"); setCsF("All");
+    setSearch(""); setAcctF("All"); setStatF("All"); setBizF("All"); setCsF("All"); setPmF("All");
     setB0_30F("All"); setB31_60F("All"); setB61_90F("All"); setB90_180F("All"); setB180plusF("All");
     setDsoF("All"); setTotalF("All");
   }
   const hasActiveFilters = !!(search || acctF !== "All" || statF !== "All" || bizF !== "All" || csF !== "All"
-    || b0_30F !== "All" || b31_60F !== "All" || b61_90F !== "All" || b90_180F !== "All" || b180plusF !== "All"
-    || dsoF !== "All" || totalF !== "All");
+    || pmF !== "All" || b0_30F !== "All" || b31_60F !== "All" || b61_90F !== "All" || b90_180F !== "All"
+    || b180plusF !== "All" || dsoF !== "All" || totalF !== "All");
 
   async function doExport() {
     setExp(true); setMsg(null);
@@ -533,6 +536,7 @@ export default function Dashboard() {
               <Th label="Status"       col="customer_status" />
               <Th label="Business"     col="business" />
               <Th label="CS Owner"     col="cs_email" />
+              <Th label="Payment"      col="collection_method" />
               <Th label="0–30d"        col="b0_30"    color="#10b981" />
               <Th label="31–60d"       col="b31_60"   color="#f59e0b" />
               <Th label="61–90d"       col="b61_90"   color="#f97316" />
@@ -562,6 +566,13 @@ export default function Dashboard() {
                   {csEmailOptions.map(e => <option key={e} value={e}>{e}</option>)}
                 </select>
               </FTh>
+              <FTh>
+                <select style={sel} value={pmF} onChange={e => setPmF(e.target.value)}>
+                  <option value="All">All</option>
+                  <option value="auto">🤖 Auto</option>
+                  <option value="manual">📧 Manual</option>
+                </select>
+              </FTh>
               <FTh><select style={sel} value={b0_30F}    onChange={e => setB0_30F(e.target.value)}   ><option value="All">All</option><option value="Has balance">Has balance</option></select></FTh>
               <FTh><select style={sel} value={b31_60F}   onChange={e => setB31_60F(e.target.value)}  ><option value="All">All</option><option value="Has balance">Has balance</option></select></FTh>
               <FTh><select style={sel} value={b61_90F}   onChange={e => setB61_90F(e.target.value)}  ><option value="All">All</option><option value="Has balance">Has balance</option></select></FTh>
@@ -589,7 +600,7 @@ export default function Dashboard() {
           </thead>
           <tbody>
             {custRows.length === 0
-              ? <tr><td colSpan={12} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
+              ? <tr><td colSpan={13} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
                   <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
                   <div style={{ fontWeight: 600, marginBottom: 4 }}>No customers match your filters</div>
                   <button onClick={resetFilters} style={{ color: "#6366f1", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}>Clear all filters</button>
@@ -613,6 +624,11 @@ export default function Dashboard() {
                         <td style={S.td}>{r.customer_status ? <span style={statusStyle(r.customer_status)}>{r.customer_status}</span> : <span style={{ color: "#cbd5e1", fontSize: 12 }}>--</span>}</td>
                         <td style={S.td}>{r.business ? <span style={{ background: bizBg, color: bizFg, border: `1px solid ${bizBorder}`, borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{r.business}</span> : <span style={{ color: "#cbd5e1", fontSize: 12 }}>--</span>}</td>
                         <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{r.cs_email?.split("@")[0] || "--"}</span></td>
+                        <td style={S.td}>
+                          {r.collection_method === "charge_automatically"
+                            ? <span style={{ background: "#ede9fe", color: "#6366f1", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #c4b5fd", whiteSpace: "nowrap" }}>🤖 Auto</span>
+                            : <span style={{ background: "#fef9c3", color: "#92400e", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #fde68a", whiteSpace: "nowrap" }}>📧 Manual</span>}
+                        </td>
                         <td style={{ ...S.td, color: "#10b981", fontWeight: 700 }}>{r.b0_30   > 0 ? fmtUSD(r.b0_30)   : <span style={{ color: "#e2e8f0" }}>—</span>}</td>
                         <td style={{ ...S.td, color: "#f59e0b", fontWeight: 700 }}>{r.b31_60  > 0 ? fmtUSD(r.b31_60)  : <span style={{ color: "#e2e8f0" }}>—</span>}</td>
                         <td style={{ ...S.td, color: "#f97316", fontWeight: 700 }}>{r.b61_90  > 0 ? fmtUSD(r.b61_90)  : <span style={{ color: "#e2e8f0" }}>—</span>}</td>
@@ -645,7 +661,7 @@ export default function Dashboard() {
                               {inv.aging_bucket}
                             </span>
                           </td>
-                          <td style={{ ...S.td, fontWeight: 700, fontSize: 13, color: "#4338ca" }} colSpan={7}>
+                          <td style={{ ...S.td, fontWeight: 700, fontSize: 13, color: "#4338ca" }} colSpan={8}>
                             {fmtUSD(inv.amount_usd)}
                             {inv.currency !== "USD" && <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: 6 }}>{inv.currency} {inv.amount_due.toLocaleString()}</span>}
                             {inv.invoice_url && <a href={inv.invoice_url} target="_blank" rel="noreferrer" style={{ marginLeft: 12, color: "#6366f1", fontSize: 12, fontWeight: 600 }}>View ↗</a>}
