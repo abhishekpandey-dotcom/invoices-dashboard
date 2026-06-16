@@ -6,11 +6,20 @@ import type { InvoiceRow, AgingBucket } from "@/lib/stripe";
 interface InvoiceRowWithUsd extends InvoiceRow { amount_usd: number; }
 interface CustomerDSOWithUsd {
   customer_id: string;
+  customer_name: string;
+  customer_email: string;
+  domain: string;
+  business: string;
+  cs_email: string;
+  customer_status: string;
   account: "India" | "US";
+  currency: string;
+  total_outstanding: number;
   total_outstanding_usd: number;
   total_sales_12m_usd: number;
   sales_3m_usd: number;
   dso_days: number;
+  invoice_count: number;
   collection_method: "charge_automatically" | "send_invoice";
 }
 interface ApiResponse {
@@ -132,20 +141,13 @@ export default function Dashboard() {
 
   const allInvoices = useMemo(() => data?.invoices ?? [], [data]);
 
-  // Global auto pay stats — computed from ALL invoices regardless of filters
-  // Used to show "X% of all customers are on auto pay" on the payment mode tabs
+  // Global auto pay stats — from ALL customers (including paid-only, no outstanding)
   const autoPayStats = useMemo(() => {
-    const allCust    = new Set<string>();
-    const autoPayCust = new Set<string>();
-    for (const inv of allInvoices) {
-      const key = `${inv.account}::${inv.customer_id}`;
-      allCust.add(key);
-      if (inv.collection_method === "charge_automatically") autoPayCust.add(key);
-    }
-    const total   = allCust.size;
-    const autoPay = autoPayCust.size;
+    const allDso  = data?.dso ?? [];
+    const autoPay = allDso.filter(d => d.collection_method === "charge_automatically").length;
+    const total   = allDso.length;
     return { total, autoPay, manual: total - autoPay, autoPayPct: total > 0 ? Math.round(autoPay / total * 100) : 0 };
-  }, [allInvoices]);
+  }, [data]);
 
   // DSO data map — keyed by "account::customer_id"
   const dsoDataMap = useMemo(() => {
@@ -153,6 +155,23 @@ export default function Dashboard() {
     for (const d of data?.dso ?? []) m.set(`${d.account}::${d.customer_id}`, d);
     return m;
   }, [data]);
+
+  // Aging bucket totals per customer from open invoices (for merging into payModeCustRows)
+  const openInvoiceMap = useMemo(() => {
+    const m = new Map<string, { b0_30: number; b31_60: number; b61_90: number; b90_180: number; b180plus: number; total: number; invoice_count: number }>();
+    for (const inv of allInvoices) {
+      const key = `${inv.account}::${inv.customer_id}`;
+      if (!m.has(key)) m.set(key, { b0_30: 0, b31_60: 0, b61_90: 0, b90_180: 0, b180plus: 0, total: 0, invoice_count: 0 });
+      const r = m.get(key)!;
+      r.total += inv.amount_usd; r.invoice_count++;
+      if      (inv.aging_bucket === "0-30")   r.b0_30   += inv.amount_usd;
+      else if (inv.aging_bucket === "31-60")  r.b31_60  += inv.amount_usd;
+      else if (inv.aging_bucket === "61-90")  r.b61_90  += inv.amount_usd;
+      else if (inv.aging_bucket === "90-180") r.b90_180 += inv.amount_usd;
+      else                                    r.b180plus += inv.amount_usd;
+    }
+    return m;
+  }, [allInvoices]);
 
   // ── Cascading filter options ────────────────────────────────────────────────
   // Each dropdown's options are derived from invoices matching ALL OTHER active
@@ -265,6 +284,57 @@ export default function Dashboard() {
   }, [allInvoices, dsoDataMap, acctF, bizF, csF, statF, search, activeTab, pmF,
       b0_30F, b31_60F, b61_90F, b90_180F, b180plusF, dsoF, totalF, sortCol, sortDir]);
 
+  // ── Auto Pay / Manual tabs: full customer list (including $0 outstanding) ──
+  const payModeCustRows = useMemo((): CustRow[] => {
+    if (activeTab !== "autopay" && activeTab !== "manual") return [];
+    const targetCm = activeTab === "autopay" ? "charge_automatically" : "send_invoice";
+    return (data?.dso ?? [])
+      .filter(d => d.collection_method === targetCm)
+      .filter(d => bizF  === "All" || d.business === bizF)
+      .filter(d => acctF === "All" || d.account  === acctF)
+      .filter(d => statF === "All" || d.customer_status === statF)
+      .filter(d => csF   === "All" || d.cs_email  === csF)
+      .filter(d => {
+        if (!search) return true;
+        const q = search.toLowerCase();
+        return [d.customer_name, d.customer_email, d.domain, d.business, d.cs_email]
+          .some(v => v?.toLowerCase().includes(q));
+      })
+      .map(d => {
+        const key  = `${d.account}::${d.customer_id}`;
+        const open = openInvoiceMap.get(key) ?? { b0_30: 0, b31_60: 0, b61_90: 0, b90_180: 0, b180plus: 0, total: 0, invoice_count: 0 };
+        return {
+          key,
+          customer_name:    d.customer_name,
+          customer_email:   d.customer_email,
+          domain:           d.domain,
+          customer_status:  d.customer_status,
+          business:         d.business,
+          cs_email:         d.cs_email,
+          account:          d.account,
+          b0_30:     open.b0_30,
+          b31_60:    open.b31_60,
+          b61_90:    open.b61_90,
+          b90_180:   open.b90_180,
+          b180plus:  open.b180plus,
+          total:         open.total,
+          invoice_count: open.invoice_count,
+          dso_days:      d.dso_days,
+          collection_method: d.collection_method,
+          sales_3m_usd:  d.sales_3m_usd,
+        };
+      })
+      .sort((a, b) => {
+        const av = a[sortCol], bv = b[sortCol];
+        const cmp = typeof av === "number" && typeof bv === "number"
+          ? av - bv : String(av ?? "").localeCompare(String(bv ?? ""));
+        return sortDir === "asc" ? cmp : -cmp;
+      });
+  }, [activeTab, data, bizF, acctF, statF, csF, search, openInvoiceMap, sortCol, sortDir]);
+
+  // Active rows for table rendering — payModeCustRows on autopay/manual, custRows otherwise
+  const displayRows = (activeTab === "autopay" || activeTab === "manual") ? payModeCustRows : custRows;
+
   const invoicesByKey = useMemo(() => {
     const m = new Map<string, InvoiceRowWithUsd[]>();
     for (const inv of allInvoices) {
@@ -276,20 +346,20 @@ export default function Dashboard() {
   }, [allInvoices]);
 
   // ── Derived stats ──────────────────────────────────────────────────────────
-  const grandTotal   = useMemo(() => custRows.reduce((s, r) => s + r.total, 0), [custRows]);
-  const pastDueCnt   = useMemo(() => custRows.filter(r => r.b31_60 + r.b61_90 + r.b90_180 + r.b180plus > 0).length, [custRows]);
+  const grandTotal   = useMemo(() => displayRows.reduce((s, r) => s + r.total, 0), [displayRows]);
+  const pastDueCnt   = useMemo(() => displayRows.filter(r => r.b31_60 + r.b61_90 + r.b90_180 + r.b180plus > 0).length, [displayRows]);
   const agingTot     = useMemo(() => {
     const m: Record<AgingBucket, number> = { "0-30": 0, "31-60": 0, "61-90": 0, "90-180": 0, "180+": 0 };
-    custRows.forEach(r => { m["0-30"] += r.b0_30; m["31-60"] += r.b31_60; m["61-90"] += r.b61_90; m["90-180"] += r.b90_180; m["180+"] += r.b180plus; });
+    displayRows.forEach(r => { m["0-30"] += r.b0_30; m["31-60"] += r.b31_60; m["61-90"] += r.b61_90; m["90-180"] += r.b90_180; m["180+"] += r.b180plus; });
     return m;
-  }, [custRows]);
+  }, [displayRows]);
 
   const aggregateDSO = useMemo(() => {
-    const withDso = custRows.filter(r => r.dso_days > 0);
+    const withDso = displayRows.filter(r => r.dso_days > 0);
     const totalAmt = withDso.reduce((s, r) => s + r.total, 0);
     if (totalAmt === 0) return 0;
     return Math.round(withDso.reduce((s, r) => s + r.dso_days * r.total, 0) / totalAmt);
-  }, [custRows]);
+  }, [displayRows]);
 
   // Business-type breakdown with payment mode stats
   const bizStats = useMemo(() => {
@@ -298,7 +368,7 @@ export default function Dashboard() {
       b0_30: number; b31_60: number; b61_90: number; b90_180: number; b180plus: number;
       autoPay: number; manualPay: number; sales_3m: number;
     }>();
-    for (const r of custRows) {
+    for (const r of displayRows) {
       const biz = r.business || "Other";
       if (!map.has(biz)) map.set(biz, { total: 0, count: 0, dsoW: 0, b0_30: 0, b31_60: 0, b61_90: 0, b90_180: 0, b180plus: 0, autoPay: 0, manualPay: 0, sales_3m: 0 });
       const b = map.get(biz)!;
@@ -429,7 +499,7 @@ export default function Dashboard() {
         <div style={{ ...S.card, borderTop: "3px solid #6366f1" }}>
           <div style={S.cardLabel}>Total Outstanding</div>
           <div style={{ ...S.cardVal, color: "#4338ca" }}>{fmtUSD(grandTotal)}</div>
-          <div style={S.cardSub}>{custRows.length} customers</div>
+          <div style={S.cardSub}>{displayRows.length} customers</div>
         </div>
         <div style={{ ...S.card, borderTop: "3px solid #ef4444" }}>
           <div style={S.cardLabel}>Past Due</div>
@@ -445,7 +515,7 @@ export default function Dashboard() {
           <div key={b} style={{ ...S.card, borderTop: `3px solid ${agingColor(b)}` }}>
             <div style={S.cardLabel}>{b} days</div>
             <div style={{ ...S.cardVal, color: agingColor(b) }}>{fmtUSD(agingTot[b])}</div>
-            <div style={S.cardSub}>{custRows.filter(r => bucketCount(r, b) > 0).length} customers</div>
+            <div style={S.cardSub}>{displayRows.filter(r => bucketCount(r, b) > 0).length} customers</div>
           </div>
         ))}
       </div>
@@ -557,7 +627,7 @@ export default function Dashboard() {
       {/* ── SEARCH + FILTER BAR ── */}
       <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
         <input style={S.searchInput} placeholder="🔍  Search customer, domain, email..." value={search} onChange={e => setSearch(e.target.value)} />
-        <span style={{ color: "#64748b", fontSize: 13, fontWeight: 500 }}>{custRows.length} customers · {fmtUSD(grandTotal)}</span>
+        <span style={{ color: "#64748b", fontSize: 13, fontWeight: 500 }}>{displayRows.length} customers · {fmtUSD(grandTotal)}</span>
         {aggregateDSO > 0 && (
           <span style={{ background: dsoBg(aggregateDSO), color: dsoColor(aggregateDSO), fontSize: 12, fontWeight: 700, padding: "3px 10px", borderRadius: 20, border: `1px solid ${dsoColor(aggregateDSO)}44` }}>
             DSO {aggregateDSO}d
@@ -649,7 +719,7 @@ export default function Dashboard() {
                   <div style={{ fontWeight: 600, marginBottom: 4 }}>No customers match your filters</div>
                   <button onClick={resetFilters} style={{ color: "#6366f1", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}>Clear all filters</button>
                 </td></tr>
-              : custRows.map((r, i) => {
+              : displayRows.map((r, i) => {
                   const isExp = expanded.has(r.key);
                   const invs  = (invoicesByKey.get(r.key) ?? []).sort((a, b) => b.days_overdue - a.days_overdue);
                   const [bizFg, bizBg, bizBorder] = r.business ? bizColor(r.business) : ["#6b7280", "#f3f4f6", "#e5e7eb"];
@@ -716,11 +786,11 @@ export default function Dashboard() {
                   );
                 })}
           </tbody>
-          {custRows.length > 0 && (
+          {displayRows.length > 0 && (
             <tfoot>
               <tr style={{ background: "#f1f5f9", fontWeight: 800 }}>
                 <td style={{ ...S.td, fontWeight: 800, color: "#0f172a" }} colSpan={5}>
-                  Subtotal — {custRows.length} customers
+                  Subtotal — {displayRows.length} customers
                   {aggregateDSO > 0 && (
                     <span style={{ marginLeft: 10, background: dsoBg(aggregateDSO), color: dsoColor(aggregateDSO), borderRadius: 20, padding: "2px 10px", fontSize: 12, fontWeight: 700, border: `1px solid ${dsoColor(aggregateDSO)}44` }}>
                       DSO {aggregateDSO}d
