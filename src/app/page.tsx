@@ -107,6 +107,7 @@ export default function Dashboard() {
   const [sortCol, setSortCol]         = useState<keyof CustRow>("total");
   const [sortDir, setSortDir]         = useState<"asc" | "desc">("desc");
   const [activeTab, setActiveTab]     = useState<"all" | "active" | "inactive" | "autopay" | "manual">("all");
+  const [pmTabExpanded, setPmTabExpanded] = useState(false); // expand customer list on autopay/manual tabs
 
   // Filters
   const [search,    setSearch]    = useState("");
@@ -219,7 +220,7 @@ export default function Dashboard() {
       }
       // Tab pre-filter
       if (activeTab === "active"   && inv.customer_status !== "Active")              continue;
-      if (activeTab === "inactive" && inv.customer_status !== "Inactive")            continue;
+      if (activeTab === "inactive" && inv.customer_status === "Active")              continue;
       if (activeTab === "autopay"  && inv.collection_method !== "charge_automatically") continue;
       if (activeTab === "manual"   && inv.collection_method !== "send_invoice")      continue;
       // pmF only applies on tabs where payment mode isn't already locked by the tab
@@ -487,7 +488,7 @@ export default function Dashboard() {
           { key: "autopay",  label: "🤖 Auto Pay" },
           { key: "manual",   label: "📧 Manual" },
         ] as const).map(({ key, label }) => (
-          <button key={key} onClick={() => { setActiveTab(key); setBizF("All"); }}
+          <button key={key} onClick={() => { setActiveTab(key); setBizF("All"); setPmTabExpanded(false); }}
             style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
             {label}
           </button>
@@ -520,33 +521,10 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* ── TAB QUICK FILTERS (all tabs except "All") ── */}
-      {activeTab !== "all" && (
+      {/* ── TAB QUICK FILTERS (Active / Inactive tabs) ── */}
+      {(activeTab === "active" || activeTab === "inactive") && (
         <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 16, background: "#fff", padding: "14px 18px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", flexWrap: "wrap" }}>
-
-          {/* Auto Pay % summary — shown on autopay / manual tabs */}
-          {(activeTab === "autopay" || activeTab === "manual") && (
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginRight: 8 }}>
-              <div style={{ fontSize: 12, color: "#64748b" }}>
-                <strong style={{ color: "#0f172a" }}>{autoPayStats.autoPay}</strong> of{" "}
-                <strong style={{ color: "#0f172a" }}>{autoPayStats.total}</strong> total customers on auto pay
-              </div>
-              {/* Auto vs Manual bar */}
-              <div style={{ display: "flex", width: 120, height: 8, borderRadius: 4, overflow: "hidden", gap: 1 }}>
-                <div style={{ flex: autoPayStats.autoPay, background: "#6366f1", minWidth: 4 }} />
-                <div style={{ flex: autoPayStats.manual, background: "#f59e0b", minWidth: 4 }} />
-              </div>
-              <span style={{ background: "#ede9fe", color: "#6366f1", borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700, border: "1px solid #c4b5fd" }}>
-                {autoPayStats.autoPayPct}% auto pay
-              </span>
-            </div>
-          )}
-
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" as const, letterSpacing: 0.6 }}>
-            Filter:
-          </span>
-
-          {/* Business Type — always shown */}
+          <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" as const, letterSpacing: 0.6 }}>Filter:</span>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Business Type</label>
             <select style={{ ...sel, width: 160 }} value={bizF} onChange={e => setBizF(e.target.value)}>
@@ -554,27 +532,80 @@ export default function Dashboard() {
               {bizTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           </div>
-
-          {/* Payment Mode — only on Active / Inactive tabs (autopay/manual tabs already lock this) */}
-          {(activeTab === "active" || activeTab === "inactive") && (
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Payment Mode</label>
-              <select style={{ ...sel, width: 150 }} value={pmF} onChange={e => setPmF(e.target.value)}>
-                <option value="All">All</option>
-                <option value="auto">🤖 Auto Pay</option>
-                <option value="manual">📧 Manual</option>
-              </select>
-            </div>
-          )}
-
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Payment Mode</label>
+            <select style={{ ...sel, width: 150 }} value={pmF} onChange={e => setPmF(e.target.value)}>
+              <option value="All">All</option>
+              <option value="auto">🤖 Auto Pay</option>
+              <option value="manual">📧 Manual</option>
+            </select>
+          </div>
           {(bizF !== "All" || pmF !== "All") && (
             <button onClick={() => { setBizF("All"); setPmF("All"); }}
-              style={{ fontSize: 12, color: "#ef4444", background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 20, padding: "5px 14px", cursor: "pointer", fontWeight: 600 }}>
-              ✕ Clear
-            </button>
+              style={{ fontSize: 12, color: "#ef4444", background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 20, padding: "5px 14px", cursor: "pointer", fontWeight: 600 }}>✕ Clear</button>
           )}
         </div>
       )}
+
+      {/* ── AUTO PAY / MANUAL SUMMARY CARD ── */}
+      {(activeTab === "autopay" || activeTab === "manual") && (() => {
+        const failed  = displayRows.filter(r => r.total > 0);
+        const healthy = displayRows.filter(r => r.total === 0);
+        const isAuto  = activeTab === "autopay";
+        return (
+          <div style={{ marginBottom: 16, background: "#fff", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: isAuto ? "1px solid #c4b5fd" : "1px solid #fde68a" }}>
+            {/* Header row */}
+            <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: "#0f172a" }}>
+                {isAuto ? "🤖 Auto Pay" : "📧 Manual Pay"} — {displayRows.length} customers
+              </div>
+              {/* Auto vs manual bar */}
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ display: "flex", width: 140, height: 10, borderRadius: 5, overflow: "hidden", gap: 1 }}>
+                  <div style={{ flex: autoPayStats.autoPay, background: "#6366f1", minWidth: 4 }} />
+                  <div style={{ flex: autoPayStats.manual,  background: "#f59e0b", minWidth: 4 }} />
+                </div>
+                <span style={{ fontSize: 12, color: "#6366f1", fontWeight: 700 }}>{autoPayStats.autoPayPct}% auto pay</span>
+                <span style={{ fontSize: 12, color: "#64748b" }}>({autoPayStats.autoPay} of {autoPayStats.total} total customers)</span>
+              </div>
+              {/* Business type filter */}
+              <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
+                <label style={{ fontSize: 12, color: "#475569", fontWeight: 600 }}>Business</label>
+                <select style={{ ...sel, width: 150 }} value={bizF} onChange={e => setBizF(e.target.value)}>
+                  <option value="All">All types</option>
+                  {bizTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+            {/* Stat boxes */}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+              <div style={{ flex: 1, minWidth: 180, background: "#f0fdf4", borderRadius: 10, padding: "14px 18px", border: "1px solid #bbf7d0" }}>
+                <div style={{ fontSize: 11, fontWeight: 700, color: "#166534", textTransform: "uppercase" as const, letterSpacing: 0.5, marginBottom: 4 }}>
+                  {isAuto ? "✓ Auto Pay Working" : "📧 Manual — Up to date"}
+                </div>
+                <div style={{ fontSize: 26, fontWeight: 800, color: "#15803d" }}>{healthy.length}</div>
+                <div style={{ fontSize: 12, color: "#166534" }}>customers · $0 outstanding</div>
+              </div>
+              {failed.length > 0 && (
+                <div
+                  onClick={() => setPmTabExpanded(v => !v)}
+                  style={{ flex: 1, minWidth: 180, background: "#fef2f2", borderRadius: 10, padding: "14px 18px", border: "1px solid #fecaca", cursor: "pointer" }}>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: "#991b1b", textTransform: "uppercase" as const, letterSpacing: 0.5, marginBottom: 4 }}>
+                    {isAuto ? "⚠ Auto Pay Paused / Failed" : "⚠ Outstanding Invoices"}
+                  </div>
+                  <div style={{ fontSize: 26, fontWeight: 800, color: "#dc2626" }}>{failed.length}</div>
+                  <div style={{ fontSize: 12, color: "#991b1b" }}>
+                    customers · {fmtUSD(grandTotal)} outstanding
+                  </div>
+                  <div style={{ fontSize: 11, color: "#6366f1", marginTop: 6, fontWeight: 600 }}>
+                    {pmTabExpanded ? "▲ Collapse list" : "▼ Click to see customer list"}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ── BUSINESS TYPE BREAKDOWN (All tab only) ── */}
       {activeTab === "all" && <div style={{ marginBottom: 20 }}>
@@ -623,6 +654,9 @@ export default function Dashboard() {
           })}
         </div>
       </div>}
+
+      {/* ── SEARCH + FILTER BAR + TABLE: hidden on autopay/manual unless expanded ── */}
+      {(activeTab !== "autopay" && activeTab !== "manual") || pmTabExpanded ? <>
 
       {/* ── SEARCH + FILTER BAR ── */}
       <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
@@ -713,13 +747,15 @@ export default function Dashboard() {
             </tr>
           </thead>
           <tbody>
-            {custRows.length === 0
+            {displayRows.filter(r => r.total > 0 || activeTab === "all" || activeTab === "active" || activeTab === "inactive").length === 0
               ? <tr><td colSpan={13} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
                   <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
                   <div style={{ fontWeight: 600, marginBottom: 4 }}>No customers match your filters</div>
                   <button onClick={resetFilters} style={{ color: "#6366f1", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}>Clear all filters</button>
                 </td></tr>
-              : displayRows.map((r, i) => {
+              : displayRows
+                  .filter(r => (activeTab === "autopay" || activeTab === "manual") ? r.total > 0 : true)
+                  .map((r, i) => {
                   const isExp = expanded.has(r.key);
                   const invs  = (invoicesByKey.get(r.key) ?? []).sort((a, b) => b.days_overdue - a.days_overdue);
                   const [bizFg, bizBg, bizBorder] = r.business ? bizColor(r.business) : ["#6b7280", "#f3f4f6", "#e5e7eb"];
@@ -739,9 +775,11 @@ export default function Dashboard() {
                         <td style={S.td}>{r.business ? <span style={{ background: bizBg, color: bizFg, border: `1px solid ${bizBorder}`, borderRadius: 20, padding: "3px 10px", fontSize: 12, fontWeight: 700 }}>{r.business}</span> : <span style={{ color: "#cbd5e1", fontSize: 12 }}>--</span>}</td>
                         <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{r.cs_email?.split("@")[0] || "--"}</span></td>
                         <td style={S.td}>
-                          {r.collection_method === "charge_automatically"
-                            ? <span style={{ background: "#ede9fe", color: "#6366f1", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #c4b5fd", whiteSpace: "nowrap" }}>🤖 Auto</span>
-                            : <span style={{ background: "#fef9c3", color: "#92400e", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #fde68a", whiteSpace: "nowrap" }}>📧 Manual</span>}
+                          {r.collection_method === "charge_automatically" && r.total > 0
+                            ? <span style={{ background: "#fee2e2", color: "#dc2626", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #fca5a5", whiteSpace: "nowrap" }}>⚠ Paused/Failed</span>
+                            : r.collection_method === "charge_automatically"
+                              ? <span style={{ background: "#ede9fe", color: "#6366f1", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #c4b5fd", whiteSpace: "nowrap" }}>🤖 Auto</span>
+                              : <span style={{ background: "#fef9c3", color: "#92400e", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #fde68a", whiteSpace: "nowrap" }}>📧 Manual</span>}
                         </td>
                         <td style={{ ...S.td, color: "#10b981", fontWeight: 700 }}>{r.b0_30   > 0 ? fmtUSD(r.b0_30)   : <span style={{ color: "#e2e8f0" }}>—</span>}</td>
                         <td style={{ ...S.td, color: "#f59e0b", fontWeight: 700 }}>{r.b31_60  > 0 ? fmtUSD(r.b31_60)  : <span style={{ color: "#e2e8f0" }}>—</span>}</td>
@@ -778,7 +816,7 @@ export default function Dashboard() {
                           <td style={{ ...S.td, fontWeight: 700, fontSize: 13, color: "#4338ca" }} colSpan={8}>
                             {fmtUSD(inv.amount_usd)}
                             {inv.currency !== "USD" && <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: 6 }}>{inv.currency} {inv.amount_due.toLocaleString()}</span>}
-                            {inv.invoice_url && <a href={inv.invoice_url} target="_blank" rel="noreferrer" style={{ marginLeft: 12, color: "#6366f1", fontSize: 12, fontWeight: 600 }}>View ↗</a>}
+                            {inv.invoice_pdf && <a href={inv.invoice_pdf} target="_blank" rel="noreferrer" download style={{ marginLeft: 12, color: "#6366f1", fontSize: 12, fontWeight: 600 }}>⬇ Download PDF</a>}
                           </td>
                         </tr>
                       ))}
@@ -813,6 +851,8 @@ export default function Dashboard() {
       <div style={{ textAlign: "center", padding: "16px 0", color: "#94a3b8", fontSize: 12 }}>
         Click ⟳ for live data · Click Total to expand invoices · DSO = weighted average age of open invoices
       </div>
+
+      </> : null}
     </div>
   );
 }
