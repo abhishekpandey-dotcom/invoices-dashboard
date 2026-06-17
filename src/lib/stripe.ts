@@ -35,6 +35,7 @@ export interface InvoiceRow {
   days_overdue: number;
   aging_bucket: AgingBucket;
   invoice_url: string | null;
+  invoice_pdf: string | null;
   description: string;
   collection_method: "charge_automatically" | "send_invoice";
 }
@@ -122,6 +123,7 @@ async function fetchOpenInvoices(
         days_overdue: daysOverdue,
         aging_bucket: bucket(daysOverdue),
         invoice_url: inv.hosted_invoice_url ?? null,
+        invoice_pdf: inv.invoice_pdf        ?? null,
         description: inv.description ?? "",
         collection_method: (inv.collection_method ?? "send_invoice") as
           | "charge_automatically"
