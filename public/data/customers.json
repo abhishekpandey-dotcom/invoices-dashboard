@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-21T07:33:20.796Z",
+  "lastUpdated": "2026-06-21T07:33:23.379Z",
   "rowCount": 413,
   "data": [
     {
@@ -3302,7 +3302,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjFHdCGdp3yc90",
       "Domain name": "https://www.coitb.org/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     }
