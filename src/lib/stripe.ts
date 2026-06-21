@@ -31,9 +31,22 @@ export interface InvoiceRow {
   status: string;
   amount_due: number;
   currency: string;
+  /** ISO date of invoice creation (always set) */
+  invoice_date: string;
+  /**
+   * Effective due date.
+   * For autopay customers with no explicit due_date, falls back to invoice_date.
+   * For manual customers with no due_date, remains null.
+   */
   due_date: string | null;
+  /** Days overdue measured from effective due_date */
   days_overdue: number;
+  /** Aging bucket from effective due_date */
   aging_bucket: AgingBucket;
+  /** Days since invoice was created (always >= 0) */
+  days_from_invoice: number;
+  /** Aging bucket measured from invoice creation date */
+  aging_bucket_from_invoice: AgingBucket;
   invoice_url: string | null;
   invoice_pdf: string | null;
   description: string;
@@ -59,6 +72,52 @@ export interface CustomerDSO {
   /** Sum of paid invoices in the last 3 months / 90 days (native currency) */
   sales_3m: number;
   collection_method: "charge_automatically" | "send_invoice";
+}
+
+// ── AllCustomer types (for the full ledger tab) ────────────────────────────────
+export interface AllCustomerInvoice {
+  id: string;
+  invoice_number: string;
+  /** "paid" | "open" | "void" | "uncollectible" */
+  status: string;
+  /** Total amount in native currency */
+  amount: number;
+  /** Amount already paid (native currency) */
+  amount_paid: number;
+  currency: string;
+  /** ISO date of invoice creation */
+  invoice_date: string;
+  /** ISO date of due date (null if none) */
+  due_date: string | null;
+  /** Start of service period from first line item */
+  period_start: string | null;
+  /** End of service period from first line item */
+  period_end: string | null;
+  invoice_url: string | null;
+  invoice_pdf: string | null;
+  /** Stripe receipt URL (available on paid invoices) */
+  receipt_url: string | null;
+  description: string;
+  collection_method: "charge_automatically" | "send_invoice";
+}
+
+export interface AllCustomer {
+  customer_id: string;
+  customer_name: string;
+  customer_email: string;
+  domain: string;
+  business: string;
+  cs_email: string;
+  customer_status: string;
+  account: "India" | "US";
+  collection_method: "charge_automatically" | "send_invoice";
+  /** Oldest invoice date found in the 18-month window */
+  first_invoice_date: string | null;
+  /** Most recent invoice date */
+  latest_invoice_date: string | null;
+  currency: string;
+  /** All invoices in the 18-month window, sorted newest first */
+  invoices: AllCustomerInvoice[];
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -93,11 +152,31 @@ async function fetchOpenInvoices(
 
     for (const inv of page.data) {
       if (SKIP.has(inv.status ?? "")) continue;
-      const dueDateMs = inv.due_date ? inv.due_date * 1000 : null;
+
+      const invoiceDateMs = inv.created * 1000;
+      const cm = (inv.collection_method ?? "send_invoice") as
+        | "charge_automatically"
+        | "send_invoice";
+
+      // For autopay customers with no due_date, use invoice creation date as the
+      // effective due date so they are correctly aged instead of landing in 0-30.
+      const effectiveDueDateMs = inv.due_date
+        ? inv.due_date * 1000
+        : cm === "charge_automatically"
+          ? invoiceDateMs
+          : null;
+
       const daysOverdue =
-        dueDateMs && dueDateMs < now
-          ? Math.floor((now - dueDateMs) / 86_400_000)
+        effectiveDueDateMs && effectiveDueDateMs < now
+          ? Math.floor((now - effectiveDueDateMs) / 86_400_000)
           : 0;
+
+      // Always compute aging from invoice date regardless of collection method
+      const daysFromInvoice = Math.max(
+        0,
+        Math.floor((now - invoiceDateMs) / 86_400_000)
+      );
+
       const cObj =
         typeof inv.customer === "object" && inv.customer !== null
           ? (inv.customer as Stripe.Customer)
@@ -117,17 +196,18 @@ async function fetchOpenInvoices(
         status: inv.status ?? "open",
         amount_due: inv.amount_due / 100,
         currency: inv.currency.toUpperCase(),
-        due_date: dueDateMs
-          ? new Date(dueDateMs).toISOString().split("T")[0]
+        invoice_date: new Date(invoiceDateMs).toISOString().split("T")[0],
+        due_date: effectiveDueDateMs
+          ? new Date(effectiveDueDateMs).toISOString().split("T")[0]
           : null,
         days_overdue: daysOverdue,
         aging_bucket: bucket(daysOverdue),
+        days_from_invoice: daysFromInvoice,
+        aging_bucket_from_invoice: bucket(daysFromInvoice),
         invoice_url: inv.hosted_invoice_url ?? null,
         invoice_pdf: inv.invoice_pdf        ?? null,
         description: inv.description ?? "",
-        collection_method: (inv.collection_method ?? "send_invoice") as
-          | "charge_automatically"
-          | "send_invoice",
+        collection_method: cm,
       });
     }
 
@@ -145,7 +225,6 @@ interface PaidSummary {
   total_3m: number;
   currency: string;
   collection_method: "charge_automatically" | "send_invoice";
-  /** Customer display name — captured so paid-only customers can appear in the full list */
   customer_name: string;
   customer_email: string;
 }
@@ -157,7 +236,7 @@ async function fetchPaidSales(
   const map = new Map<string, PaidSummary>();
   const nowSec = Math.floor(Date.now() / 1000);
   const since12m = nowSec - 365 * 24 * 3600;
-  const since3m  = nowSec - 90 * 24 * 3600;
+  const since3m  = nowSec - 90  * 24 * 3600;
   let hasMore = true;
   let startingAfter: string | undefined;
 
@@ -182,7 +261,6 @@ async function fetchPaidSales(
       const cm = (inv.collection_method ?? "send_invoice") as
         | "charge_automatically"
         | "send_invoice";
-
       const cName  = cObj?.name  ?? inv.customer_name  ?? inv.customer_email ?? "Unknown";
       const cEmail = cObj?.email ?? inv.customer_email ?? "";
 
@@ -192,7 +270,7 @@ async function fetchPaidSales(
       const s = map.get(key)!;
       s.total_12m += amount;
       if (inv.created >= since3m) s.total_3m += amount;
-      s.collection_method = cm; // keep most-recent invoice's value
+      s.collection_method = cm;
     }
 
     hasMore = page.has_more;
@@ -203,13 +281,115 @@ async function fetchPaidSales(
   return map;
 }
 
-// ── Main export ───────────────────────────────────────────────────────────────
+// ── Fetch all invoices for the ledger tab ─────────────────────────────────────
+async function fetchAllCustomerInvoices(
+  stripe: Stripe,
+  account: "India" | "US",
+  sinceMs: number
+): Promise<Map<string, { meta: Partial<AllCustomer>; invoices: AllCustomerInvoice[] }>> {
+  const map = new Map<string, { meta: Partial<AllCustomer>; invoices: AllCustomerInvoice[] }>();
+  const since = Math.floor(sinceMs / 1000);
+  let hasMore = true;
+  let startingAfter: string | undefined;
+
+  while (hasMore) {
+    const page = await stripe.invoices.list({
+      limit: 100,
+      created: { gte: since },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expand: ["data.charge"] as any,
+      ...(startingAfter ? { starting_after: startingAfter } : {}),
+    });
+
+    for (const inv of page.data) {
+      // Skip drafts — they're not real invoices yet
+      if (inv.status === "draft") continue;
+
+      const cObj =
+        typeof inv.customer === "object" && inv.customer !== null
+          ? (inv.customer as Stripe.Customer)
+          : null;
+      const cId =
+        typeof inv.customer === "string" ? inv.customer : (cObj?.id ?? "");
+      if (!cId) continue;
+
+      const key = `${account}::${cId}`;
+      const cm = (inv.collection_method ?? "send_invoice") as
+        | "charge_automatically"
+        | "send_invoice";
+
+      // Service period from first line item
+      const firstLine = inv.lines?.data?.[0];
+      const periodStart = firstLine?.period?.start
+        ? new Date(firstLine.period.start * 1000).toISOString().split("T")[0]
+        : null;
+      const periodEnd = firstLine?.period?.end
+        ? new Date(firstLine.period.end * 1000).toISOString().split("T")[0]
+        : null;
+
+      // Receipt URL from expanded charge (available on paid invoices)
+      const charge =
+        inv.charge && typeof inv.charge === "object"
+          ? (inv.charge as Stripe.Charge)
+          : null;
+      const receiptUrl = charge?.receipt_url ?? null;
+
+      const invoiceDate = new Date(inv.created * 1000).toISOString().split("T")[0];
+      const dueDateStr = inv.due_date
+        ? new Date(inv.due_date * 1000).toISOString().split("T")[0]
+        : null;
+
+      const invoiceRow: AllCustomerInvoice = {
+        id: inv.id,
+        invoice_number: inv.number ?? inv.id,
+        status: inv.status ?? "open",
+        amount: (inv.amount_due ?? inv.total ?? 0) / 100,
+        amount_paid: (inv.amount_paid ?? 0) / 100,
+        currency: inv.currency.toUpperCase(),
+        invoice_date: invoiceDate,
+        due_date: dueDateStr,
+        period_start: periodStart,
+        period_end: periodEnd,
+        invoice_url: inv.hosted_invoice_url ?? null,
+        invoice_pdf: inv.invoice_pdf ?? null,
+        receipt_url: receiptUrl,
+        description: inv.description ?? "",
+        collection_method: cm,
+      };
+
+      if (!map.has(key)) {
+        map.set(key, {
+          meta: {
+            customer_id: cId,
+            customer_name: cObj?.name ?? inv.customer_name ?? inv.customer_email ?? "Unknown",
+            customer_email: cObj?.email ?? inv.customer_email ?? "",
+            account,
+            currency: inv.currency.toUpperCase(),
+            collection_method: cm,
+          },
+          invoices: [],
+        });
+      }
+      const entry = map.get(key)!;
+      entry.invoices.push(invoiceRow);
+      // Keep most-recent collection_method
+      entry.meta.collection_method = cm;
+    }
+
+    hasMore = page.has_more;
+    startingAfter =
+      page.data.length > 0 ? page.data[page.data.length - 1].id : undefined;
+    if (!page.data.length) hasMore = false;
+  }
+  return map;
+}
+
+// ── Main export: outstanding invoices + DSO ───────────────────────────────────
 export async function getAllInvoices(
   metaMap: CustomerMetaMap = new Map()
 ): Promise<{ invoices: InvoiceRow[]; dso: CustomerDSO[] }> {
   const { india, us } = getStripeClients();
 
-  // Parallel fetch: open invoices + paid sales history for both accounts
   const [indiaRows, usRows, indiaSales, usSales] = await Promise.all([
     fetchOpenInvoices(india, "India"),
     fetchOpenInvoices(us, "US"),
@@ -219,7 +399,6 @@ export async function getAllInvoices(
 
   const salesMap = new Map([...indiaSales, ...usSales]);
 
-  // Merge metadata from Google Sheets
   const invoices: InvoiceRow[] = [...indiaRows, ...usRows].map(inv => {
     const meta = metaMap.get(inv.customer_id);
     return {
@@ -231,7 +410,6 @@ export async function getAllInvoices(
     };
   });
 
-  // ── Aggregate per customer ────────────────────────────────────────────────
   interface CustAgg {
     customer_id: string; customer_name: string; customer_email: string;
     domain: string; business: string; cs_email: string; customer_status: string;
@@ -239,14 +417,12 @@ export async function getAllInvoices(
     totalOutstanding: number; count: number;
     total_sales_12m: number; sales_3m: number;
     collection_method: "charge_automatically" | "send_invoice";
-    /** Σ(amount_due × days_overdue) — numerator for weighted-average DSO */
     weightedDaysSum: number;
   }
 
   const custMap = new Map<string, CustAgg>();
 
   for (const inv of invoices) {
-    // Key includes currency so multi-currency customers aggregate separately
     const key      = `${inv.account}::${inv.customer_id}::${inv.currency}`;
     const salesKey = `${inv.account}::${inv.customer_id}`;
     const paid     = salesMap.get(salesKey);
@@ -276,14 +452,13 @@ export async function getAllInvoices(
     c.count++;
   }
 
-  // ── Add paid-only customers (no open invoices, but active in last 12m) ────
-  //   These appear in the Auto Pay / Manual tabs even though outstanding = $0.
+  // Add paid-only customers (active in last 12m but no open invoices)
   for (const [salesKey, paid] of salesMap.entries()) {
-    const parts     = salesKey.split("::");
-    const account   = parts[0] as "India" | "US";
-    const custId    = parts[1];
-    const key       = `${account}::${custId}::${paid.currency}`;
-    if (custMap.has(key)) continue; // already added from open invoices
+    const parts   = salesKey.split("::");
+    const account = parts[0] as "India" | "US";
+    const custId  = parts[1];
+    const key     = `${account}::${custId}::${paid.currency}`;
+    if (custMap.has(key)) continue;
     const meta = metaMap.get(custId);
     custMap.set(key, {
       customer_id:      custId,
@@ -304,21 +479,10 @@ export async function getAllInvoices(
     });
   }
 
-  // ── Compute DSO — weighted average age of open invoices ─────────────────
-  //   DSO = Σ(invoice_amount × days_overdue) / Σ(invoice_amount)
-  //
-  //   This is the most rational measure: it directly answers "on average, how
-  //   many days old is the money we're owed?"
-  //
-  //   • Never inflated by customers paying outside Stripe
-  //   • Never affected by onboarding date or tenure
-  //   • Bounded by the actual age of the oldest invoice — cannot give 657d
-  //   • Invoices not yet due contribute 0 days (days_overdue = 0)
   const dso: CustomerDSO[] = Array.from(custMap.values()).map(c => {
     const dso_days = c.totalOutstanding > 0
       ? Math.round(c.weightedDaysSum / c.totalOutstanding)
       : 0;
-
     return {
       customer_id:     c.customer_id,
       customer_name:   c.customer_name,
@@ -340,4 +504,63 @@ export async function getAllInvoices(
 
   dso.sort((a, b) => b.total_outstanding - a.total_outstanding);
   return { invoices, dso };
+}
+
+// ── Main export: full customer ledger (all statuses, 18 months) ───────────────
+export async function getAllCustomers(
+  metaMap: CustomerMetaMap = new Map()
+): Promise<AllCustomer[]> {
+  const { india, us } = getStripeClients();
+  const now = Date.now();
+  const since18m = now - 18 * 30 * 24 * 3600 * 1000;
+
+  const [indiaMap, usMap] = await Promise.all([
+    fetchAllCustomerInvoices(india, "India", since18m),
+    fetchAllCustomerInvoices(us, "US", since18m),
+  ]);
+
+  const threeMonthsAgo = new Date(now - 90 * 24 * 3600 * 1000)
+    .toISOString()
+    .split("T")[0];
+
+  const result: AllCustomer[] = [];
+
+  for (const [, { meta, invoices }] of new Map([...indiaMap, ...usMap]).entries()) {
+    const custId = meta.customer_id ?? "";
+
+    // Sort newest first
+    invoices.sort((a, b) => b.invoice_date.localeCompare(a.invoice_date));
+
+    const dates = invoices.map(i => i.invoice_date).filter(Boolean);
+    const latestDate = dates[0] ?? null;
+    const firstDate  = dates[dates.length - 1] ?? null;
+
+    const sheetMeta = metaMap.get(custId);
+    const status    = sheetMeta?.status ?? "";
+
+    // Exclude churned customers who have had no invoice in the last 3 months
+    if (status === "Churned" && (!latestDate || latestDate < threeMonthsAgo)) continue;
+
+    result.push({
+      customer_id:          custId,
+      customer_name:        meta.customer_name ?? "",
+      customer_email:       meta.customer_email ?? "",
+      domain:               sheetMeta?.domain   ?? "",
+      business:             sheetMeta?.business ?? "",
+      cs_email:             sheetMeta?.cs_email ?? "",
+      customer_status:      status,
+      account:              meta.account ?? "India",
+      currency:             meta.currency ?? "USD",
+      collection_method:    meta.collection_method ?? "send_invoice",
+      first_invoice_date:   firstDate,
+      latest_invoice_date:  latestDate,
+      invoices,
+    });
+  }
+
+  // Sort by latest invoice date descending
+  result.sort((a, b) =>
+    (b.latest_invoice_date ?? "").localeCompare(a.latest_invoice_date ?? "")
+  );
+  return result;
 }
