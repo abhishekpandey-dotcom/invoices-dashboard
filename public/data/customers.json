@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-16T10:10:56.668Z",
-  "rowCount": 412,
+  "lastUpdated": "2026-06-21T07:33:09.300Z",
+  "rowCount": 413,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -2222,7 +2222,7 @@
       "Customer Name": "Master Matchmakers",
       "Stripe Customer ID": "cus_UWUVBjosY9qZrW",
       "Domain name": "https://www.mastermatchmakers.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "muddasir.h@gushwork.ai"
     },
@@ -2252,7 +2252,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Ndatastor_dummy",
+      "Stripe Customer ID": "cus_UiRRVXF6onfZKo",
       "Domain name": "https://www.ndatastor.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -2342,7 +2342,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Personalwarehouse_dummy",
       "Domain name": "https://personalwarehouse.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "amitesh.girotiya@gushwork.ai"
     },
@@ -2462,7 +2462,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UWUVBjosY9qZrW",
       "Domain name": "https://www.mastermatchmakers.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "muddasir.h@gushwork.ai"
     },
@@ -2486,7 +2486,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Applewoodspa_dummy",
       "Domain name": "https://applewoodspa.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "roshni.kothari@gushwork.ai"
     },
@@ -2588,7 +2588,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Ndatastor_dummy",
+      "Stripe Customer ID": "cus_UiRRVXF6onfZKo",
       "Domain name": "https://www.ndatastor.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -2598,7 +2598,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Personalwarehouse_dummy",
       "Domain name": "https://personalwarehouse.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "amitesh.girotiya@gushwork.ai"
     },
@@ -2614,7 +2614,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UWUVBjosY9qZrW",
       "Domain name": "https://www.mastermatchmakers.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "muddasir.h@gushwork.ai"
     },
@@ -2678,7 +2678,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Applewoodspa_dummy",
       "Domain name": "https://applewoodspa.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "roshni.kothari@gushwork.ai"
     },
@@ -2740,11 +2740,11 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_UXyMFmMvJB5RpT",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://tariffrefunds.priceridge.com/",
-      "Status": "Active",
+      "Status": "#N/A",
       "Business": "AI Agents",
-      "CS Name": "muddasir.h@gushwork.ai"
+      "CS Name": "#N/A"
     },
     {
       "Customer Name": "",
@@ -2990,7 +2990,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Austinsignfactory_dummy",
       "Domain name": "https://www.austinsignfactory.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "harikrishnan.en@gushwork.ai"
     },
@@ -3100,11 +3100,11 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Algorithmshift_dummy",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.algorithmshift.ai",
-      "Status": "Active",
+      "Status": "#N/A",
       "Business": "AI Agents",
-      "CS Name": "alfia.k@gushwork.ai"
+      "CS Name": "#N/A"
     },
     {
       "Customer Name": "",
@@ -3190,7 +3190,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Specdata_dummy",
       "Domain name": "https://specdata.co/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "sarvesh.shetty@gushwork.ai"
     },
@@ -3297,6 +3297,14 @@
       "Status": "Active",
       "Business": "Services",
       "CS Name": "shubham.kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UjFHdCGdp3yc90",
+      "Domain name": "",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
