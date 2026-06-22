@@ -30,6 +30,8 @@ export interface InvoiceRow {
   invoice_number: string;
   status: string;
   amount_due: number;
+  /** Tax amount on this invoice (0 if none) */
+  tax: number;
   currency: string;
   /** ISO date of invoice creation (always set) */
   invoice_date: string;
@@ -64,7 +66,7 @@ export interface CustomerDSO {
   account: "India" | "US";
   total_outstanding: number;
   currency: string;
-  /** DSO = weighted average age of open invoices: Σ(amount × days_overdue) / Σ(amount) */
+  /** DSO = Total Outstanding (ex-tax) / Daily MRR, where Daily MRR = Last Invoice (ex-tax) / 30 */
   dso_days: number;
   invoice_count: number;
   /** Sum of paid invoices in the last 12 months (native currency) */
@@ -195,6 +197,7 @@ async function fetchOpenInvoices(
         invoice_number: inv.number ?? inv.id,
         status: inv.status ?? "open",
         amount_due: inv.amount_due / 100,
+        tax: (inv.tax ?? 0) / 100,
         currency: inv.currency.toUpperCase(),
         invoice_date: new Date(invoiceDateMs).toISOString().split("T")[0],
         due_date: effectiveDueDateMs
@@ -417,7 +420,12 @@ export async function getAllInvoices(
     totalOutstanding: number; count: number;
     total_sales_12m: number; sales_3m: number;
     collection_method: "charge_automatically" | "send_invoice";
-    weightedDaysSum: number;
+    /** Sum of (amount_due - tax) across all open invoices — used for DSO numerator */
+    totalOutstandingExTax: number;
+    /** amount_due - tax of the most recent open invoice — used as MRR proxy */
+    latestInvoiceAmtExTax: number;
+    /** Invoice date of the most recent open invoice */
+    latestInvoiceDate: string;
   }
 
   const custMap = new Map<string, CustAgg>();
@@ -443,13 +451,24 @@ export async function getAllInvoices(
         total_sales_12m:  paid?.total_12m     ?? 0,
         sales_3m:         paid?.total_3m      ?? 0,
         collection_method: paid?.collection_method ?? inv.collection_method,
-        weightedDaysSum:  0,
+        totalOutstandingExTax: 0,
+        latestInvoiceAmtExTax: 0,
+        latestInvoiceDate:     "",
       });
     }
     const c = custMap.get(key)!;
     c.totalOutstanding += inv.amount_due;
-    c.weightedDaysSum  += inv.amount_due * inv.days_overdue;
     c.count++;
+
+    // DSO new formula: accumulate ex-tax amounts
+    const amtExTax = inv.amount_due - inv.tax;
+    c.totalOutstandingExTax += amtExTax;
+
+    // Track the most recent invoice as MRR proxy
+    if (!c.latestInvoiceDate || inv.invoice_date > c.latestInvoiceDate) {
+      c.latestInvoiceDate     = inv.invoice_date;
+      c.latestInvoiceAmtExTax = amtExTax;
+    }
   }
 
   // Add paid-only customers (active in last 12m but no open invoices)
@@ -475,13 +494,18 @@ export async function getAllInvoices(
       total_sales_12m:  paid.total_12m,
       sales_3m:         paid.total_3m,
       collection_method: paid.collection_method,
-      weightedDaysSum:  0,
+      totalOutstandingExTax: 0,
+      latestInvoiceAmtExTax: 0,
+      latestInvoiceDate:     "",
     });
   }
 
   const dso: CustomerDSO[] = Array.from(custMap.values()).map(c => {
-    const dso_days = c.totalOutstanding > 0
-      ? Math.round(c.weightedDaysSum / c.totalOutstanding)
+    // DSO = Total Outstanding (ex-tax) / Daily MRR
+    // Daily MRR = Last Invoice Amount (ex-tax) / 30
+    const dailyMrr = c.latestInvoiceAmtExTax / 30;
+    const dso_days = c.totalOutstandingExTax > 0 && dailyMrr > 0
+      ? Math.round(c.totalOutstandingExTax / dailyMrr)
       : 0;
     return {
       customer_id:     c.customer_id,
@@ -536,31 +560,4 @@ export async function getAllCustomers(
     const firstDate  = dates[dates.length - 1] ?? null;
 
     const sheetMeta = metaMap.get(custId);
-    const status    = sheetMeta?.status ?? "";
-
-    // Exclude churned customers who have had no invoice in the last 3 months
-    if (status === "Churned" && (!latestDate || latestDate < threeMonthsAgo)) continue;
-
-    result.push({
-      customer_id:          custId,
-      customer_name:        meta.customer_name ?? "",
-      customer_email:       meta.customer_email ?? "",
-      domain:               sheetMeta?.domain   ?? "",
-      business:             sheetMeta?.business ?? "",
-      cs_email:             sheetMeta?.cs_email ?? "",
-      customer_status:      status,
-      account:              meta.account ?? "India",
-      currency:             meta.currency ?? "USD",
-      collection_method:    meta.collection_method ?? "send_invoice",
-      first_invoice_date:   firstDate,
-      latest_invoice_date:  latestDate,
-      invoices,
-    });
-  }
-
-  // Sort by latest invoice date descending
-  result.sort((a, b) =>
-    (b.latest_invoice_date ?? "").localeCompare(a.latest_invoice_date ?? "")
-  );
-  return result;
-}
+    const 
