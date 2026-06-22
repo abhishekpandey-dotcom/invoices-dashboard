@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-21T07:33:44.727Z",
-  "rowCount": 413,
+  "lastUpdated": "2026-06-22T09:46:27.058Z",
+  "rowCount": 414,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -3305,6 +3305,14 @@
       "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "shubham.kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UjTdITKHCGc8Yx",
+      "Domain name": "",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
