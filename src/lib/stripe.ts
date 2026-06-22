@@ -560,4 +560,31 @@ export async function getAllCustomers(
     const firstDate  = dates[dates.length - 1] ?? null;
 
     const sheetMeta = metaMap.get(custId);
-    const 
+    const status    = sheetMeta?.status ?? "";
+
+    // Exclude churned customers who have had no invoice in the last 3 months
+    if (status === "Churned" && (!latestDate || latestDate < threeMonthsAgo)) continue;
+
+    result.push({
+      customer_id:          custId,
+      customer_name:        meta.customer_name ?? "",
+      customer_email:       meta.customer_email ?? "",
+      domain:               sheetMeta?.domain   ?? "",
+      business:             sheetMeta?.business ?? "",
+      cs_email:             sheetMeta?.cs_email ?? "",
+      customer_status:      status,
+      account:              meta.account ?? "India",
+      currency:             meta.currency ?? "USD",
+      collection_method:    meta.collection_method ?? "send_invoice",
+      first_invoice_date:   firstDate,
+      latest_invoice_date:  latestDate,
+      invoices,
+    });
+  }
+
+  // Sort by latest invoice date descending
+  result.sort((a, b) =>
+    (b.latest_invoice_date ?? "").localeCompare(a.latest_invoice_date ?? "")
+  );
+  return result;
+}
