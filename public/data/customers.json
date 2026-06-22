@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T09:53:12.156Z",
+  "lastUpdated": "2026-06-22T09:53:19.323Z",
   "rowCount": 417,
   "data": [
     {
@@ -3333,7 +3333,7 @@
     {
       "Customer Name": "",
       "Stripe Customer ID": "cus_UkZevIebJzayeA",
-      "Domain name": "",
+      "Domain name": "https://verc.ai/",
       "Status": "",
       "Business": "",
       "CS Name": ""
