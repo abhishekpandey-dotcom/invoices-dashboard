@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T09:48:31.694Z",
+  "lastUpdated": "2026-06-22T09:48:34.859Z",
   "rowCount": 416,
   "data": [
     {
@@ -3326,8 +3326,8 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjTpHNKe8HgYfz",
       "Domain name": "https://soundadvicebookkeeping.com/",
-      "Status": "",
-      "Business": "",
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
       "CS Name": ""
     }
   ]
