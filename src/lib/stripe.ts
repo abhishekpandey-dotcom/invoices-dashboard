@@ -14,7 +14,7 @@ export function getStripeClients() {
   };
 }
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ââ Types âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 export type AgingBucket = "0-30" | "31-60" | "61-90" | "90-180" | "180+";
 
 export interface InvoiceRow {
@@ -32,6 +32,8 @@ export interface InvoiceRow {
   amount_due: number;
   /** Tax amount on this invoice (0 if none) */
   tax: number;
+  /** Pre-tax subtotal â used as ex-tax base for DSO (reliable even when inv.tax is null) */
+  subtotal: number;
   currency: string;
   /** ISO date of invoice creation (always set) */
   invoice_date: string;
@@ -68,9 +70,9 @@ export interface CustomerDSO {
   currency: string;
   /** DSO = Total Outstanding (ex-tax) / Daily MRR, where Daily MRR = Last Invoice (ex-tax) / 30 */
   dso_days: number;
-  /** Sum of (amount_due - tax) across open invoices — for aggregate DSO numerator */
+  /** Sum of (amount_due - tax) across open invoices â for aggregate DSO numerator */
   total_outstanding_ex_tax: number;
-  /** Ex-tax amount of most recent open invoice — for aggregate DSO denominator base */
+  /** Ex-tax amount of most recent open invoice â for aggregate DSO denominator base */
   latest_invoice_amt_ex_tax: number;
   invoice_count: number;
   /** Sum of paid invoices in the last 12 months (native currency) */
@@ -80,7 +82,7 @@ export interface CustomerDSO {
   collection_method: "charge_automatically" | "send_invoice";
 }
 
-// ── AllCustomer types (for the full ledger tab) ────────────────────────────────
+// ââ AllCustomer types (for the full ledger tab) ââââââââââââââââââââââââââââââââ
 export interface AllCustomerInvoice {
   id: string;
   invoice_number: string;
@@ -126,7 +128,7 @@ export interface AllCustomer {
   invoices: AllCustomerInvoice[];
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ââ Helpers âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const SKIP = new Set(["paid", "void", "draft", "uncollectible"]);
 
 function bucket(d: number): AgingBucket {
@@ -137,7 +139,7 @@ function bucket(d: number): AgingBucket {
   return "180+";
 }
 
-// ── Fetch open invoices ───────────────────────────────────────────────────────
+// ââ Fetch open invoices âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 type RawRow = Omit<InvoiceRow, "domain" | "business" | "cs_email" | "customer_status">;
 
 async function fetchOpenInvoices(
@@ -202,6 +204,7 @@ async function fetchOpenInvoices(
         status: inv.status ?? "open",
         amount_due: inv.amount_due / 100,
         tax: (inv.tax ?? 0) / 100,
+        subtotal: (inv.subtotal ?? inv.amount_due) / 100,
         currency: inv.currency.toUpperCase(),
         invoice_date: new Date(invoiceDateMs).toISOString().split("T")[0],
         due_date: effectiveDueDateMs
@@ -226,7 +229,7 @@ async function fetchOpenInvoices(
   return rows;
 }
 
-// ── Fetch paid invoice totals ─────────────────────────────────────────────────
+// ââ Fetch paid invoice totals âââââââââââââââââââââââââââââââââââââââââââââââââ
 interface PaidSummary {
   total_12m: number;
   total_3m: number;
@@ -234,7 +237,7 @@ interface PaidSummary {
   collection_method: "charge_automatically" | "send_invoice";
   customer_name: string;
   customer_email: string;
-  /** Ex-tax amount of the most recent paid invoice — MRR fallback for inactive customers */
+  /** Ex-tax amount of the most recent paid invoice â MRR fallback for inactive customers */
   latestPaidAmtExTax: number;
   /** ISO date of the most recent paid invoice */
   latestPaidDate: string;
@@ -276,8 +279,8 @@ async function fetchPaidSales(
       const cEmail = cObj?.email ?? inv.customer_email ?? "";
 
       const invDate = new Date(inv.created * 1000).toISOString().split("T")[0];
-      const tax = (inv.tax ?? 0) / 100;
-      const paidAmtExTax = ((inv.amount_paid ?? inv.total ?? 0) / 100) - tax;
+      // Use subtotal (pre-tax) â reliable even when inv.tax is null (Indian automatic tax invoices)
+      const paidAmtExTax = (inv.subtotal ?? (inv.amount_paid ?? inv.total ?? 0)) / 100;
 
       if (!map.has(key)) {
         map.set(key, { total_12m: 0, total_3m: 0, currency, collection_method: cm, customer_name: cName, customer_email: cEmail, latestPaidAmtExTax: 0, latestPaidDate: "" });
@@ -301,7 +304,7 @@ async function fetchPaidSales(
   return map;
 }
 
-// ── Fetch all invoices for the ledger tab ─────────────────────────────────────
+// ââ Fetch all invoices for the ledger tab âââââââââââââââââââââââââââââââââââââ
 async function fetchAllCustomerInvoices(
   stripe: Stripe,
   account: "India" | "US",
@@ -322,7 +325,7 @@ async function fetchAllCustomerInvoices(
     });
 
     for (const inv of page.data) {
-      // Skip drafts — they're not real invoices yet
+      // Skip drafts â they're not real invoices yet
       if (inv.status === "draft") continue;
 
       const cObj =
@@ -404,7 +407,7 @@ async function fetchAllCustomerInvoices(
   return map;
 }
 
-// ── Main export: outstanding invoices + DSO ───────────────────────────────────
+// ââ Main export: outstanding invoices + DSO âââââââââââââââââââââââââââââââââââ
 export async function getAllInvoices(
   metaMap: CustomerMetaMap = new Map()
 ): Promise<{ invoices: InvoiceRow[]; dso: CustomerDSO[] }> {
@@ -437,9 +440,9 @@ export async function getAllInvoices(
     totalOutstanding: number; count: number;
     total_sales_12m: number; sales_3m: number;
     collection_method: "charge_automatically" | "send_invoice";
-    /** Sum of (amount_due - tax) across all open invoices — used for DSO numerator */
+    /** Sum of (amount_due - tax) across all open invoices â used for DSO numerator */
     totalOutstandingExTax: number;
-    /** amount_due - tax of the most recent open invoice — used as MRR proxy */
+    /** amount_due - tax of the most recent open invoice â used as MRR proxy */
     latestInvoiceAmtExTax: number;
     /** Invoice date of the most recent open invoice */
     latestInvoiceDate: string;
@@ -477,14 +480,14 @@ export async function getAllInvoices(
     c.totalOutstanding += inv.amount_due;
     c.count++;
 
-    // DSO new formula: accumulate ex-tax amounts
-    const amtExTax = inv.amount_due - inv.tax;
-    c.totalOutstandingExTax += amtExTax;
+    // DSO: use subtotal (Stripe's pre-tax field) â more reliable than amount_due - tax
+    // because inv.tax can be null/0 for Indian invoices using automatic tax (tax_amounts array)
+    c.totalOutstandingExTax += inv.subtotal;
 
     // Track the most recent invoice as MRR proxy
     if (!c.latestInvoiceDate || inv.invoice_date > c.latestInvoiceDate) {
       c.latestInvoiceDate     = inv.invoice_date;
-      c.latestInvoiceAmtExTax = amtExTax;
+      c.latestInvoiceAmtExTax = inv.subtotal;
     }
   }
 
@@ -520,7 +523,7 @@ export async function getAllInvoices(
   const dso: CustomerDSO[] = Array.from(custMap.values()).map(c => {
     // DSO = Total Outstanding (ex-tax) / Daily MRR
     // Daily MRR = Last Invoice Amount (ex-tax) / 30
-    // Use most recent invoice (open OR paid) as MRR proxy — critical for inactive
+    // Use most recent invoice (open OR paid) as MRR proxy â critical for inactive
     // customers whose most recent invoice was their last paid subscription charge.
     const salesKey  = `${c.account}::${c.customer_id}`;
     const paidEntry = salesMap.get(salesKey);
@@ -560,7 +563,7 @@ export async function getAllInvoices(
   return { invoices, dso };
 }
 
-// ── Main export: full customer ledger (all statuses, 18 months) ───────────────
+// ââ Main export: full customer ledger (all statuses, 18 months) âââââââââââââââââââ
 export async function getAllCustomers(
   metaMap: CustomerMetaMap = new Map()
 ): Promise<AllCustomer[]> {
