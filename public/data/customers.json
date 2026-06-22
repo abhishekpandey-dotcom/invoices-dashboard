@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-22T09:48:46.685Z",
-  "rowCount": 416,
+  "lastUpdated": "2026-06-22T09:53:12.156Z",
+  "rowCount": 417,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -3329,6 +3329,14 @@
       "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "sushanth.raj@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UkZevIebJzayeA",
+      "Domain name": "",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
