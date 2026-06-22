@@ -443,9 +443,9 @@ export async function getAllInvoices(
     totalOutstanding: number; count: number;
     total_sales_12m: number; sales_3m: number;
     collection_method: "charge_automatically" | "send_invoice";
-    /** Sum of (amount_due - tax) across all open invoices — used for DSO numerator */
+    /** Sum of subtotal across all open invoices — used for DSO numerator */
     totalOutstandingExTax: number;
-    /** amount_due - tax of the most recent open invoice — used as MRR proxy */
+    /** subtotal of the most recent open invoice — used as MRR proxy */
     latestInvoiceAmtExTax: number;
     /** Invoice date of the most recent open invoice */
     latestInvoiceDate: string;
@@ -498,7 +498,7 @@ export async function getAllInvoices(
     const parts   = salesKey.split("::");
     const account = parts[0] as "India" | "US";
     const custId  = parts[1];
-    const key     = `${account}::$custId}::${paid.currency}`;
+    const key     = `${account}::${custId}::${paid.currency}`;
     if (custMap.has(key)) continue;
     const meta = metaMap.get(custId);
     custMap.set(key, {
@@ -523,6 +523,10 @@ export async function getAllInvoices(
   }
 
   const dso: CustomerDSO[] = Array.from(custMap.values()).map(c => {
+    // DSO = Total Outstanding (ex-tax) / Daily MRR
+    // Daily MRR = Last Invoice Amount (ex-tax) / 30
+    // Use most recent invoice (open OR paid) as MRR proxy — critical for inactive
+    // customers whose most recent invoice was their last paid subscription charge.
     const salesKey  = `${c.account}::${c.customer_id}`;
     const paidEntry = salesMap.get(salesKey);
     const useOpenAsMrr =
@@ -537,22 +541,22 @@ export async function getAllInvoices(
       ? Math.round(c.totalOutstandingExTax / dailyMrr)
       : 0;
     return {
-      customer_id: c.customer_id,
-      customer_name: c.customer_name,
-      customer_email: c.customer_email,
-      domain: c.domain,
-      business: c.business,
-      cs_email: c.cs_email,
+      customer_id:     c.customer_id,
+      customer_name:   c.customer_name,
+      customer_email:  c.customer_email,
+      domain:          c.domain,
+      business:        c.business,
+      cs_email:        c.cs_email,
       customer_status: c.customer_status,
-      account: c.account,
-      currency: c.currency,
+      account:         c.account,
+      currency:        c.currency,
       total_outstanding: Math.round(c.totalOutstanding * 100) / 100,
       total_outstanding_ex_tax: Math.round(c.totalOutstandingExTax * 100) / 100,
       latest_invoice_amt_ex_tax: Math.round(mrrAmtExTax * 100) / 100,
       dso_days,
-      invoice_count: c.count,
-      total_sales_12m: Math.round(c.total_sales_12m * 100) / 100,
-      sales_3m: Math.round(c.sales_3m * 100) / 100,
+      invoice_count:    c.count,
+      total_sales_12m:  Math.round(c.total_sales_12m * 100) / 100,
+      sales_3m:         Math.round(c.sales_3m * 100) / 100,
       collection_method: c.collection_method,
     };
   });
@@ -561,7 +565,7 @@ export async function getAllInvoices(
   return { invoices, dso };
 }
 
-// ── Main export: full customer ledger (all statuses, 18 months) ────────────────────
+// ── Main export: full customer ledger (all statuses, 18 months) ───────────────
 export async function getAllCustomers(
   metaMap: CustomerMetaMap = new Map()
 ): Promise<AllCustomer[]> {
@@ -583,34 +587,37 @@ export async function getAllCustomers(
   for (const [, { meta, invoices }] of new Map([...indiaMap, ...usMap]).entries()) {
     const custId = meta.customer_id ?? "";
 
+    // Sort newest first
     invoices.sort((a, b) => b.invoice_date.localeCompare(a.invoice_date));
 
     const dates = invoices.map(i => i.invoice_date).filter(Boolean);
     const latestDate = dates[0] ?? null;
-    const firstDate = dates[dates.length - 1] ?? null;
+    const firstDate  = dates[dates.length - 1] ?? null;
 
     const sheetMeta = metaMap.get(custId);
-    const status = sheetMeta?.status ?? "";
+    const status    = sheetMeta?.status ?? "";
 
+    // Exclude churned customers who have had no invoice in the last 3 months
     if (status === "Churned" && (!latestDate || latestDate < threeMonthsAgo)) continue;
 
     result.push({
-      customer_id: custId,
-      customer_name: meta.customer_name ?? "",
-      customer_email: meta.customer_email ?? "",
-      domain: sheetMeta?.domain ?? "",
-      business: sheetMeta?.business ?? "",
-      cs_email: sheetMeta?.cs_email ?? "",
-      customer_status: status,
-      account: meta.account ?? "India",
-      currency: meta.currency ?? "USD",
-      collection_method: meta.collection_method ?? "send_invoice",
-      first_invoice_date: firstDate,
-      latest_invoice_date: latestDate,
+      customer_id:          custId,
+      customer_name:        meta.customer_name ?? "",
+      customer_email:       meta.customer_email ?? "",
+      domain:               sheetMeta?.domain   ?? "",
+      business:             sheetMeta?.business ?? "",
+      cs_email:             sheetMeta?.cs_email ?? "",
+      customer_status:      status,
+      account:              meta.account ?? "India",
+      currency:             meta.currency ?? "USD",
+      collection_method:    meta.collection_method ?? "send_invoice",
+      first_invoice_date:   firstDate,
+      latest_invoice_date:  latestDate,
       invoices,
     });
   }
 
+  // Sort by latest invoice date descending
   result.sort((a, b) =>
     (b.latest_invoice_date ?? "").localeCompare(a.latest_invoice_date ?? "")
   );
