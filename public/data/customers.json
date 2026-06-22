@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T09:58:23.124Z",
+  "lastUpdated": "2026-06-22T09:58:24.748Z",
   "rowCount": 419,
   "data": [
     {
@@ -3350,7 +3350,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Pb2atmvh051Yy8",
       "Domain name": "ues.net",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     }
