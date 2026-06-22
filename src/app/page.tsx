@@ -1331,3 +1331,4 @@ const S: Record<string, React.CSSProperties> = {
   center:      { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", gap: 8, background: "#f1f5f9" },
   spin:        { width: 40, height: 40, border: "4px solid #e2e8f0", borderTop: "4px solid #6366f1", borderRadius: "50%", animation: "spin 0.8s linear infinite" },
 };
+
