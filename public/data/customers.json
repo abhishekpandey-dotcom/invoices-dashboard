@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T09:56:27.337Z",
+  "lastUpdated": "2026-06-22T09:56:56.048Z",
   "rowCount": 418,
   "data": [
     {
@@ -3341,8 +3341,8 @@
     {
       "Customer Name": "",
       "Stripe Customer ID": "cus_UYkYUJtOiFWp5y",
-      "Domain name": "",
-      "Status": "",
+      "Domain name": "https://eisemannconsulting.com/",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     }
