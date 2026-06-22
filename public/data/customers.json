@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-22T13:23:09.114Z",
-  "rowCount": 420,
+  "lastUpdated": "2026-06-22T13:24:06.343Z",
+  "rowCount": 421,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -3360,6 +3360,14 @@
       "Domain name": "https://stainlesssteelfloatballs.com/",
       "Status": "Active",
       "Business": "Services",
+      "CS Name": "shubham.kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Kochar Innnovations Private Limited",
+      "Stripe Customer ID": "",
+      "Domain name": "",
+      "Status": "",
+      "Business": "",
       "CS Name": ""
     }
   ]
