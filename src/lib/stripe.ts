@@ -234,6 +234,10 @@ interface PaidSummary {
   collection_method: "charge_automatically" | "send_invoice";
   customer_name: string;
   customer_email: string;
+  /** Ex-tax amount of the most recent paid invoice — MRR fallback for inactive customers */
+  latestPaidAmtExTax: number;
+  /** ISO date of the most recent paid invoice */
+  latestPaidDate: string;
 }
 
 async function fetchPaidSales(
@@ -271,13 +275,22 @@ async function fetchPaidSales(
       const cName  = cObj?.name  ?? inv.customer_name  ?? inv.customer_email ?? "Unknown";
       const cEmail = cObj?.email ?? inv.customer_email ?? "";
 
+      const invDate = new Date(inv.created * 1000).toISOString().split("T")[0];
+      const tax = (inv.tax ?? 0) / 100;
+      const paidAmtExTax = ((inv.amount_paid ?? inv.total ?? 0) / 100) - tax;
+
       if (!map.has(key)) {
-        map.set(key, { total_12m: 0, total_3m: 0, currency, collection_method: cm, customer_name: cName, customer_email: cEmail });
+        map.set(key, { total_12m: 0, total_3m: 0, currency, collection_method: cm, customer_name: cName, customer_email: cEmail, latestPaidAmtExTax: 0, latestPaidDate: "" });
       }
       const s = map.get(key)!;
       s.total_12m += amount;
       if (inv.created >= since3m) s.total_3m += amount;
       s.collection_method = cm;
+      // Track most recent paid invoice as MRR fallback
+      if (!s.latestPaidDate || invDate > s.latestPaidDate) {
+        s.latestPaidDate       = invDate;
+        s.latestPaidAmtExTax   = paidAmtExTax;
+      }
     }
 
     hasMore = page.has_more;
@@ -507,7 +520,18 @@ export async function getAllInvoices(
   const dso: CustomerDSO[] = Array.from(custMap.values()).map(c => {
     // DSO = Total Outstanding (ex-tax) / Daily MRR
     // Daily MRR = Last Invoice Amount (ex-tax) / 30
-    const dailyMrr = c.latestInvoiceAmtExTax / 30;
+    // Use most recent invoice (open OR paid) as MRR proxy — critical for inactive
+    // customers whose most recent invoice was their last paid subscription charge.
+    const salesKey  = `${c.account}::${c.customer_id}`;
+    const paidEntry = salesMap.get(salesKey);
+    const useOpenAsMrr =
+      !paidEntry?.latestPaidDate ||
+      (c.latestInvoiceDate && c.latestInvoiceDate >= paidEntry.latestPaidDate);
+    const mrrAmtExTax = useOpenAsMrr
+      ? c.latestInvoiceAmtExTax
+      : (paidEntry?.latestPaidAmtExTax ?? 0);
+
+    const dailyMrr = mrrAmtExTax / 30;
     const dso_days = c.totalOutstandingExTax > 0 && dailyMrr > 0
       ? Math.round(c.totalOutstandingExTax / dailyMrr)
       : 0;
@@ -523,7 +547,7 @@ export async function getAllInvoices(
       currency:        c.currency,
       total_outstanding: Math.round(c.totalOutstanding * 100) / 100,
       total_outstanding_ex_tax: Math.round(c.totalOutstandingExTax * 100) / 100,
-      latest_invoice_amt_ex_tax: Math.round(c.latestInvoiceAmtExTax * 100) / 100,
+      latest_invoice_amt_ex_tax: Math.round(mrrAmtExTax * 100) / 100,
       dso_days,
       invoice_count:    c.count,
       total_sales_12m:  Math.round(c.total_sales_12m * 100) / 100,
