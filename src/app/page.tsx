@@ -174,10 +174,10 @@ export default function Dashboard() {
       .finally(() => { setLoading(false); setRefreshing(false); });
   }, []);
 
-  const loadLedger = useCallback(() => {
+  const loadLedger = useCallback((bust = false) => {
     setLedgerLoading(true);
     setLedgerError(null);
-    fetch("/api/all-customers")
+    fetch(bust ? "/api/all-customers?bust=1" : "/api/all-customers")
       .then(r => r.json())
       .then(d => {
         if (d.error) throw new Error(d.error);
@@ -605,12 +605,12 @@ export default function Dashboard() {
       {/* ── TABS ── */}
       <div style={{ ...S.tabBar, width: "auto" }}>
         {([
-          { key: "all",      label: "All Customers" },
+          { key: "all",      label: "Customers with O/S Amount" },
           { key: "active",   label: "Active" },
           { key: "inactive", label: "Inactive" },
           { key: "autopay",  label: "🤖 Auto Pay" },
           { key: "manual",   label: "📧 Manual" },
-          { key: "ledger",   label: "📋 Customer Ledger" },
+          { key: "ledger",   label: "📋 All Customers Data" },
         ] as const).map(({ key, label }) => (
           <button key={key} onClick={() => { setActiveTab(key); setBizF("All"); setPmTabExpanded(false); }}
             style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
@@ -625,10 +625,10 @@ export default function Dashboard() {
           {/* Ledger header */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
             <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>
-              All active customers · last 18 months · real-time from Stripe
+              All active customers · last 18 months · cached up to 10 min
             </div>
             <button
-              onClick={loadLedger}
+              onClick={() => loadLedger(true)}
               disabled={ledgerLoading}
               style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
               {ledgerLoading ? "⟳ Loading..." : "⟳ Refresh"}
@@ -1261,5 +1261,4 @@ const S: Record<string, React.CSSProperties> = {
   th:          { textAlign: "left", padding: "13px 14px", fontWeight: 700, fontSize: 11, borderBottom: "2px solid #e2e8f0", whiteSpace: "nowrap", background: "#f8fafc", textTransform: "uppercase" as const, letterSpacing: 0.5 },
   td:          { padding: "11px 14px", borderBottom: "1px solid #f1f5f9", verticalAlign: "middle" },
   center:      { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", gap: 8, background: "#f1f5f9" },
-  spin:        { width: 40, height: 40, border: "4px solid #e2e8f0", borderTop: "4px solid #6366f1", borderRadius: "50%", animation: "spin 0.8s linear infinite" },
-};
+  spin:        { width: 40, height: 40, border: "4px solid #e2e8f0", borderTop: "4px solid #6
