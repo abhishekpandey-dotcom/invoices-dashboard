@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T09:47:46.620Z",
+  "lastUpdated": "2026-06-22T09:47:59.381Z",
   "rowCount": 415,
   "data": [
     {
@@ -3315,12 +3315,12 @@
       "CS Name": "alfia.k@gushwork.ai"
     },
     {
-      "Customer Name": "",
+      "Customer Name": "Finout",
       "Stripe Customer ID": "cus_UjTidcDf4CcAix",
       "Domain name": "https://www.finout.io/",
       "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
-      "CS Name": ""
+      "CS Name": "muddasir.h@gushwork.ai"
     }
   ]
 }
