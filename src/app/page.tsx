@@ -337,9 +337,11 @@ export default function Dashboard() {
         if (b61_90F   === "Has balance" && r.b61_90   <= 0) return false;
         if (b90_180F  === "Has balance" && r.b90_180  <= 0) return false;
         if (b180plusF === "Has balance" && r.b180plus <= 0) return false;
-        if (dsoF === "0–30d"   && !(r.dso_days <= 30))                      return false;
-        if (dsoF === "31–60d"  && !(r.dso_days > 30 && r.dso_days <= 60))  return false;
-        if (dsoF === "61–90d"  && !(r.dso_days > 60 && r.dso_days <= 90))  return false;
+        if (dsoF === "<30d"    && !(r.dso_days > 0 && r.dso_days < 30))     return false;
+        if (dsoF === ">30d"    && !(r.dso_days > 30))                        return false;
+        if (dsoF === "0–30d"   && !(r.dso_days <= 30))                       return false;
+        if (dsoF === "31–60d"  && !(r.dso_days > 30 && r.dso_days <= 60))   return false;
+        if (dsoF === "61–90d"  && !(r.dso_days > 60 && r.dso_days <= 90))   return false;
         if (dsoF === ">90d"    && !(r.dso_days > 90))                        return false;
         if (totalF === "<$1k"    && !(r.total < 1000))                       return false;
         if (totalF === "$1k–5k"  && !(r.total >= 1000 && r.total < 5000))   return false;
@@ -512,6 +514,40 @@ export default function Dashboard() {
     setSearch(""); setAcctF("All"); setStatF("All"); setBizF("All"); setCsF("All"); setPmF("All");
     setB0_30F("All"); setB31_60F("All"); setB61_90F("All"); setB90_180F("All"); setB180plusF("All");
     setDsoF("All"); setTotalF("All");
+  }
+
+  function downloadCSV() {
+    const headers = ["Domain","Customer","Account","Status","Business","CS Owner","Payment","0-30d","31-60d","61-90d","90-180d","180+d","Total (USD)","DSO (days)","Sales 3M (USD)"];
+    const rows = displayRows.map(r => [
+      r.domain, r.customer_name, r.account, r.customer_status, r.business, r.cs_email,
+      r.collection_method === "charge_automatically" ? "Auto" : "Manual",
+      r.b0_30.toFixed(2), r.b31_60.toFixed(2), r.b61_90.toFixed(2), r.b90_180.toFixed(2), r.b180plus.toFixed(2),
+      r.total.toFixed(2), String(r.dso_days), r.sales_3m_usd.toFixed(2),
+    ]);
+    const csv = "﻿" + [headers, ...rows]
+      .map(row => row.map(c => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = `outstanding-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+  }
+
+  function downloadDSOCSV() {
+    const headers = ["Domain","Customer","Account","Status","Business","CS Owner","Currency","Outstanding","DSO (days)","Sales 3M (USD)","Payment"];
+    const rows = (data?.dso ?? []).map(d => [
+      d.domain, d.customer_name, d.account, d.customer_status, d.business, d.cs_email,
+      d.currency, d.total_outstanding.toFixed(2), String(d.dso_days),
+      (d as any).sales_3m_usd?.toFixed(2) ?? "0",
+      d.collection_method === "charge_automatically" ? "Auto" : "Manual",
+    ]);
+    const csv = "﻿" + [headers, ...rows]
+      .map(row => row.map(c => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    a.download = `dso-all-customers-${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
   }
   const hasActiveFilters = !!(search || acctF !== "All" || statF !== "All" || bizF !== "All" || csF !== "All"
     || pmF !== "All" || b0_30F !== "All" || b31_60F !== "All" || b61_90F !== "All" || b90_180F !== "All"
@@ -1062,6 +1098,14 @@ export default function Dashboard() {
                 ✕ Clear filters
               </button>
             )}
+            <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
+              <button onClick={downloadCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                ⬇ CSV (filtered)
+              </button>
+              <button onClick={downloadDSOCSV} style={{ fontSize: 12, background: "#eff6ff", color: "#2563eb", border: "1px solid #93c5fd", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                ⬇ CSV (all DSO)
+              </button>
+            </div>
           </div>
 
           {/* ── TABLE ── */}
@@ -1128,6 +1172,8 @@ export default function Dashboard() {
                   <FTh>
                     <select style={sel} value={dsoF} onChange={e => setDsoF(e.target.value)}>
                       <option value="All">All</option>
+                      <option value="<30d">&lt;30d</option>
+                      <option value=">30d">&gt;30d</option>
                       <option value="0–30d">0–30d</option>
                       <option value="31–60d">31–60d</option>
                       <option value="61–90d">61–90d</option>
@@ -1248,7 +1294,7 @@ export default function Dashboard() {
           </div>
 
           <div style={{ textAlign: "center", padding: "16px 0", color: "#94a3b8", fontSize: 12 }}>
-            Click ⟳ for live data · Click Total to expand invoices · DSO = weighted average age of open invoices
+            Click ⟳ for live data · Click Total to expand invoices · DSO = Total Outstanding (ex-tax) ÷ (Last Invoice ex-tax ÷ 30)
             {agingMode === "invoice_date" && <span style={{ marginLeft: 8, color: "#6366f1", fontWeight: 600 }}> · Aging from invoice date</span>}
             {agingMode === "due_date"     && <span style={{ marginLeft: 8, color: "#64748b" }}> · Aging from due date (autopay uses invoice date when no due date)</span>}
           </div>
