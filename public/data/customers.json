@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T13:25:42.419Z",
+  "lastUpdated": "2026-06-22T13:25:44.669Z",
   "rowCount": 421,
   "data": [
     {
@@ -3366,8 +3366,8 @@
       "Customer Name": "Kochar Innnovations Private Limited",
       "Stripe Customer ID": "cus_UYzZmkRzW3LA8j",
       "Domain name": "https://knowmax.ai/",
-      "Status": "",
-      "Business": "",
+      "Status": "Active",
+      "Business": "Services",
       "CS Name": ""
     }
   ]
