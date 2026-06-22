@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T09:47:42.884Z",
+  "lastUpdated": "2026-06-22T09:47:46.620Z",
   "rowCount": 415,
   "data": [
     {
@@ -3319,7 +3319,7 @@
       "Stripe Customer ID": "cus_UjTidcDf4CcAix",
       "Domain name": "https://www.finout.io/",
       "Status": "Post Onboarding Drop Off",
-      "Business": "",
+      "Business": "AI Agents",
       "CS Name": ""
     }
   ]
