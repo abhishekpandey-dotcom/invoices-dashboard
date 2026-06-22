@@ -16,6 +16,8 @@ interface CustomerDSOWithUsd {
   currency: string;
   total_outstanding: number;
   total_outstanding_usd: number;
+  total_outstanding_ex_tax: number;
+  latest_invoice_amt_ex_tax: number;
   total_sales_12m_usd: number;
   sales_3m_usd: number;
   dso_days: number;
@@ -40,6 +42,8 @@ interface CustRow {
   b0_30: number; b31_60: number; b61_90: number;
   b90_180: number; b180plus: number;
   total: number; invoice_count: number; dso_days: number;
+  total_outstanding_ex_tax: number;
+  latest_invoice_amt_ex_tax: number;
   collection_method: "charge_automatically" | "send_invoice";
   sales_3m_usd: number;
 }
@@ -299,6 +303,8 @@ export default function Dashboard() {
           account:         inv.account,
           b0_30: 0, b31_60: 0, b61_90: 0, b90_180: 0, b180plus: 0,
           total: 0, invoice_count: 0, dso_days: 0,
+          total_outstanding_ex_tax: dsoData?.total_outstanding_ex_tax ?? 0,
+          latest_invoice_amt_ex_tax: dsoData?.latest_invoice_amt_ex_tax ?? 0,
           collection_method: dsoData?.collection_method ?? inv.collection_method,
           sales_3m_usd: dsoData?.sales_3m_usd ?? 0,
         });
@@ -316,7 +322,15 @@ export default function Dashboard() {
     }
 
     return Array.from(map.values())
-      .map(r => ({ ...r, dso_days: dsoDataMap.get(r.key)?.dso_days ?? 0 }))
+      .map(r => {
+        const d = dsoDataMap.get(r.key);
+        return {
+          ...r,
+          dso_days: d?.dso_days ?? 0,
+          total_outstanding_ex_tax: d?.total_outstanding_ex_tax ?? r.total_outstanding_ex_tax,
+          latest_invoice_amt_ex_tax: d?.latest_invoice_amt_ex_tax ?? r.latest_invoice_amt_ex_tax,
+        };
+      })
       .filter(r => {
         if (b0_30F    === "Has balance" && r.b0_30    <= 0) return false;
         if (b31_60F   === "Has balance" && r.b31_60   <= 0) return false;
@@ -414,24 +428,30 @@ export default function Dashboard() {
   }, [displayRows]);
 
   const aggregateDSO = useMemo(() => {
+    // Same formula as per-customer DSO: Σ outstanding_ex_tax / (Σ latest_invoice_ex_tax / 30)
     const withDso = displayRows.filter(r => r.dso_days > 0);
-    const totalAmt = withDso.reduce((s, r) => s + r.total, 0);
-    if (totalAmt === 0) return 0;
-    return Math.round(withDso.reduce((s, r) => s + r.dso_days * r.total, 0) / totalAmt);
+    const totalExTax   = withDso.reduce((s, r) => s + r.total_outstanding_ex_tax,  0);
+    const totalLastInv = withDso.reduce((s, r) => s + r.latest_invoice_amt_ex_tax, 0);
+    const dailyMrr = totalLastInv / 30;
+    return totalExTax > 0 && dailyMrr > 0 ? Math.round(totalExTax / dailyMrr) : 0;
   }, [displayRows]);
 
   const bizStats = useMemo(() => {
     const map = new Map<string, {
-      total: number; count: number; dsoW: number;
+      total: number; count: number;
+      totalExTax: number; totalLastInv: number;
       b0_30: number; b31_60: number; b61_90: number; b90_180: number; b180plus: number;
       autoPay: number; manualPay: number; sales_3m: number;
     }>();
     for (const r of displayRows) {
       const biz = r.business || "Other";
-      if (!map.has(biz)) map.set(biz, { total: 0, count: 0, dsoW: 0, b0_30: 0, b31_60: 0, b61_90: 0, b90_180: 0, b180plus: 0, autoPay: 0, manualPay: 0, sales_3m: 0 });
+      if (!map.has(biz)) map.set(biz, { total: 0, count: 0, totalExTax: 0, totalLastInv: 0, b0_30: 0, b31_60: 0, b61_90: 0, b90_180: 0, b180plus: 0, autoPay: 0, manualPay: 0, sales_3m: 0 });
       const b = map.get(biz)!;
       b.total += r.total; b.count++;
-      if (r.dso_days > 0) b.dsoW += r.dso_days * r.total;
+      if (r.dso_days > 0) {
+        b.totalExTax   += r.total_outstanding_ex_tax;
+        b.totalLastInv += r.latest_invoice_amt_ex_tax;
+      }
       b.b0_30 += r.b0_30; b.b31_60 += r.b31_60; b.b61_90 += r.b61_90; b.b90_180 += r.b90_180; b.b180plus += r.b180plus;
       if (r.collection_method === "charge_automatically") b.autoPay++; else b.manualPay++;
       b.sales_3m += r.sales_3m_usd;
@@ -439,7 +459,7 @@ export default function Dashboard() {
     return Array.from(map.entries()).map(([biz, v]) => ({
       biz,
       total: v.total, count: v.count,
-      dso: v.total > 0 ? Math.round(v.dsoW / v.total) : 0,
+      dso: v.totalLastInv > 0 ? Math.round(v.totalExTax / (v.totalLastInv / 30)) : 0,
       b0_30: v.b0_30, b31_60: v.b31_60, b61_90: v.b61_90, b90_180: v.b90_180, b180plus: v.b180plus,
       autoPay: v.autoPay, manualPay: v.manualPay,
       autoPayPct: v.count > 0 ? Math.round(v.autoPay / v.count * 100) : 0,
