@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-22T09:58:42.510Z",
-  "rowCount": 419,
+  "lastUpdated": "2026-06-22T13:22:51.787Z",
+  "rowCount": 420,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -3353,6 +3353,14 @@
       "Status": "Active",
       "Business": "Services",
       "CS Name": "shubham.kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "Casting Technologies Inc",
+      "Stripe Customer ID": "",
+      "Domain name": "",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
