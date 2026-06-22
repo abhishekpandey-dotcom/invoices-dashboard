@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T09:53:19.323Z",
+  "lastUpdated": "2026-06-22T09:53:22.789Z",
   "rowCount": 417,
   "data": [
     {
@@ -3334,9 +3334,9 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UkZevIebJzayeA",
       "Domain name": "https://verc.ai/",
-      "Status": "",
-      "Business": "",
-      "CS Name": ""
+      "Status": "Post Onboarding Drop Off",
+      "Business": "AI Agents",
+      "CS Name": "hridya.das@gushwork.ai"
     }
   ]
 }
