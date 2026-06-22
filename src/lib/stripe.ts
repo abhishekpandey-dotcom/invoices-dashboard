@@ -68,6 +68,10 @@ export interface CustomerDSO {
   currency: string;
   /** DSO = Total Outstanding (ex-tax) / Daily MRR, where Daily MRR = Last Invoice (ex-tax) / 30 */
   dso_days: number;
+  /** Sum of (amount_due - tax) across open invoices — for aggregate DSO numerator */
+  total_outstanding_ex_tax: number;
+  /** Ex-tax amount of most recent open invoice — for aggregate DSO denominator base */
+  latest_invoice_amt_ex_tax: number;
   invoice_count: number;
   /** Sum of paid invoices in the last 12 months (native currency) */
   total_sales_12m: number;
@@ -518,6 +522,8 @@ export async function getAllInvoices(
       account:         c.account,
       currency:        c.currency,
       total_outstanding: Math.round(c.totalOutstanding * 100) / 100,
+      total_outstanding_ex_tax: Math.round(c.totalOutstandingExTax * 100) / 100,
+      latest_invoice_amt_ex_tax: Math.round(c.latestInvoiceAmtExTax * 100) / 100,
       dso_days,
       invoice_count:    c.count,
       total_sales_12m:  Math.round(c.total_sales_12m * 100) / 100,
