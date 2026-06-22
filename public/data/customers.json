@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-22T09:46:50.479Z",
+  "lastUpdated": "2026-06-22T09:46:53.463Z",
   "rowCount": 414,
   "data": [
     {
@@ -3311,8 +3311,8 @@
       "Stripe Customer ID": "cus_UjTdITKHCGc8Yx",
       "Domain name": "https://www.1000xdev.com/",
       "Status": "Post Onboarding Drop Off",
-      "Business": "",
-      "CS Name": ""
+      "Business": "AI Agents",
+      "CS Name": "shubham.kumar@gushwork.ai"
     }
   ]
 }
