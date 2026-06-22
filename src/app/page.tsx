@@ -396,6 +396,8 @@ export default function Dashboard() {
           total:         open.total,
           invoice_count: open.invoice_count,
           dso_days:      d.dso_days,
+          total_outstanding_ex_tax:  d.total_outstanding_ex_tax  ?? 0,
+          latest_invoice_amt_ex_tax: d.latest_invoice_amt_ex_tax ?? 0,
           collection_method: d.collection_method,
           sales_3m_usd:  d.sales_3m_usd,
         };
