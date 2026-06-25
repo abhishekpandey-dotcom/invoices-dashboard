@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-25T14:22:25.063Z",
-  "rowCount": 499,
+  "lastUpdated": "2026-06-25T14:38:23.310Z",
+  "rowCount": 500,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -3980,7 +3980,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Ul7tVKa5LW7TCb",
       "Domain name": "https://www.vitolilandscapedesign.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3993,6 +3993,14 @@
       "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "hridya.das@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://novadesk.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
