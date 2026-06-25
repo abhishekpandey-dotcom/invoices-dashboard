@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-25T14:38:30.937Z",
-  "rowCount": 500,
+  "lastUpdated": "2026-06-25T14:41:53.364Z",
+  "rowCount": 501,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -3604,7 +3604,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Ul5As5Riq3sKCw",
       "Domain name": "https://printicon.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4001,6 +4001,14 @@
       "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "ashmini.poddar@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://printicon.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
