@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-25T14:38:28.741Z",
+  "lastUpdated": "2026-06-25T14:38:30.937Z",
   "rowCount": 500,
   "data": [
     {
@@ -3999,8 +3999,8 @@
       "Stripe Customer ID": "cus_UOZ75waxE7vDAv",
       "Domain name": "https://novadesk.com/",
       "Status": "Active",
-      "Business": "",
-      "CS Name": ""
+      "Business": "AI Agents",
+      "CS Name": "ashmini.poddar@gushwork.ai"
     }
   ]
 }
