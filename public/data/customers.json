@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-25T14:42:01.412Z",
+  "lastUpdated": "2026-06-25T14:42:03.248Z",
   "rowCount": 501,
   "data": [
     {
@@ -4007,7 +4007,7 @@
       "Stripe Customer ID": "cus_Ul5As5Riq3sKCw",
       "Domain name": "https://printicon.com/",
       "Status": "Active",
-      "Business": "",
+      "Business": "AI Agents",
       "CS Name": ""
     }
   ]
