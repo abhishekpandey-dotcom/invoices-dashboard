@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-25T14:38:26.499Z",
+  "lastUpdated": "2026-06-25T14:38:28.741Z",
   "rowCount": 500,
   "data": [
     {
@@ -3998,7 +3998,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UOZ75waxE7vDAv",
       "Domain name": "https://novadesk.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     }
