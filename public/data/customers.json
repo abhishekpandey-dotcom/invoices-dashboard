@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-25T14:42:50.462Z",
+  "lastUpdated": "2026-06-26T09:21:38.437Z",
   "rowCount": 501,
   "data": [
     {
@@ -398,7 +398,7 @@
       "Customer Name": "GANNAYAK PACKAGING PRIVATE LIMITED",
       "Stripe Customer ID": "cus_TZ9gTaPIHRG362",
       "Domain name": "https://gannayakpackaging.com/",
-      "Status": "Active",
+      "Status": "Churned",
       "Business": "AI Agents",
       "CS Name": "sana.shaik@gushwork.ai"
     },
@@ -622,7 +622,7 @@
       "Customer Name": "Nesho Entertainment Private Limited",
       "Stripe Customer ID": "cus_TsdxwK2eiEeyDy",
       "Domain name": "https://www.madverse.co/",
-      "Status": "Active",
+      "Status": "Churned",
       "Business": "AI Agents",
       "CS Name": "sana.shaik@gushwork.ai"
     },
@@ -1774,7 +1774,7 @@
       "Customer Name": "HealthFront Ventures",
       "Stripe Customer ID": "cus_UPd0SGDKo25xTG",
       "Domain name": "https://healthfrontventures.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "sana.shaik@gushwork.ai"
     },
@@ -3276,7 +3276,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Theredpen_dummy",
+      "Stripe Customer ID": "cus_Ukua99svMH4vfW",
       "Domain name": "https://theredpen.in/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3304,7 +3304,7 @@
       "Domain name": "https://www.coitb.org/",
       "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "shubham.kumar@gushwork.ai"
+      "CS Name": "bhuvi.sharma@gushwork.ai"
     },
     {
       "Customer Name": "ThousandX Ventures LLP",
