@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-29T09:54:07.821Z",
+  "lastUpdated": "2026-06-29T09:54:11.064Z",
   "rowCount": 502,
   "data": [
     {
@@ -4014,8 +4014,8 @@
       "Customer Name": "Elexes Medical Consulting LLC",
       "Stripe Customer ID": "cus_UPdNsNJXyh2xPL",
       "Domain name": "https://www.elexes.com/",
-      "Status": "",
-      "Business": "",
+      "Status": "Active",
+      "Business": "AI Agents",
       "CS Name": ""
     }
   ]
