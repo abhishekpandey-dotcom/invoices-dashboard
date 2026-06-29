@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-26T09:21:38.437Z",
-  "rowCount": 501,
+  "lastUpdated": "2026-06-29T09:53:32.775Z",
+  "rowCount": 502,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -1070,7 +1070,7 @@
       "Customer Name": "What if Design",
       "Stripe Customer ID": "cus_Tui7kHe1ZweoEl",
       "Domain name": "https://www.whatifdesign.co/",
-      "Status": "Active",
+      "Status": "Churned",
       "Business": "AI Agents",
       "CS Name": "sushanth.raj@gushwork.ai"
     },
@@ -1350,7 +1350,7 @@
       "Customer Name": "Seneca Cost Segregation",
       "Stripe Customer ID": "cus_U87uJsw1u9PoVU",
       "Domain name": "senecacostseg.com",
-      "Status": "Churned",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "harikrishnan.en@gushwork.ai"
     },
@@ -1734,7 +1734,7 @@
       "Customer Name": "Rargus Inc DBA Trussed AI",
       "Stripe Customer ID": "cus_UIRPZCYPycg4TY",
       "Domain name": "https://trussed.ai/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "ashmini.poddar@gushwork.ai"
     },
@@ -1766,7 +1766,7 @@
       "Customer Name": "Sagravia LLC",
       "Stripe Customer ID": "cus_UI0isrv30PZKFs",
       "Domain name": "https://www.houseofsummary.com",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "alfia.k@gushwork.ai"
     },
@@ -1872,7 +1872,7 @@
       "Domain name": "https://candidresearch.com/",
       "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "hridya.das@gushwork.ai"
+      "CS Name": "sana.shaik@gushwork.ai"
     },
     {
       "Customer Name": "PEOPLE COMBINE BASICS PRIVATE LIMITED",
@@ -2620,7 +2620,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Colab91_dummy",
+      "Stripe Customer ID": "cus_UfSx5mZuk1JG6W",
       "Domain name": "https://www.colab91.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3252,7 +3252,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Mediafurrate_dummy",
+      "Stripe Customer ID": "cus_UlmA1LCErkIXdg",
       "Domain name": "www.mediafurrate.com ",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3436,7 +3436,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Ulm93v2115SizW",
       "Domain name": "www.danielbrian.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3572,7 +3572,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Ulnndi6fbJfZML",
       "Domain name": "solvpro.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3652,7 +3652,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Ulqlgfs514rGIx",
       "Domain name": "https://owngcc.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3756,7 +3756,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UlrZ0pp4rbw5vb",
       "Domain name": "rzcommunitygroup.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3820,7 +3820,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UmCz3HDX05RHOy",
       "Domain name": "https://www.compucolor.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3916,7 +3916,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Um8aC3pE0Mg1FA",
       "Domain name": "https://intellectible.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3964,7 +3964,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UlXHR7s40frpSk",
       "Domain name": "https://jacobsfamilyinsurance.net/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4009,6 +4009,14 @@
       "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "bhuvi.sharma@gushwork.ai"
+    },
+    {
+      "Customer Name": "Elexes Medical Consulting LLC",
+      "Stripe Customer ID": "",
+      "Domain name": "",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
