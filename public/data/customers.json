@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-20T12:45:36.216Z",
+  "lastUpdated": "2026-07-20T12:45:59.018Z",
   "rowCount": 661,
   "data": [
     {
@@ -4022,7 +4022,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UcsKj8k8iiCYEQ",
       "Domain name": "https://golmlaw.com/",
-      "Status": "#N/A",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
