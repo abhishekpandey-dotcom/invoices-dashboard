@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-06-29T11:25:23.205Z",
-  "rowCount": 502,
+  "lastUpdated": "2026-07-20T12:42:57.724Z",
+  "rowCount": 661,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -342,7 +342,7 @@
       "Customer Name": "Field Flower Collective",
       "Stripe Customer ID": "cus_TuWXTjw5wYegOW",
       "Domain name": "https://www.fieldflowercollective.com/",
-      "Status": "Active",
+      "Status": "Churned",
       "Business": "AI Agents",
       "CS Name": "alfia.k@gushwork.ai"
     },
@@ -1414,7 +1414,7 @@
       "Customer Name": "Althire AI LLC",
       "Stripe Customer ID": "cus_U5v2bRRAk6kgWM",
       "Domain name": "althire.ai",
-      "Status": "Active",
+      "Status": "Churned",
       "Business": "AI Agents",
       "CS Name": "amitesh.girotiya@gushwork.ai"
     },
@@ -2356,7 +2356,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Evaspeaks_dummy",
+      "Stripe Customer ID": "cus_UnNK1MtHdTKyku",
       "Domain name": "https://evaspeaks.ai/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -2604,7 +2604,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Evaspeaks_dummy",
+      "Stripe Customer ID": "cus_UnNK1MtHdTKyku",
       "Domain name": "https://evaspeaks.ai/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -2764,7 +2764,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Toplead_dummy",
+      "Stripe Customer ID": "cus_UpjZoPeJbdP2eV",
       "Domain name": "https://www.toplead.io/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3006,7 +3006,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UYLy0NCXIfdvaf",
       "Domain name": "https://scatterplot.co/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "roshni.kothari@gushwork.ai"
     },
@@ -3220,7 +3220,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Panameramedical_dummy",
+      "Stripe Customer ID": "cus_UnKC9H8y36D6Ir",
       "Domain name": "https://www.panameramedical.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3470,7 +3470,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "",
       "Domain name": "https://aretiz.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "rishab.r@gushwork.ai"
     },
@@ -3488,7 +3488,7 @@
       "Domain name": "unitegps.com",
       "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "mukesh.kumar@gushwork.ai"
+      "CS Name": "harikrishnan.en@gushwork.ai"
     },
     {
       "Customer Name": "",
@@ -3724,7 +3724,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Unci11iYwVY5Xx",
       "Domain name": "https://gemixx.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3748,7 +3748,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UiRcKLFq2ps9BI",
       "Domain name": "https://packagewarehouse.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3798,7 +3798,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "",
       "Domain name": "absolutesigns.org",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "rishab.r@gushwork.ai"
     },
@@ -3956,7 +3956,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UlRUcQ7mTdSxzb",
       "Domain name": "https://megalifters.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3988,7 +3988,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Uo3BV4vJsu9Hl1",
       "Domain name": "https://twinoaksdev.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4017,6 +4017,1278 @@
       "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "harikrishnan.en@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://golmlaw.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://chillercoatingservices.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "radiatorsupplyhouse.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://schallertenterprises.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.designdirections.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "runit.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.kustomerkinetics.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.philalifeandhealth.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.harrisdigital.io",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.uptiq.ai/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://greenarearatio.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "gomyto.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.theconsultinginstitute.org/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.danielbrian.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://centerprism.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.carnolaw.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.yourhealthyourmoneyaz.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://aretiz.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.thekitchenfactory.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "unitegps.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://premierbusinessteam.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.minutemanmarketing.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "spotz-sci.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://barkingsandscapital.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://optimist.in/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.coitb.org/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "franklinfinancingservices.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.megawall.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://growthmarketingwerks.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://carrybacksolutions.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.nidrapack.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.boxsy.io/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "gregbeverlyservices.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.birthpointe.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://oneplanify.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.aerox.pro/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "Www.goriderentals.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://bivisualgraphics.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "solvpro.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.blueevolution.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.latitude-am.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "gushwork.ai",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "stirlingcg.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://printicon.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://concept32design.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://rolascreen.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "bluehorizonsolutions.org",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://ditool.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.magnified-consulting.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.morrelltargets.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://owngcc.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "respondpropertysolutions.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://ductincorporated.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "actioneer.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.parkwaykew.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.lanesurf.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://hro-advisors.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://ideaguides.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://leantac.com/consulting.html",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "wsmtechnology.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://gemixx.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.sourcebay.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.artemisiacollege.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://cardboardboxes4u.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://directemployers.org/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.theconnectedhive.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://packagewarehouse.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "rzcommunitygroup.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.readyplastics.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.bhiservices.org",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "nexuhouse.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://aquageneral.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://megaresveratrol.net/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.proofnation.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "absolutesigns.org",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "http://www.cmgvisuals.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://herolifecare.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://call21st.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.nimblemfg.co",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://waterflowinnovations.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://minervamerchantservices.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.compucolor.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "thevirtualaccountingoffice.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://lazrtek.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://ettebiz.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.cuesequip.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://nedcofold.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "esoftplanner.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.compackage.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://aimerchantry.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.tincoat.net/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://nationalcandidacenter.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.ferreestoolsinc.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.wellchecked.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://ljtsi.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.envirofan.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.supremeofficetechnology.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.shipsims.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://kodiakfreight.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://intellectible.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://thehealingheroes.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://taxresgroup.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.zelkam.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.alifewellorganized.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "smartscale360.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://megalifters.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://jacobsfamilyinsurance.net/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.iafrikey.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.jondorenbos.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://pearlprgroup.com/services",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.cambridgewealth.in/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.seqtek.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "uwavems.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.vitolilandscapedesign.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://twinoaksdev.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.upa.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.tcfsales.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://pneumacounseling.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://vanwykconfections.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.petrovybe.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.evidencecommunications.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.realogview.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://merlinembroidery.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://micro-ant.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.modernfootball.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://datatel360.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.pennerbathing.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://akerahealth.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://eminenttax.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.jmepartners.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "http://griffinproducts.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://roofguardpro.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "ckfco.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://sensordatatech.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.trafficcontrolcorp.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "sbcinc.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://bluwatertechnology.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.fluenceflow.io/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "www.waterenergy.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://jstreetadvisors.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://infinitytoolmfg.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.azuga.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://garylifeindex.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://calusamarketing.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.utahclosetconnection.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://sominc.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://sspins.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.beyondthefunnel.ai/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://swiftthinkr.ai/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://compassionategeek.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://garofano.store/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://commercialfundingpartners.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "http://ronnunes.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "qmslearning.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.utahwebsitedesign.com",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://www.mmpjax.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://apriltbocian.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://meadowbrookcounseling.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://irislaboratories.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
