@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-07-20T13:01:19.763Z",
-  "rowCount": 736,
+  "lastUpdated": "2026-07-20T13:10:19.488Z",
+  "rowCount": 737,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -5889,6 +5889,14 @@
       "Status": "To be Onboarded",
       "Business": "AI Agents",
       "CS Name": "mukesh.kumar@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "cus_UsmtFbS6zg3ssa",
+      "Domain name": "https://writerrelocations.com/",
+      "Status": "Active",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
