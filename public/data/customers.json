@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-20T12:45:59.018Z",
+  "lastUpdated": "2026-07-20T12:46:04.598Z",
   "rowCount": 661,
   "data": [
     {
@@ -4030,7 +4030,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UVHP1d341l9xk8",
       "Domain name": "https://chillercoatingservices.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4038,7 +4038,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UdCOnNnUUD9Cns",
       "Domain name": "radiatorsupplyhouse.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4046,7 +4046,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UisdrtQj63qbpU",
       "Domain name": "https://schallertenterprises.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4054,7 +4054,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Designdirections_dummy",
       "Domain name": "www.designdirections.com",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4062,7 +4062,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Runit_dummy",
       "Domain name": "runit.com",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4070,7 +4070,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Kustomerkinetics_dummy",
       "Domain name": "www.kustomerkinetics.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4078,7 +4078,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UcnXALjkJgT3QR",
       "Domain name": "https://www.philalifeandhealth.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4086,7 +4086,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Harrisdigital_dummy",
       "Domain name": "www.harrisdigital.io",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4094,7 +4094,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uptiq_dummy",
       "Domain name": "https://www.uptiq.ai/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4102,7 +4102,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Greenarearatio_dummy",
       "Domain name": "https://greenarearatio.com/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4110,7 +4110,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Gomyto_dummy",
       "Domain name": "gomyto.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4118,7 +4118,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Theconsultinginstitute_dummy",
       "Domain name": "https://www.theconsultinginstitute.org/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4126,7 +4126,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ulm93v2115SizW",
       "Domain name": "www.danielbrian.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4134,7 +4134,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjbhxFPE2XYwg0",
       "Domain name": "https://centerprism.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4142,7 +4142,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UgBoULI52Rm69M",
       "Domain name": "https://www.carnolaw.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4150,7 +4150,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Yourhealthyourmoneyaz_dummy",
       "Domain name": "https://www.yourhealthyourmoneyaz.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4158,7 +4158,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Aretiz_dummy",
       "Domain name": "https://aretiz.com/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4166,7 +4166,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UeNitpNFUPGi0M",
       "Domain name": "https://www.thekitchenfactory.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4174,7 +4174,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ue0MFDk8gnllIm",
       "Domain name": "unitegps.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4182,7 +4182,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Premierbusinessteam_dummy",
       "Domain name": "https://premierbusinessteam.com/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4190,7 +4190,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UeJErWm8upxrEh",
       "Domain name": "https://www.minutemanmarketing.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4198,7 +4198,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UftrBRAp1Ur025",
       "Domain name": "spotz-sci.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4206,7 +4206,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UkoVPYP5vI40F2",
       "Domain name": "https://barkingsandscapital.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4214,7 +4214,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Optimist_dummy",
       "Domain name": "https://optimist.in/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4222,7 +4222,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjFHdCGdp3yc90",
       "Domain name": "https://www.coitb.org/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4230,7 +4230,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Franklinfinancingservices_dummy",
       "Domain name": "franklinfinancingservices.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4238,7 +4238,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UrMNO4pVmtnb2K",
       "Domain name": "https://www.megawall.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4246,7 +4246,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UeLzsY3wqpG8Ud",
       "Domain name": "https://growthmarketingwerks.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4254,7 +4254,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "",
       "Domain name": "https://carrybacksolutions.com/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4262,7 +4262,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Nidrapack_dummy",
       "Domain name": "https://www.nidrapack.com/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4270,7 +4270,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Boxsy_dummy",
       "Domain name": "https://www.boxsy.io/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4278,7 +4278,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Gregbeverlyservices_dummy",
       "Domain name": "gregbeverlyservices.com",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4286,7 +4286,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Birthpointe_dummy",
       "Domain name": "https://www.birthpointe.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4294,7 +4294,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlNV4A52rFSUEw",
       "Domain name": "https://oneplanify.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4302,7 +4302,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Aerox_dummy",
       "Domain name": "https://www.aerox.pro/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4310,7 +4310,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Www_dummy",
       "Domain name": "Www.goriderentals.com",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4318,7 +4318,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UeIfeJcj23ksPL",
       "Domain name": "https://bivisualgraphics.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4326,7 +4326,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ulnndi6fbJfZML",
       "Domain name": "solvpro.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4334,7 +4334,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Blueevolution_dummy",
       "Domain name": "https://www.blueevolution.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4342,7 +4342,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ukf9g4kZwXq8qk",
       "Domain name": "https://www.latitude-am.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4350,7 +4350,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Gushwork_dummy",
       "Domain name": "gushwork.ai",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4358,7 +4358,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UfS5zvhC8ZbnG0",
       "Domain name": "stirlingcg.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4366,7 +4366,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ul5As5Riq3sKCw",
       "Domain name": "https://printicon.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4374,7 +4374,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjctFhKo10UKPX",
       "Domain name": "https://concept32design.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4382,7 +4382,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjAuj8TeDPqDj9",
       "Domain name": "https://rolascreen.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4390,7 +4390,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Bluehorizonsolutions_dummy",
       "Domain name": "bluehorizonsolutions.org",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4398,7 +4398,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjakK57pPE78OL",
       "Domain name": "https://ditool.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4406,7 +4406,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UgXa4RzEzA4pC1",
       "Domain name": "https://www.magnified-consulting.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4414,7 +4414,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ute7BrAcdBdhDR",
       "Domain name": "https://www.morrelltargets.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4422,7 +4422,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ulqlgfs514rGIx",
       "Domain name": "https://owngcc.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4430,7 +4430,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Respondpropertysolutions_dummy",
       "Domain name": "respondpropertysolutions.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4438,7 +4438,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ductincorporated_dummy",
       "Domain name": "https://ductincorporated.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4446,7 +4446,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "#N/A",
       "Domain name": "actioneer.com",
-      "Status": "",
+      "Status": "#N/A",
       "Business": "",
       "CS Name": ""
     },
@@ -4454,7 +4454,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlT8p1KN38UoPY",
       "Domain name": "www.parkwaykew.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4462,7 +4462,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Lanesurf_dummy",
       "Domain name": "https://www.lanesurf.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4470,7 +4470,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ui1ufq2eRuQDss",
       "Domain name": "https://hro-advisors.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4478,7 +4478,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UiQ0zRnPfR1TUM",
       "Domain name": "https://ideaguides.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4486,7 +4486,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Leantac_dummy",
       "Domain name": "https://leantac.com/consulting.html",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4494,7 +4494,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uqgr6bme5O75vY",
       "Domain name": "wsmtechnology.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4502,7 +4502,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Unci11iYwVY5Xx",
       "Domain name": "https://gemixx.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4510,7 +4510,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Sourcebay_dummy",
       "Domain name": "www.sourcebay.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4518,7 +4518,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_SX8clLngv1Hkus",
       "Domain name": "https://www.artemisiacollege.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4526,7 +4526,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UiRcKLFq2ps9BI",
       "Domain name": "https://cardboardboxes4u.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4534,7 +4534,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UiTFGdlgloXYUM",
       "Domain name": "https://directemployers.org/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4542,7 +4542,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UqLTT3lJ5iSBeg",
       "Domain name": "https://www.theconnectedhive.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4550,7 +4550,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UiRcKLFq2ps9BI",
       "Domain name": "https://packagewarehouse.com/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4558,7 +4558,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlrZ0pp4rbw5vb",
       "Domain name": "rzcommunitygroup.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4566,7 +4566,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Readyplastics_dummy",
       "Domain name": "https://www.readyplastics.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4574,7 +4574,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Bhiservices_dummy",
       "Domain name": "www.bhiservices.org",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4582,7 +4582,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Nexuhouse_dummy",
       "Domain name": "nexuhouse.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4590,7 +4590,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UiPVTNyMXGbNpg",
       "Domain name": "https://aquageneral.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4598,7 +4598,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjBH1mVSfrt87p",
       "Domain name": "https://megaresveratrol.net/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4606,7 +4606,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UioJb6HkShCrMC",
       "Domain name": "https://www.proofnation.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4614,7 +4614,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Absolutesigns_dummy",
       "Domain name": "absolutesigns.org",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4622,7 +4622,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlxdDt6NxthzzP",
       "Domain name": "http://www.cmgvisuals.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4630,7 +4630,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Herolifecare_dummy",
       "Domain name": "https://herolifecare.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4638,7 +4638,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uiom19rNUReXXV",
       "Domain name": "https://call21st.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4646,7 +4646,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "#N/A",
       "Domain name": "www.nimblemfg.co",
-      "Status": "",
+      "Status": "#N/A",
       "Business": "",
       "CS Name": ""
     },
@@ -4654,7 +4654,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UqKxxHxkGnEwXE",
       "Domain name": "https://waterflowinnovations.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4662,7 +4662,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Minervamerchantservices_dummy",
       "Domain name": "https://minervamerchantservices.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4670,7 +4670,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UmCz3HDX05RHOy",
       "Domain name": "https://www.compucolor.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4678,7 +4678,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Thevirtualaccountingoffice_dummy",
       "Domain name": "thevirtualaccountingoffice.com",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4686,7 +4686,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Lazrtek_dummy",
       "Domain name": "https://lazrtek.com/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4694,7 +4694,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ul18PvpK7GmRKK",
       "Domain name": "https://ettebiz.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4702,7 +4702,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UjbZBzlIUU6Zhm",
       "Domain name": "https://www.cuesequip.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4710,7 +4710,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Nedcofold_dummy",
       "Domain name": "https://nedcofold.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4718,7 +4718,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlmLVunX9R0VcH",
       "Domain name": "esoftplanner.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4726,7 +4726,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UsYSTKmLmFRDyQ",
       "Domain name": "www.compackage.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4734,7 +4734,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Aimerchantry_dummy",
       "Domain name": "https://aimerchantry.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4742,7 +4742,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlO0dOPRu4RAcp",
       "Domain name": "https://www.tincoat.net/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4750,7 +4750,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UrPfmvJGvbhtGS",
       "Domain name": "https://nationalcandidacenter.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4758,7 +4758,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ferreestoolsinc_dummy",
       "Domain name": "https://www.ferreestoolsinc.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4766,7 +4766,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UsaqdVVbYhTS1B",
       "Domain name": "https://www.wellchecked.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4774,7 +4774,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UtGeFszUVRs4Qc",
       "Domain name": "https://ljtsi.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4782,7 +4782,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Envirofan_dummy",
       "Domain name": "www.envirofan.com",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4790,7 +4790,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Supremeofficetechnology_dummy",
       "Domain name": "https://www.supremeofficetechnology.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4798,7 +4798,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uo0x292L0wVaRQ",
       "Domain name": "https://www.shipsims.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4806,7 +4806,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uo10pG7o9LmoMe",
       "Domain name": "https://kodiakfreight.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4814,7 +4814,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Um8aC3pE0Mg1FA",
       "Domain name": "https://intellectible.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4822,7 +4822,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ul7ccp0CW6Iqec",
       "Domain name": "https://thehealingheroes.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4830,7 +4830,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Taxresgroup_dummy",
       "Domain name": "https://taxresgroup.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4838,7 +4838,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Zelkam_dummy",
       "Domain name": "https://www.zelkam.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4846,7 +4846,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UqLEosDgbpHoM9",
       "Domain name": "https://www.alifewellorganized.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4854,7 +4854,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UkeVwLSuxz2Av3",
       "Domain name": "smartscale360.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4862,7 +4862,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlRUcQ7mTdSxzb",
       "Domain name": "https://megalifters.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4870,7 +4870,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlXHR7s40frpSk",
       "Domain name": "https://jacobsfamilyinsurance.net/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4878,7 +4878,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Iafrikey_dummy",
       "Domain name": "https://www.iafrikey.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4886,7 +4886,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ur4X1W1Zaz7Osu",
       "Domain name": "https://www.jondorenbos.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4894,7 +4894,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Pearlprgroup_dummy",
       "Domain name": "https://pearlprgroup.com/services",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4902,7 +4902,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UoIGpSPBHnC9zK",
       "Domain name": "https://www.cambridgewealth.in/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4910,7 +4910,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Seqtek_dummy",
       "Domain name": "https://www.seqtek.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4918,7 +4918,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uwavems_dummy",
       "Domain name": "uwavems.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4926,7 +4926,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ul7tVKa5LW7TCb",
       "Domain name": "https://www.vitolilandscapedesign.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4934,7 +4934,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uo3BV4vJsu9Hl1",
       "Domain name": "https://twinoaksdev.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4942,7 +4942,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Upa_dummy",
       "Domain name": "https://www.upa.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4950,7 +4950,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Tcfsales_dummy",
       "Domain name": "https://www.tcfsales.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4958,7 +4958,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Pneumacounseling_dummy",
       "Domain name": "https://pneumacounseling.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -4966,7 +4966,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UnhI1JFQZ625cQ",
       "Domain name": "https://vanwykconfections.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4974,7 +4974,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Petrovybe_dummy",
       "Domain name": "https://www.petrovybe.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4982,7 +4982,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UtzpSNqPFINuJd",
       "Domain name": "https://www.evidencecommunications.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4990,7 +4990,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UsuoFMD27iserV",
       "Domain name": "www.realogview.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -4998,7 +4998,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlS1nrwyJodPGm",
       "Domain name": "https://merlinembroidery.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5006,7 +5006,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Micro-Ant_dummy",
       "Domain name": "https://micro-ant.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5014,7 +5014,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UmDYo7A0EzXH0q",
       "Domain name": "https://www.modernfootball.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5022,7 +5022,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlTyn3126GJBfg",
       "Domain name": "https://datatel360.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5030,7 +5030,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UnGOQXGjgtsDEt",
       "Domain name": "https://www.pennerbathing.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5038,7 +5038,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Akerahealth_dummy",
       "Domain name": "https://akerahealth.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5046,7 +5046,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Eminenttax_dummy",
       "Domain name": "https://eminenttax.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -5054,7 +5054,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Jmepartners_dummy",
       "Domain name": "www.jmepartners.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5062,7 +5062,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UnOAssKiccxuk0",
       "Domain name": "http://griffinproducts.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5070,7 +5070,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UmCipJkzlDSU8o",
       "Domain name": "https://roofguardpro.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5078,7 +5078,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Um7QqTuJQQ3l4E",
       "Domain name": "ckfco.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5086,7 +5086,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UnITiVzhXPEuqQ",
       "Domain name": "https://sensordatatech.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5094,7 +5094,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UtdW0vsSWLk1nQ",
       "Domain name": "https://www.trafficcontrolcorp.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5102,7 +5102,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UqJNnNKGo6wkeD",
       "Domain name": "sbcinc.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5110,7 +5110,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Bluwatertechnology_dummy",
       "Domain name": "https://bluwatertechnology.com/",
-      "Status": "",
+      "Status": "Post Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -5118,7 +5118,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Fluenceflow_dummy",
       "Domain name": "https://www.fluenceflow.io/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5126,7 +5126,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UsdFydYcIo5tQY",
       "Domain name": "www.waterenergy.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5134,7 +5134,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Jstreetadvisors_dummy",
       "Domain name": "https://jstreetadvisors.com/",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -5142,7 +5142,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Unc1tokN11VWlB",
       "Domain name": "https://infinitytoolmfg.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5150,7 +5150,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UmBHhv53KfcnE9",
       "Domain name": "https://www.azuga.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5158,7 +5158,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Garylifeindex_dummy",
       "Domain name": "https://garylifeindex.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5166,7 +5166,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UnjLm2USg28kzi",
       "Domain name": "https://calusamarketing.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5174,7 +5174,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Utkk8ChL7xZK7e",
       "Domain name": "https://www.utahclosetconnection.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5182,7 +5182,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UoPFdAFp1QciQg",
       "Domain name": "https://sominc.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5190,7 +5190,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Sspins_dummy",
       "Domain name": "https://sspins.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5198,7 +5198,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UnNyzGd0tOKvWY",
       "Domain name": "https://www.beyondthefunnel.ai/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5206,7 +5206,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Swiftthinkr_dummy",
       "Domain name": "https://swiftthinkr.ai/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5214,7 +5214,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uni8GklTXph8Uu",
       "Domain name": "https://compassionategeek.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5222,7 +5222,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UnFuFHVgGXBacc",
       "Domain name": "https://garofano.store/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5230,7 +5230,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UnMFpECm4bArMt",
       "Domain name": "https://commercialfundingpartners.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5238,7 +5238,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ung6Qq5P4VGgp6",
       "Domain name": "http://ronnunes.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5246,7 +5246,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UoAmeJfo06nKSC",
       "Domain name": "qmslearning.com",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5254,7 +5254,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Utahwebsitedesign_dummy",
       "Domain name": "https://www.utahwebsitedesign.com",
-      "Status": "",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "",
       "CS Name": ""
     },
@@ -5262,7 +5262,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Mmpjax_dummy",
       "Domain name": "https://www.mmpjax.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5270,7 +5270,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Apriltbocian_dummy",
       "Domain name": "https://apriltbocian.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5278,7 +5278,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Uo2VRYiTs6muvf",
       "Domain name": "https://meadowbrookcounseling.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     },
@@ -5286,7 +5286,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UeMSHJY9FMjZLd",
       "Domain name": "https://irislaboratories.com/",
-      "Status": "",
+      "Status": "Active",
       "Business": "",
       "CS Name": ""
     }
