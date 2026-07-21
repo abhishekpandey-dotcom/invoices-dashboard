@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-07-20T13:10:23.925Z",
-  "rowCount": 737,
+  "lastUpdated": "2026-07-21T11:47:23.220Z",
+  "rowCount": 738,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -5352,7 +5352,7 @@
       "Domain name": "https://www.adeptyx.com/",
       "Status": "To be Onboarded",
       "Business": "AI Agents",
-      "CS Name": "mukesh.kumar@gushwork.ai"
+      "CS Name": "jaiveer.singh@gushwork.ai"
     },
     {
       "Customer Name": "",
@@ -5444,7 +5444,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UvDtbQ1nyOrEMe",
       "Domain name": "https://truscribe.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -5758,7 +5758,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "",
       "Domain name": "https://bustersindustrial.com/",
-      "Status": "To be Onboarded",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "rishab.r@gushwork.ai"
     },
@@ -5806,7 +5806,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "",
       "Domain name": "https://www.smithmaye.com/thefirm",
-      "Status": "To be Onboarded",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "bhuvi.sharma@gushwork.ai"
     },
@@ -5816,7 +5816,7 @@
       "Domain name": "https://www.brandywinetrees.com/",
       "Status": "To be Onboarded",
       "Business": "AI Agents",
-      "CS Name": "mukesh.kumar@gushwork.ai"
+      "CS Name": "sarvesh.shetty@gushwork.ai"
     },
     {
       "Customer Name": "",
@@ -5848,7 +5848,7 @@
       "Domain name": "biminipethealth.com",
       "Status": "To be Onboarded",
       "Business": "AI Agents",
-      "CS Name": "mukesh.kumar@gushwork.ai"
+      "CS Name": "jaiveer.singh@gushwork.ai"
     },
     {
       "Customer Name": "",
@@ -5884,11 +5884,11 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UvEczR4GFwOts8",
       "Domain name": "https://brimmercompany.com/",
-      "Status": "To be Onboarded",
+      "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "mukesh.kumar@gushwork.ai"
+      "CS Name": "sushant.singh@gushwork.ai"
     },
     {
       "Customer Name": "",
@@ -5897,6 +5897,14 @@
       "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "roshni.kothari@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://brimmercompany.com/",
+      "Status": "",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
