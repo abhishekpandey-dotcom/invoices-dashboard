@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-21T11:47:26.099Z",
+  "lastUpdated": "2026-07-21T11:47:28.425Z",
   "rowCount": 738,
   "data": [
     {
@@ -5902,9 +5902,9 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UvEczR4GFwOts8",
       "Domain name": "https://brimmercompany.com/",
-      "Status": "",
-      "Business": "",
-      "CS Name": ""
+      "Status": "Active",
+      "Business": "AI Agents",
+      "CS Name": "sushant.singh@gushwork.ai"
     }
   ]
 }
