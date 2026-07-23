@@ -1,6 +1,30 @@
 "use client";
 import { useEffect, useState, useMemo, useCallback } from "react";
+import * as XLSX from "xlsx";
 import type { InvoiceRow, AgingBucket, AllCustomer, AllCustomerInvoice } from "@/lib/stripe";
+
+// ── Plan-change (upgrade/downgrade) API types ─────────────────────────────────
+interface PlanChangeRow {
+  detected_at: string;
+  customer_id: string;
+  account: string;
+  customer_name: string;
+  domain: string;
+  business: string;
+  cs_email: string;
+  change_type: string; // "Upgrade" | "Downgrade" | "Currency Switch" | "Plan Changed"
+  previous_value: number;
+  new_value: number;
+  previous_currency: string;
+  new_currency: string;
+  previous_plan: string;
+  new_plan: string;
+}
+interface PlanChangesApiResponse {
+  changes: PlanChangeRow[];
+  asOf: string;
+  newly_detected?: number;
+}
 
 // ── API interfaces ─────────────────────────────────────────────────────────────
 interface InvoiceRowWithUsd extends InvoiceRow { amount_usd: number; }
@@ -129,7 +153,7 @@ export default function Dashboard() {
   const [expanded, setExpanded]       = useState<Set<string>>(new Set());
   const [sortCol, setSortCol]         = useState<keyof CustRow>("total");
   const [sortDir, setSortDir]         = useState<"asc" | "desc">("desc");
-  const [activeTab, setActiveTab]     = useState<"all" | "active" | "inactive" | "autopay" | "manual" | "ledger">("all");
+  const [activeTab, setActiveTab]     = useState<"all" | "active" | "inactive" | "autopay" | "manual" | "ledger" | "planChanges">("all");
   const [pmTabExpanded, setPmTabExpanded] = useState(false);
 
   /** "due_date" = use effective due date (autopay falls back to invoice date).
@@ -163,6 +187,23 @@ export default function Dashboard() {
   const [ledgerSortCol, setLedgerSortCol] = useState<"latest_invoice_date" | "first_invoice_date" | "customer_name" | "domain">("latest_invoice_date");
   const [ledgerSortDir, setLedgerSortDir] = useState<"asc" | "desc">("desc");
 
+  // ── Plan changes (upgrade/downgrade) tab state ────────────────────────────
+  const [planData, setPlanData]       = useState<PlanChangesApiResponse | null>(null);
+  const [planLoading, setPlanLoading] = useState(false);
+  const [planError, setPlanError]     = useState<string | null>(null);
+  const [planSearch, setPlanSearch]   = useState("");
+  const [planTypeF, setPlanTypeF]     = useState<"All" | "Upgrade" | "Downgrade" | "Currency Switch" | "Plan Changed">("All");
+  const [planAcctF, setPlanAcctF]     = useState("All");
+  /** Set of "YYYY-MM" strings. Empty set = no month filter (show all months). */
+  const [planMonthsF, setPlanMonthsF] = useState<Set<string>>(new Set());
+  const [planMonthPickerOpen, setPlanMonthPickerOpen] = useState(false);
+
+  // ── Plan Changes: view mode + revenue month-over-month state ──────────────
+  const [planViewMode, setPlanViewMode] = useState<"tier" | "revenue">("tier");
+  /** Months selected as columns for the revenue view — NOT empty-means-all like planMonthsF; defaults to the 2 most recent months once data loads. */
+  const [revenueMonthsF, setRevenueMonthsF] = useState<Set<string>>(new Set());
+  const [revenueMonthPickerOpen, setRevenueMonthPickerOpen] = useState(false);
+
   // ── Data loading ─────────────────────────────────────────────────────────
   const loadData = useCallback((isRefresh = false) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
@@ -191,6 +232,19 @@ export default function Dashboard() {
       .finally(() => setLedgerLoading(false));
   }, []);
 
+  const loadPlanChanges = useCallback(() => {
+    setPlanLoading(true);
+    setPlanError(null);
+    fetch("/api/plan-changes")
+      .then(r => r.json())
+      .then(d => {
+        if (d.error) throw new Error(d.error);
+        setPlanData(d);
+      })
+      .catch(e => setPlanError(e.message))
+      .finally(() => setPlanLoading(false));
+  }, []);
+
   useEffect(() => { loadData(false); }, [loadData]);
 
   // Lazy-load ledger when the tab is first opened
@@ -199,6 +253,20 @@ export default function Dashboard() {
       loadLedger();
     }
   }, [activeTab, ledgerData, ledgerLoading, loadLedger]);
+
+  // Lazy-load plan changes when the tab is first opened
+  useEffect(() => {
+    if (activeTab === "planChanges" && !planData && !planLoading) {
+      loadPlanChanges();
+    }
+  }, [activeTab, planData, planLoading, loadPlanChanges]);
+
+  // Lazy-load ledger data (reused as the source for the revenue month-over-month view)
+  useEffect(() => {
+    if (activeTab === "planChanges" && planViewMode === "revenue" && !ledgerData && !ledgerLoading) {
+      loadLedger();
+    }
+  }, [activeTab, planViewMode, ledgerData, ledgerLoading, loadLedger]);
 
   const allInvoices = useMemo(() => data?.invoices ?? [], [data]);
 
@@ -501,6 +569,176 @@ export default function Dashboard() {
     Array.from(new Set((ledgerData?.customers ?? []).map(c => c.customer_status).filter(Boolean))).sort(),
   [ledgerData]);
 
+  // ── Plan changes filtered rows ────────────────────────────────────────────
+  const planMonthOptions = useMemo(() => {
+    const months = new Set<string>();
+    for (const c of planData?.changes ?? []) {
+      const ym = c.detected_at?.slice(0, 7); // "YYYY-MM"
+      if (ym) months.add(ym);
+    }
+    return Array.from(months).sort().reverse();
+  }, [planData]);
+
+  const planMonthLabel = (ym: string) => {
+    const [y, m] = ym.split("-");
+    const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return `${months[parseInt(m) - 1]} ${y}`;
+  };
+
+  function togglePlanMonth(ym: string) {
+    setPlanMonthsF(prev => {
+      const n = new Set(prev);
+      n.has(ym) ? n.delete(ym) : n.add(ym);
+      return n;
+    });
+  }
+
+  const planRows = useMemo(() => {
+    const changes = planData?.changes ?? [];
+    return changes
+      .filter(c => planAcctF === "All" || c.account === planAcctF)
+      .filter(c => planTypeF === "All" || c.change_type === planTypeF)
+      .filter(c => planMonthsF.size === 0 || planMonthsF.has(c.detected_at?.slice(0, 7)))
+      .filter(c => {
+        if (!planSearch) return true;
+        const q = planSearch.toLowerCase();
+        return [c.customer_name, c.domain, c.business, c.cs_email]
+          .some(v => v?.toLowerCase().includes(q));
+      });
+  }, [planData, planAcctF, planTypeF, planMonthsF, planSearch]);
+
+  const planCountBase = useMemo(() => {
+    const changes = planData?.changes ?? [];
+    return changes
+      .filter(c => planAcctF === "All" || c.account === planAcctF)
+      .filter(c => planMonthsF.size === 0 || planMonthsF.has(c.detected_at?.slice(0, 7)));
+  }, [planData, planAcctF, planMonthsF]);
+  const planUpgradeCount   = useMemo(() => planCountBase.filter(c => c.change_type === "Upgrade").length, [planCountBase]);
+  const planDowngradeCount = useMemo(() => planCountBase.filter(c => c.change_type === "Downgrade").length, [planCountBase]);
+
+  // ── Revenue month-over-month (invoiced amount, native currency, per calendar month) ──
+  interface RevenueMonthCell { amount: number; currency: string; }
+  interface RevenueCustomerEntry {
+    domain: string; customer_name: string; business: string; cs_email: string;
+    account: "India" | "US"; customer_status: string;
+    monthly: Map<string, RevenueMonthCell>; // "YYYY-MM" -> total invoiced that month
+  }
+  const revenueByCustomer = useMemo(() => {
+    const map = new Map<string, RevenueCustomerEntry>();
+    for (const cust of ledgerData?.customers ?? []) {
+      const key = `${cust.account}::${cust.customer_id}`;
+      if (!map.has(key)) {
+        map.set(key, {
+          domain: cust.domain, customer_name: cust.customer_name, business: cust.business,
+          cs_email: cust.cs_email, account: cust.account, customer_status: cust.customer_status,
+          monthly: new Map(),
+        });
+      }
+      const entry = map.get(key)!;
+      for (const inv of cust.invoices) {
+        if (inv.status === "void") continue; // voided invoices aren't real revenue
+        const ym = inv.invoice_date.slice(0, 7);
+        const existing = entry.monthly.get(ym);
+        if (existing) { existing.amount += inv.amount; existing.currency = inv.currency; }
+        else entry.monthly.set(ym, { amount: inv.amount, currency: inv.currency });
+      }
+    }
+    return map;
+  }, [ledgerData]);
+
+  const revenueMonthOptions = useMemo(() => {
+    const months = new Set<string>();
+    for (const entry of revenueByCustomer.values()) {
+      for (const ym of entry.monthly.keys()) months.add(ym);
+    }
+    return Array.from(months).sort().reverse(); // newest first
+  }, [revenueByCustomer]);
+
+  // Default to the 2 most recent months once data is available (only fires while empty)
+  useEffect(() => {
+    if (planViewMode === "revenue" && revenueMonthsF.size === 0 && revenueMonthOptions.length > 0) {
+      setRevenueMonthsF(new Set(revenueMonthOptions.slice(0, 2)));
+    }
+  }, [planViewMode, revenueMonthOptions, revenueMonthsF.size]);
+
+  function toggleRevenueMonth(ym: string) {
+    setRevenueMonthsF(prev => { const n = new Set(prev); n.has(ym) ? n.delete(ym) : n.add(ym); return n; });
+  }
+
+  /** "2026-07" -> "2026-06" (calendar month immediately before, regardless of what's selected/displayed) */
+  function monthBefore(ym: string): string {
+    const [y, m] = ym.split("-").map(Number);
+    const d = new Date(Date.UTC(y, m - 2, 1)); // m is 1-indexed; m-2 = previous month, 0-indexed
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+  }
+
+  interface RevenueMonthCol {
+    ym: string; amount: number; currency: string;
+    prevYm: string; prevAmount: number; prevCurrency: string;
+    /** "Upgrade" | "Downgrade" | "Currency Switch" | "New/Reactivated" | "Churned" | "Flat" | "—" — always vs the true previous calendar month */
+    change_type: string;
+  }
+  interface RevenueRow {
+    key: string; domain: string; customer_name: string; business: string; cs_email: string;
+    account: "India" | "US"; customer_status: string;
+    monthCols: RevenueMonthCol[]; // selected months, chronological (oldest → newest)
+    /** Change type of the most recent selected month — used for the summary counts and sort order */
+    change_type: string;
+  }
+  const revenueRows = useMemo((): RevenueRow[] => {
+    const selected = Array.from(revenueMonthsF).sort(); // chronological ascending
+    const rows: RevenueRow[] = [];
+    for (const [key, entry] of revenueByCustomer.entries()) {
+      if (planAcctF !== "All" && entry.account !== planAcctF) continue;
+      if (planSearch) {
+        const q = planSearch.toLowerCase();
+        if (![entry.customer_name, entry.domain, entry.business, entry.cs_email].some(v => v?.toLowerCase().includes(q))) continue;
+      }
+      const monthCols: RevenueMonthCol[] = selected.map(ym => {
+        const cur = entry.monthly.get(ym);
+        const prevYm = monthBefore(ym);
+        const prev = entry.monthly.get(prevYm);
+        const amount = cur?.amount ?? 0;
+        const currency = cur?.currency ?? "";
+        const prevAmount = prev?.amount ?? 0;
+        const prevCurrency = prev?.currency ?? "";
+        // This month's total invoiced minus the actual previous calendar month's total invoiced —
+        // simple subtraction, always against the true prior month regardless of which other months are checked.
+        let change_type = "—";
+        const prevHas = prevAmount > 0, currHas = amount > 0;
+        if (!prevHas && currHas) change_type = "New/Reactivated";
+        else if (prevHas && !currHas) change_type = "Churned";
+        else if (prevHas && currHas) {
+          // Same guardrail as the subscription-tier view: only classify Upgrade/Downgrade
+          // when the currency matches — a currency difference alone is never an upgrade/downgrade.
+          if (prevCurrency && currency && prevCurrency !== currency) change_type = "Currency Switch";
+          else if (Math.abs(amount - prevAmount) < 0.01) change_type = "Flat";
+          else change_type = amount > prevAmount ? "Upgrade" : "Downgrade";
+        }
+        return { ym, amount, currency, prevYm, prevAmount, prevCurrency, change_type };
+      });
+      if (monthCols.length > 0 && monthCols.every(c => c.amount === 0 && c.prevAmount === 0)) continue; // nothing to show
+
+      const latest = monthCols.length > 0 ? monthCols[monthCols.length - 1] : undefined;
+      rows.push({
+        key, domain: entry.domain, customer_name: entry.customer_name, business: entry.business, cs_email: entry.cs_email,
+        account: entry.account, customer_status: entry.customer_status, monthCols,
+        change_type: latest?.change_type ?? "—",
+      });
+    }
+    // Biggest movers (up or down, on the most recent selected month) first
+    rows.sort((a, b) => {
+      const la = a.monthCols[a.monthCols.length - 1], lb = b.monthCols[b.monthCols.length - 1];
+      const da = la ? Math.abs(la.amount - la.prevAmount) : 0;
+      const db = lb ? Math.abs(lb.amount - lb.prevAmount) : 0;
+      return db - da;
+    });
+    return rows;
+  }, [revenueByCustomer, revenueMonthsF, planAcctF, planSearch]);
+
+  const revenueUpgradeCount   = useMemo(() => revenueRows.filter(r => r.change_type === "Upgrade").length,   [revenueRows]);
+  const revenueDowngradeCount = useMemo(() => revenueRows.filter(r => r.change_type === "Downgrade").length, [revenueRows]);
+
   // ── Actions ───────────────────────────────────────────────────────────────
   function toggleSort(k: keyof CustRow) {
     if (sortCol === k) setSortDir(d => d === "asc" ? "desc" : "asc");
@@ -551,6 +789,97 @@ export default function Dashboard() {
     a.download = `dso-all-customers-${new Date().toISOString().split("T")[0]}.csv`;
     a.click();
   }
+  // ── Generic download helpers ───────────────────────────────────────────────
+  function downloadBlob(content: BlobPart, filename: string, type: string) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([content], { type }));
+    a.download = filename;
+    a.click();
+  }
+  function toCSV(headers: string[], rows: (string | number)[][]): string {
+    return "﻿" + [headers, ...rows]
+      .map(row => row.map(c => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+  }
+
+  // ── "All Customers Data" (ledger) exports ─────────────────────────────────
+  const ledgerSummaryHeaders = ["Domain","Customer","Email","Account","Status","Business","CS Owner","Payment","Start Date","Latest Invoice","# Invoices"];
+  function ledgerSummaryRows(): (string | number)[][] {
+    return ledgerRows.map(c => [
+      c.domain, c.customer_name, c.customer_email, c.account, c.customer_status, c.business, c.cs_email,
+      c.collection_method === "charge_automatically" ? "Auto" : "Manual",
+      c.first_invoice_date ?? "", c.latest_invoice_date ?? "", c.invoices.length,
+    ]);
+  }
+  const ledgerInvoiceHeaders = ["Domain","Customer","Account","Invoice #","Status","Currency","Amount","Amount Paid","Invoice Date","Due Date","Period Start","Period End","Payment"];
+  function ledgerInvoiceRows(): (string | number)[][] {
+    const rows: (string | number)[][] = [];
+    for (const c of ledgerRows) {
+      for (const inv of c.invoices) {
+        rows.push([
+          c.domain, c.customer_name, c.account, inv.invoice_number, inv.status, inv.currency,
+          inv.amount.toFixed(2), inv.amount_paid.toFixed(2), inv.invoice_date, inv.due_date ?? "",
+          inv.period_start ?? "", inv.period_end ?? "",
+          c.collection_method === "charge_automatically" ? "Auto" : "Manual",
+        ]);
+      }
+    }
+    return rows;
+  }
+  function downloadLedgerSummaryCSV() {
+    downloadBlob(toCSV(ledgerSummaryHeaders, ledgerSummaryRows()), `all-customers-summary-${new Date().toISOString().split("T")[0]}.csv`, "text/csv;charset=utf-8");
+  }
+  function downloadLedgerInvoicesCSV() {
+    downloadBlob(toCSV(ledgerInvoiceHeaders, ledgerInvoiceRows()), `all-customers-invoices-${new Date().toISOString().split("T")[0]}.csv`, "text/csv;charset=utf-8");
+  }
+  function downloadLedgerExcel() {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([ledgerSummaryHeaders, ...ledgerSummaryRows()]), "Summary");
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([ledgerInvoiceHeaders, ...ledgerInvoiceRows()]), "Invoices");
+    XLSX.writeFile(wb, `all-customers-${new Date().toISOString().split("T")[0]}.xlsx`);
+  }
+
+  // ── Plan changes (upgrade/downgrade) exports ──────────────────────────────
+  const planHeaders = ["Detected At","Domain","Customer","Account","Business","CS Owner","Change Type","Previous Plan","Previous Value","Previous Currency","New Plan","New Value","New Currency"];
+  function planRowsForExport(): (string | number)[][] {
+    return planRows.map(c => [
+      c.detected_at, c.domain, c.customer_name, c.account, c.business, c.cs_email, c.change_type,
+      c.previous_plan, c.previous_value.toFixed(2), c.previous_currency,
+      c.new_plan, c.new_value.toFixed(2), c.new_currency,
+    ]);
+  }
+  function downloadPlanCSV() {
+    downloadBlob(toCSV(planHeaders, planRowsForExport()), `plan-changes-${new Date().toISOString().split("T")[0]}.csv`, "text/csv;charset=utf-8");
+  }
+  function downloadPlanExcel() {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([planHeaders, ...planRowsForExport()]), "Plan Changes");
+    XLSX.writeFile(wb, `plan-changes-${new Date().toISOString().split("T")[0]}.xlsx`);
+  }
+
+  // ── Revenue month-over-month exports ──────────────────────────────────────
+  function revenueHeaders(): string[] {
+    const monthHeaders = Array.from(revenueMonthsF).sort().flatMap(ym => [planMonthLabel(ym), `${planMonthLabel(ym)} vs Prev Month`]);
+    return ["Domain","Customer","Account","Business","CS Owner", ...monthHeaders];
+  }
+  function revenueRowsForExport(): (string | number)[][] {
+    return revenueRows.map(r => [
+      r.domain, r.customer_name, r.account, r.business, r.cs_email,
+      ...r.monthCols.flatMap(c => [
+        c.amount > 0 ? `${c.currency} ${c.amount.toFixed(2)}` : "—",
+        c.change_type,
+      ]),
+    ]);
+  }
+  function downloadRevenueCSV() {
+    downloadBlob(toCSV(revenueHeaders(), revenueRowsForExport()), `revenue-month-over-month-${new Date().toISOString().split("T")[0]}.csv`, "text/csv;charset=utf-8");
+  }
+  function downloadRevenueExcel() {
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([revenueHeaders(), ...revenueRowsForExport()]), "Revenue MoM");
+    XLSX.writeFile(wb, `revenue-month-over-month-${new Date().toISOString().split("T")[0]}.xlsx`);
+  }
+
   const hasActiveFilters = !!(search || acctF !== "All" || statF !== "All" || bizF !== "All" || csF !== "All"
     || pmF !== "All" || b0_30F !== "All" || b31_60F !== "All" || b61_90F !== "All" || b90_180F !== "All"
     || b180plusF !== "All" || dsoF !== "All" || totalF !== "All");
@@ -669,6 +998,7 @@ export default function Dashboard() {
           { key: "autopay",  label: "🤖 Auto Pay" },
           { key: "manual",   label: "📧 Manual" },
           { key: "ledger",   label: "📋 All Customers Data" },
+          { key: "planChanges", label: "📈 Plan Changes" },
         ] as const).map(({ key, label }) => (
           <button key={key} onClick={() => { setActiveTab(key); setBizF("All"); setPmTabExpanded(false); }}
             style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
@@ -690,6 +1020,15 @@ export default function Dashboard() {
               disabled={ledgerLoading}
               style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
               {ledgerLoading ? "⟳ Loading..." : "⟳ Refresh"}
+            </button>
+            <button onClick={downloadLedgerSummaryCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+              ⬇ CSV (Summary)
+            </button>
+            <button onClick={downloadLedgerInvoicesCSV} style={{ fontSize: 12, background: "#eff6ff", color: "#2563eb", border: "1px solid #93c5fd", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+              ⬇ CSV (Invoices)
+            </button>
+            <button onClick={downloadLedgerExcel} style={{ fontSize: 12, background: "#f0f9ff", color: "#0369a1", border: "1px solid #7dd3fc", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+              ⬇ Excel (.xlsx)
             </button>
           </div>
 
@@ -918,8 +1257,382 @@ export default function Dashboard() {
         </div>
       )}
 
+      {/* ── PLAN CHANGES (UPGRADE/DOWNGRADE) TAB ── */}
+      {activeTab === "planChanges" && (
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", background: "#f1f5f9", borderRadius: 8, padding: 3, gap: 2 }}>
+              <button
+                onClick={() => setPlanViewMode("tier")}
+                style={{ fontSize: 12, fontWeight: 700, padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer",
+                  background: planViewMode === "tier" ? "#6366f1" : "transparent", color: planViewMode === "tier" ? "#fff" : "#64748b" }}>
+                🎚 Subscription Tier
+              </button>
+              <button
+                onClick={() => setPlanViewMode("revenue")}
+                style={{ fontSize: 12, fontWeight: 700, padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer",
+                  background: planViewMode === "revenue" ? "#6366f1" : "transparent", color: planViewMode === "revenue" ? "#fff" : "#64748b" }}>
+                💰 Monthly Revenue
+              </button>
+            </div>
+            <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>
+              {planViewMode === "tier"
+                ? "Detected from Stripe subscription price/tier changes · currency-only switches excluded from Upgrade/Downgrade counts"
+                : "Compares total invoiced amount month-over-month, per customer · currency-only differences excluded from Upgrade/Downgrade counts"}
+            </div>
+            {planViewMode === "tier" ? (
+              <>
+                <button
+                  onClick={loadPlanChanges}
+                  disabled={planLoading}
+                  style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
+                  {planLoading ? "⟳ Checking..." : "⟳ Check for changes"}
+                </button>
+                <button onClick={downloadPlanCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                  ⬇ CSV
+                </button>
+                <button onClick={downloadPlanExcel} style={{ fontSize: 12, background: "#f0f9ff", color: "#0369a1", border: "1px solid #7dd3fc", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                  ⬇ Excel (.xlsx)
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => loadLedger(true)}
+                  disabled={ledgerLoading}
+                  style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
+                  {ledgerLoading ? "⟳ Loading..." : "⟳ Refresh"}
+                </button>
+                <button onClick={downloadRevenueCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                  ⬇ CSV
+                </button>
+                <button onClick={downloadRevenueExcel} style={{ fontSize: 12, background: "#f0f9ff", color: "#0369a1", border: "1px solid #7dd3fc", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                  ⬇ Excel (.xlsx)
+                </button>
+              </>
+            )}
+          </div>
+
+          {planViewMode === "tier" && (
+          <>
+          {!planLoading && planData && (
+            <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+              <div style={{ background: "#fff", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 18px" }}>
+                <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700, textTransform: "uppercase" as const }}>⬆ Upgrades</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>{planUpgradeCount}</div>
+              </div>
+              <div style={{ background: "#fff", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px" }}>
+                <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" as const }}>⬇ Downgrades</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#dc2626" }}>{planDowngradeCount}</div>
+              </div>
+            </div>
+          )}
+
+          {planLoading && (
+            <div style={S.center}>
+              <div style={S.spin} />
+              <p style={{ marginTop: 16, color: "#64748b", fontSize: 14 }}>Comparing current Stripe subscriptions against the last known snapshot...</p>
+            </div>
+          )}
+
+          {planError && (
+            <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "16px 20px", color: "#dc2626", marginBottom: 16 }}>
+              ⚠ {planError}
+            </div>
+          )}
+
+          {!planLoading && planData && (
+            <>
+              <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <input
+                  style={S.searchInput}
+                  placeholder="🔍  Search domain, customer, business..."
+                  value={planSearch}
+                  onChange={e => setPlanSearch(e.target.value)}
+                />
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Account</label>
+                  <select style={{ ...sel, width: 100 }} value={planAcctF} onChange={e => setPlanAcctF(e.target.value)}>
+                    <option value="All">All</option>
+                    <option value="India">India</option>
+                    <option value="US">US</option>
+                  </select>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Type</label>
+                  <select style={{ ...sel, width: 140 }} value={planTypeF} onChange={e => setPlanTypeF(e.target.value as typeof planTypeF)}>
+                    <option value="All">All</option>
+                    <option value="Upgrade">Upgrade</option>
+                    <option value="Downgrade">Downgrade</option>
+                    <option value="Currency Switch">Currency Switch</option>
+                    <option value="Plan Changed">Plan Changed</option>
+                  </select>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap", marginRight: 6 }}>Month</label>
+                  <button
+                    onClick={() => setPlanMonthPickerOpen(v => !v)}
+                    style={{ ...sel, width: "auto", minWidth: 140, textAlign: "left", display: "inline-flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    <span>
+                      {planMonthsF.size === 0
+                        ? "All months"
+                        : planMonthsF.size <= 2
+                          ? Array.from(planMonthsF).sort().reverse().map(planMonthLabel).join(", ")
+                          : `${planMonthsF.size} months selected`}
+                    </span>
+                    <span style={{ fontSize: 10 }}>{planMonthPickerOpen ? "▲" : "▼"}</span>
+                  </button>
+                  {planMonthPickerOpen && (
+                    <div style={{
+                      position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 20,
+                      background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8,
+                      boxShadow: "0 4px 16px rgba(0,0,0,0.12)", padding: 10, minWidth: 180, maxHeight: 240, overflowY: "auto",
+                    }}>
+                      {planMonthOptions.length === 0 ? (
+                        <div style={{ fontSize: 12, color: "#94a3b8", padding: "4px 6px" }}>No dated changes yet</div>
+                      ) : planMonthOptions.map(ym => (
+                        <label key={ym} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", padding: "4px 6px", cursor: "pointer", borderRadius: 5 }}>
+                          <input type="checkbox" checked={planMonthsF.has(ym)} onChange={() => togglePlanMonth(ym)} />
+                          {planMonthLabel(ym)}
+                        </label>
+                      ))}
+                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9" }}>
+                        <button
+                          onClick={() => setPlanMonthsF(new Set())}
+                          style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                          Clear
+                        </button>
+                        <button
+                          onClick={() => setPlanMonthPickerOpen(false)}
+                          style={{ fontSize: 11, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                          Done
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>{planRows.length} changes</span>
+              </div>
+
+              <div style={S.tableWrap}>
+                <table style={S.table}>
+                  <thead>
+                    <tr>
+                      {["Detected","Domain","Account","Business","CS Owner","Change","Previous Plan","New Plan"].map(label => (
+                        <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {planRows.length === 0 ? (
+                      <tr><td colSpan={8} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
+                        <div style={{ fontSize: 32, marginBottom: 8 }}>📈</div>
+                        <div style={{ fontWeight: 600 }}>No plan changes detected yet</div>
+                        <div style={{ fontSize: 12, marginTop: 4 }}>Click &quot;Check for changes&quot; periodically — changes are detected relative to the last check.</div>
+                      </td></tr>
+                    ) : planRows.map((c, i) => {
+                      const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
+                      const typeStyle: React.CSSProperties =
+                        c.change_type === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
+                        c.change_type === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
+                        c.change_type === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
+                        { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
+                      return (
+                        <tr key={`${c.customer_id}-${c.account}-${c.detected_at}`} style={{ background: rowBg }}>
+                          <td style={{ ...S.td, fontSize: 12, color: "#475569" }}>{fmtDate(c.detected_at.split("T")[0])}</td>
+                          <td style={S.td}>
+                            <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{c.domain || "—"}</div>
+                            <div style={{ fontSize: 11, color: "#94a3b8" }}>{c.customer_name}</div>
+                          </td>
+                          <td style={S.td}><span style={acctStyle(c.account)}>{c.account}</span></td>
+                          <td style={S.td}>{c.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
+                          <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{c.cs_email?.split("@")[0] || "—"}</span></td>
+                          <td style={S.td}>
+                            <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", ...typeStyle }}>
+                              {c.change_type === "Upgrade" ? "⬆ " : c.change_type === "Downgrade" ? "⬇ " : ""}{c.change_type}
+                            </span>
+                          </td>
+                          <td style={{ ...S.td, fontSize: 12 }}>
+                            <div style={{ color: "#475569" }}>{c.previous_plan || "—"}</div>
+                            <div style={{ color: "#94a3b8" }}>{c.previous_currency} {c.previous_value.toFixed(2)}</div>
+                          </td>
+                          <td style={{ ...S.td, fontSize: 12 }}>
+                            <div style={{ color: "#0f172a", fontWeight: 600 }}>{c.new_plan || "—"}</div>
+                            <div style={{ color: "#94a3b8" }}>{c.new_currency} {c.new_value.toFixed(2)}</div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+          </>
+          )}
+
+          {planViewMode === "revenue" && (
+            <>
+              {ledgerLoading && (
+                <div style={S.center}>
+                  <div style={S.spin} />
+                  <p style={{ marginTop: 16, color: "#64748b", fontSize: 14 }}>Fetching invoice history from Stripe (this may take 20–40s)...</p>
+                </div>
+              )}
+
+              {ledgerError && (
+                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "16px 20px", color: "#dc2626", marginBottom: 16 }}>
+                  ⚠ {ledgerError}
+                </div>
+              )}
+
+              {!ledgerLoading && ledgerData && (
+                <>
+                  <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+                    <div style={{ background: "#fff", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 18px" }}>
+                      <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700, textTransform: "uppercase" as const }}>⬆ Upsells</div>
+                      <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>{revenueUpgradeCount}</div>
+                    </div>
+                    <div style={{ background: "#fff", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px" }}>
+                      <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" as const }}>⬇ Downgrades</div>
+                      <div style={{ fontSize: 22, fontWeight: 800, color: "#dc2626" }}>{revenueDowngradeCount}</div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                    <input
+                      style={S.searchInput}
+                      placeholder="🔍  Search domain, customer, business..."
+                      value={planSearch}
+                      onChange={e => setPlanSearch(e.target.value)}
+                    />
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Account</label>
+                      <select style={{ ...sel, width: 100 }} value={planAcctF} onChange={e => setPlanAcctF(e.target.value)}>
+                        <option value="All">All</option>
+                        <option value="India">India</option>
+                        <option value="US">US</option>
+                      </select>
+                    </div>
+                    <div style={{ position: "relative" }}>
+                      <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap", marginRight: 6 }}>Months to compare</label>
+                      <button
+                        onClick={() => setRevenueMonthPickerOpen(v => !v)}
+                        style={{ ...sel, width: "auto", minWidth: 160, textAlign: "left", display: "inline-flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <span>
+                          {revenueMonthsF.size === 0
+                            ? "Select months..."
+                            : Array.from(revenueMonthsF).sort().map(planMonthLabel).join(", ")}
+                        </span>
+                        <span style={{ fontSize: 10 }}>{revenueMonthPickerOpen ? "▲" : "▼"}</span>
+                      </button>
+                      {revenueMonthPickerOpen && (
+                        <div style={{
+                          position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 20,
+                          background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8,
+                          boxShadow: "0 4px 16px rgba(0,0,0,0.12)", padding: 10, minWidth: 180, maxHeight: 240, overflowY: "auto",
+                        }}>
+                          {revenueMonthOptions.length === 0 ? (
+                            <div style={{ fontSize: 12, color: "#94a3b8", padding: "4px 6px" }}>No invoiced months found</div>
+                          ) : revenueMonthOptions.map(ym => (
+                            <label key={ym} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", padding: "4px 6px", cursor: "pointer", borderRadius: 5 }}>
+                              <input type="checkbox" checked={revenueMonthsF.has(ym)} onChange={() => toggleRevenueMonth(ym)} />
+                              {planMonthLabel(ym)}
+                            </label>
+                          ))}
+                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9" }}>
+                            <button
+                              onClick={() => setRevenueMonthsF(new Set(revenueMonthOptions.slice(0, 2)))}
+                              style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                              Reset to latest 2
+                            </button>
+                            <button
+                              onClick={() => setRevenueMonthPickerOpen(false)}
+                              style={{ fontSize: 11, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                              Done
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>{revenueRows.length} customers</span>
+                    <span style={{ fontSize: 11, color: "#94a3b8", fontStyle: "italic" }}>
+                      Each month's change compares it to that customer's actual previous calendar month
+                    </span>
+                  </div>
+
+                  <div style={S.tableWrap}>
+                    <table style={S.table}>
+                      <thead>
+                        <tr>
+                          {["Domain","Account","Business","CS Owner", ...Array.from(revenueMonthsF).sort().map(planMonthLabel), "Latest Change"].map(label => (
+                            <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {revenueRows.length === 0 ? (
+                          <tr><td colSpan={5 + revenueMonthsF.size} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
+                            <div style={{ fontSize: 32, marginBottom: 8 }}>💰</div>
+                            <div style={{ fontWeight: 600 }}>{revenueMonthsF.size === 0 ? "Select at least one month above" : "No customers match your filters"}</div>
+                          </td></tr>
+                        ) : revenueRows.map((r, i) => {
+                          const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
+                          const chipStyle = (t: string): React.CSSProperties =>
+                            t === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
+                            t === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
+                            t === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
+                            t === "New/Reactivated"  ? { color: "#075985", background: "#e0f2fe", border: "1px solid #7dd3fc" } :
+                            t === "Churned" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
+                            { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
+                          return (
+                            <tr key={r.key} style={{ background: rowBg }}>
+                              <td style={S.td}>
+                                <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{r.domain || "—"}</div>
+                                <div style={{ fontSize: 11, color: "#94a3b8" }}>{r.customer_name}</div>
+                              </td>
+                              <td style={S.td}><span style={acctStyle(r.account)}>{r.account}</span></td>
+                              <td style={S.td}>{r.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
+                              <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{r.cs_email?.split("@")[0] || "—"}</span></td>
+                              {r.monthCols.map(c => {
+                                const delta = c.amount - c.prevAmount;
+                                const showDelta = c.change_type !== "—" && c.change_type !== "Flat";
+                                return (
+                                  <td key={c.ym} style={{ ...S.td, fontSize: 13, fontWeight: 600, color: c.amount > 0 ? "#0f172a" : "#cbd5e1" }}>
+                                    <div>{c.amount > 0 ? `${c.currency} ${c.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "—"}</div>
+                                    {showDelta && (
+                                      <span style={{ marginTop: 3, borderRadius: 12, padding: "1px 7px", fontSize: 10, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...chipStyle(c.change_type) }}>
+                                        {c.change_type === "Upgrade" ? `⬆ +${c.currency} ${Math.abs(delta).toFixed(0)}` :
+                                         c.change_type === "Downgrade" ? `⬇ -${c.currency} ${Math.abs(delta).toFixed(0)}` :
+                                         c.change_type}
+                                      </span>
+                                    )}
+                                  </td>
+                                );
+                              })}
+                              <td style={S.td}>
+                                <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...chipStyle(r.change_type) }}>
+                                  {r.change_type === "Upgrade" ? "⬆ " : r.change_type === "Downgrade" ? "⬇ " : ""}{r.change_type}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ textAlign: "center", padding: "12px 0", color: "#94a3b8", fontSize: 12 }}>
+                    Revenue = total invoiced amount per calendar month (native currency, voided invoices excluded) · each month is compared to its own actual previous calendar month, not to whichever other month is checked above
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
       {/* ── All other tabs ── */}
-      {activeTab !== "ledger" && (
+      {activeTab !== "ledger" && activeTab !== "planChanges" && (
         <>
           {/* ── TOP STAT CARDS ── */}
           <div style={S.statsRow}>
