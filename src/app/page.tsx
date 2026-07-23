@@ -20,10 +20,24 @@ interface PlanChangeRow {
   previous_plan: string;
   new_plan: string;
 }
+interface PlanCurrentRow {
+  customer_id: string;
+  account: string;
+  customer_name: string;
+  domain: string;
+  business: string;
+  cs_email: string;
+  currency: string;
+  plan_value: number;
+  plan_summary: string;
+  status: string; // "Baseline" | "No Change" | "Upgrade" | "Downgrade" | "Currency Switch" | "Plan Changed"
+}
 interface PlanChangesApiResponse {
   changes: PlanChangeRow[];
+  current?: PlanCurrentRow[];
   asOf: string;
   newly_detected?: number;
+  subscriptions_found?: number;
 }
 
 // ── API interfaces ─────────────────────────────────────────────────────────────
@@ -616,12 +630,36 @@ export default function Dashboard() {
   const planUpgradeCount   = useMemo(() => planCountBase.filter(c => c.change_type === "Upgrade").length, [planCountBase]);
   const planDowngradeCount = useMemo(() => planCountBase.filter(c => c.change_type === "Downgrade").length, [planCountBase]);
 
+  // ── Current subscription snapshot (so the tab isn't empty before a 2nd check exists) ──
+  const planCurrentRows = useMemo(() => {
+    const rows = planData?.current ?? [];
+    return rows
+      .filter(c => planAcctF === "All" || c.account === planAcctF)
+      .filter(c => {
+        if (!planSearch) return true;
+        const q = planSearch.toLowerCase();
+        return [c.customer_name, c.domain, c.business, c.cs_email].some(v => v?.toLowerCase().includes(q));
+      })
+      .sort((a, b) => (a.domain || a.customer_name).localeCompare(b.domain || b.customer_name));
+  }, [planData, planAcctF, planSearch]);
+
   // ── Revenue month-over-month (invoiced amount, native currency, per calendar month) ──
+  // NOTE: this is ex-GST revenue, specifically for MRR/upsell/downgrade/churn tracking.
+  // The Outstanding Invoices / DSO / All Customers Data tabs elsewhere stay GST-inclusive on purpose.
+  const INDIA_GST_RATE = 0.18;
+  /** Ex-GST amount for a single invoice. Uses Stripe's own tax figure when available;
+   *  otherwise assumes the standard 18% GST is baked into the invoiced amount (India only — GST doesn't apply to US). */
+  function exGstAmount(inv: AllCustomerInvoice, account: "India" | "US"): number {
+    if (account !== "India") return inv.amount;
+    if (inv.tax && inv.tax > 0) return inv.amount - inv.tax;
+    return inv.amount / (1 + INDIA_GST_RATE);
+  }
+
   interface RevenueMonthCell { amount: number; currency: string; }
   interface RevenueCustomerEntry {
     domain: string; customer_name: string; business: string; cs_email: string;
     account: "India" | "US"; customer_status: string;
-    monthly: Map<string, RevenueMonthCell>; // "YYYY-MM" -> total invoiced that month
+    monthly: Map<string, RevenueMonthCell>; // "YYYY-MM" -> total invoiced that month, ex-GST for India
   }
   const revenueByCustomer = useMemo(() => {
     const map = new Map<string, RevenueCustomerEntry>();
@@ -637,10 +675,14 @@ export default function Dashboard() {
       const entry = map.get(key)!;
       for (const inv of cust.invoices) {
         if (inv.status === "void") continue; // voided invoices aren't real revenue
-        const ym = inv.invoice_date.slice(0, 7);
+        // Classify by the service period's start month (e.g. a May–June period → May),
+        // not by whichever calendar month the invoice happened to be raised in.
+        // Falls back to invoice_date only when no line-item period is available.
+        const ym = (inv.period_start ?? inv.invoice_date).slice(0, 7);
+        const amount = exGstAmount(inv, cust.account);
         const existing = entry.monthly.get(ym);
-        if (existing) { existing.amount += inv.amount; existing.currency = inv.currency; }
-        else entry.monthly.set(ym, { amount: inv.amount, currency: inv.currency });
+        if (existing) { existing.amount += amount; existing.currency = inv.currency; }
+        else entry.monthly.set(ym, { amount, currency: inv.currency });
       }
     }
     return map;
@@ -684,6 +726,13 @@ export default function Dashboard() {
     monthCols: RevenueMonthCol[]; // selected months, chronological (oldest → newest)
     /** Change type of the most recent selected month — used for the summary counts and sort order */
     change_type: string;
+    /** Net change across the WHOLE selected range: last selected month minus first selected month.
+     *  This is what answers "if I select a quarter, what's the net upsell/downgrade" — e.g. selecting
+     *  Jan/Feb/Mar compares Mar directly against Jan, not against Feb. */
+    net_first_ym?: string; net_first_amount?: number; net_first_currency?: string;
+    net_last_ym?: string; net_last_amount?: number; net_last_currency?: string;
+    net_change_type: string;
+    net_delta: number;
   }
   const revenueRows = useMemo((): RevenueRow[] => {
     const selected = Array.from(revenueMonthsF).sort(); // chronological ascending
@@ -720,24 +769,61 @@ export default function Dashboard() {
       if (monthCols.length > 0 && monthCols.every(c => c.amount === 0 && c.prevAmount === 0)) continue; // nothing to show
 
       const latest = monthCols.length > 0 ? monthCols[monthCols.length - 1] : undefined;
+
+      // Net change across the full selected range (e.g. a quarter): last selected month vs first.
+      let net_change_type = "—";
+      let net_delta = 0;
+      const first = monthCols[0];
+      const last = monthCols[monthCols.length - 1];
+      if (monthCols.length >= 2 && first && last) {
+        const firstHas = first.amount > 0, lastHas = last.amount > 0;
+        net_delta = last.amount - first.amount;
+        if (!firstHas && lastHas) net_change_type = "New/Reactivated";
+        else if (firstHas && !lastHas) net_change_type = "Churned";
+        else if (firstHas && lastHas) {
+          if (first.currency && last.currency && first.currency !== last.currency) net_change_type = "Currency Switch";
+          else if (Math.abs(net_delta) < 0.01) net_change_type = "Flat";
+          else net_change_type = net_delta > 0 ? "Upgrade" : "Downgrade";
+        }
+      }
+
       rows.push({
         key, domain: entry.domain, customer_name: entry.customer_name, business: entry.business, cs_email: entry.cs_email,
         account: entry.account, customer_status: entry.customer_status, monthCols,
         change_type: latest?.change_type ?? "—",
+        net_first_ym: first?.ym, net_first_amount: first?.amount, net_first_currency: first?.currency,
+        net_last_ym: last?.ym, net_last_amount: last?.amount, net_last_currency: last?.currency,
+        net_change_type, net_delta,
       });
     }
-    // Biggest movers (up or down, on the most recent selected month) first
-    rows.sort((a, b) => {
-      const la = a.monthCols[a.monthCols.length - 1], lb = b.monthCols[b.monthCols.length - 1];
-      const da = la ? Math.abs(la.amount - la.prevAmount) : 0;
-      const db = lb ? Math.abs(lb.amount - lb.prevAmount) : 0;
-      return db - da;
-    });
+    // Biggest net movers (over the whole selected range) first
+    rows.sort((a, b) => Math.abs(b.net_delta) - Math.abs(a.net_delta));
     return rows;
   }, [revenueByCustomer, revenueMonthsF, planAcctF, planSearch]);
 
   const revenueUpgradeCount   = useMemo(() => revenueRows.filter(r => r.change_type === "Upgrade").length,   [revenueRows]);
   const revenueDowngradeCount = useMemo(() => revenueRows.filter(r => r.change_type === "Downgrade").length, [revenueRows]);
+
+  // Net $ amount summed across the whole filtered view, for the selected range (e.g. a quarter) —
+  // only counted when the two ends of the range are in the same currency, same rule as everywhere else.
+  const revenueNetUpsellTotals = useMemo(() => {
+    const byCurrency = new Map<string, number>();
+    for (const r of revenueRows) {
+      if (r.net_change_type === "Upgrade" && r.net_last_currency) {
+        byCurrency.set(r.net_last_currency, (byCurrency.get(r.net_last_currency) ?? 0) + r.net_delta);
+      }
+    }
+    return byCurrency;
+  }, [revenueRows]);
+  const revenueNetDowngradeTotals = useMemo(() => {
+    const byCurrency = new Map<string, number>();
+    for (const r of revenueRows) {
+      if (r.net_change_type === "Downgrade" && r.net_last_currency) {
+        byCurrency.set(r.net_last_currency, (byCurrency.get(r.net_last_currency) ?? 0) + Math.abs(r.net_delta));
+      }
+    }
+    return byCurrency;
+  }, [revenueRows]);
 
   // ── Actions ───────────────────────────────────────────────────────────────
   function toggleSort(k: keyof CustRow) {
@@ -860,7 +946,7 @@ export default function Dashboard() {
   // ── Revenue month-over-month exports ──────────────────────────────────────
   function revenueHeaders(): string[] {
     const monthHeaders = Array.from(revenueMonthsF).sort().flatMap(ym => [planMonthLabel(ym), `${planMonthLabel(ym)} vs Prev Month`]);
-    return ["Domain","Customer","Account","Business","CS Owner", ...monthHeaders];
+    return ["Domain","Customer","Account","Business","CS Owner", ...monthHeaders, "Net Change (Selected Range)", "Net Change Amount"];
   }
   function revenueRowsForExport(): (string | number)[][] {
     return revenueRows.map(r => [
@@ -869,6 +955,8 @@ export default function Dashboard() {
         c.amount > 0 ? `${c.currency} ${c.amount.toFixed(2)}` : "—",
         c.change_type,
       ]),
+      r.net_change_type,
+      r.net_change_type === "—" ? "" : `${r.net_last_currency} ${r.net_delta.toFixed(2)}`,
     ]);
   }
   function downloadRevenueCSV() {
@@ -1328,6 +1416,60 @@ export default function Dashboard() {
             </div>
           )}
 
+          {!planLoading && planData && planData.subscriptions_found === 0 && (
+            <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, padding: "14px 20px", color: "#92400e", marginBottom: 16, fontSize: 13 }}>
+              ⚠ Stripe returned <b>0 active/trialing subscription objects</b> across both accounts. This tab tracks changes to Stripe <b>Subscription</b> price/tier — if your customers are invoiced directly (one-off invoices, not attached to a Stripe Subscription), there's nothing here to track and this view will stay empty. The <b>💰 Monthly Revenue</b> view (based on actual invoices) is the one that will show data for that billing setup.
+            </div>
+          )}
+
+          {!planLoading && planData && planCurrentRows.length > 0 && (
+            <div style={{ marginBottom: 20 }}>
+              <div style={S.sectionLabel}>Current Subscriptions (as of last check)</div>
+              <div style={S.tableWrap}>
+                <table style={S.table}>
+                  <thead>
+                    <tr>
+                      {["Domain","Account","Business","CS Owner","Currency","Plan Value","Plan Summary","Status"].map(label => (
+                        <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {planCurrentRows.map((c, i) => {
+                      const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
+                      const statusStyle: React.CSSProperties =
+                        c.status === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
+                        c.status === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
+                        c.status === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
+                        c.status === "Baseline" ? { color: "#075985", background: "#e0f2fe", border: "1px solid #7dd3fc" } :
+                        c.status === "No Change" ? { color: "#64748b", background: "#f1f5f9", border: "1px solid #e2e8f0" } :
+                        { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
+                      return (
+                        <tr key={`${c.account}-${c.customer_id}`} style={{ background: rowBg }}>
+                          <td style={S.td}>
+                            <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{c.domain || "—"}</div>
+                            <div style={{ fontSize: 11, color: "#94a3b8" }}>{c.customer_name}</div>
+                          </td>
+                          <td style={S.td}><span style={acctStyle(c.account)}>{c.account}</span></td>
+                          <td style={S.td}>{c.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
+                          <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{c.cs_email?.split("@")[0] || "—"}</span></td>
+                          <td style={S.td}>{c.currency}</td>
+                          <td style={{ ...S.td, fontWeight: 700 }}>{c.plan_value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          <td style={{ ...S.td, fontSize: 12, color: "#64748b" }}>{c.plan_summary || "—"}</td>
+                          <td style={S.td}>
+                            <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...statusStyle }}>
+                              {c.status === "Upgrade" ? "⬆ " : c.status === "Downgrade" ? "⬇ " : ""}{c.status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
           {planLoading && (
             <div style={S.center}>
               <div style={S.spin} />
@@ -1490,12 +1632,18 @@ export default function Dashboard() {
                 <>
                   <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
                     <div style={{ background: "#fff", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 18px" }}>
-                      <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700, textTransform: "uppercase" as const }}>⬆ Upsells</div>
+                      <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700, textTransform: "uppercase" as const }}>⬆ Net Upsell (selected range)</div>
                       <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>{revenueUpgradeCount}</div>
+                      <div style={{ fontSize: 12, color: "#16a34a", marginTop: 2 }}>
+                        {revenueNetUpsellTotals.size === 0 ? "—" : Array.from(revenueNetUpsellTotals.entries()).map(([cur, amt]) => `+${cur} ${amt.toLocaleString("en-US", { maximumFractionDigits: 0 })}`).join(" · ")}
+                      </div>
                     </div>
                     <div style={{ background: "#fff", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px" }}>
-                      <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" as const }}>⬇ Downgrades</div>
+                      <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" as const }}>⬇ Net Downgrade (selected range)</div>
                       <div style={{ fontSize: 22, fontWeight: 800, color: "#dc2626" }}>{revenueDowngradeCount}</div>
+                      <div style={{ fontSize: 12, color: "#dc2626", marginTop: 2 }}>
+                        {revenueNetDowngradeTotals.size === 0 ? "—" : Array.from(revenueNetDowngradeTotals.entries()).map(([cur, amt]) => `-${cur} ${amt.toLocaleString("en-US", { maximumFractionDigits: 0 })}`).join(" · ")}
+                      </div>
                     </div>
                   </div>
 
@@ -1565,7 +1713,7 @@ export default function Dashboard() {
                     <table style={S.table}>
                       <thead>
                         <tr>
-                          {["Domain","Account","Business","CS Owner", ...Array.from(revenueMonthsF).sort().map(planMonthLabel), "Latest Change"].map(label => (
+                          {["Domain","Account","Business","CS Owner", ...Array.from(revenueMonthsF).sort().map(planMonthLabel), "Net Change (Selected Range)"].map(label => (
                             <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
                           ))}
                         </tr>
@@ -1611,9 +1759,16 @@ export default function Dashboard() {
                                 );
                               })}
                               <td style={S.td}>
-                                <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...chipStyle(r.change_type) }}>
-                                  {r.change_type === "Upgrade" ? "⬆ " : r.change_type === "Downgrade" ? "⬇ " : ""}{r.change_type}
+                                <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...chipStyle(r.net_change_type) }}>
+                                  {r.net_change_type === "Upgrade" ? `⬆ +${r.net_last_currency} ${Math.abs(r.net_delta).toLocaleString("en-US", { maximumFractionDigits: 0 })}` :
+                                   r.net_change_type === "Downgrade" ? `⬇ -${r.net_last_currency} ${Math.abs(r.net_delta).toLocaleString("en-US", { maximumFractionDigits: 0 })}` :
+                                   r.net_change_type}
                                 </span>
+                                {r.monthCols.length >= 2 && r.net_change_type !== "—" && (
+                                  <div style={{ fontSize: 10, color: "#94a3b8", marginTop: 3 }}>
+                                    {planMonthLabel(r.net_first_ym ?? "")} → {planMonthLabel(r.net_last_ym ?? "")}
+                                  </div>
+                                )}
                               </td>
                             </tr>
                           );
@@ -1622,7 +1777,7 @@ export default function Dashboard() {
                     </table>
                   </div>
                   <div style={{ textAlign: "center", padding: "12px 0", color: "#94a3b8", fontSize: 12 }}>
-                    Revenue = total invoiced amount per calendar month (native currency, voided invoices excluded) · each month is compared to its own actual previous calendar month, not to whichever other month is checked above
+                    Revenue = total invoiced amount classified by the invoice&apos;s service period start month (not the invoice raise date), voided invoices excluded, <b>ex-GST for India</b> (uses Stripe&apos;s tax figure when available, else assumes 18%) · each month cell is compared to its own actual previous calendar month · &quot;Net Change&quot; compares the last selected month directly against the first selected month — e.g. selecting a full quarter shows the net movement across that quarter
                   </div>
                 </>
               )}
@@ -2044,4 +2199,3 @@ const S: Record<string, React.CSSProperties> = {
   center:      { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100vh", gap: 8, background: "#f1f5f9" },
   spin:        { width: 40, height: 40, border: "4px solid #e2e8f0", borderTop: "4px solid #6366f1", borderRadius: "50%", animation: "spin 0.8s linear infinite" },
 };
-
