@@ -86,6 +86,8 @@ export interface AllCustomerInvoice {
   status: string;
   /** Total amount in native currency */
   amount: number;
+  /** Tax (e.g. GST) amount included in `amount`, in native currency. 0 if Stripe reports none/unavailable. */
+  tax: number;
   /** Amount already paid (native currency) */
   amount_paid: number;
   currency: string;
@@ -122,7 +124,6 @@ export interface AllCustomer {
   /** All invoices in the 18-month window, sorted newest first */
   invoices: AllCustomerInvoice[];
 }
-
 // ── Plan snapshot types (for upgrade/downgrade tracking) ───────────────────────
 export interface CustomerPlanSnapshot {
   customer_id: string;
@@ -356,6 +357,7 @@ async function fetchAllCustomerInvoices(
         invoice_number: inv.number ?? inv.id,
         status: inv.status ?? "open",
         amount: (inv.amount_due ?? inv.total ?? 0) / 100,
+        tax: (inv.tax ?? 0) / 100,
         amount_paid: (inv.amount_paid ?? 0) / 100,
         currency: inv.currency.toUpperCase(),
         invoice_date: invoiceDate,
@@ -675,7 +677,7 @@ export async function getPlanSnapshots(
     return {
       ...s,
       domain: meta?.domain ?? "",
-      business: meta?.business ?? "",
+      business: meta?.business ?? "AI Agents",
       cs_email: meta?.cs_email ?? "",
       customer_status: meta?.status ?? "",
     };
