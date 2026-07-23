@@ -1,4 +1,4 @@
-﻿import { google } from "googleapis";
+import { google } from "googleapis";
 import type { InvoiceRow, CustomerDSO } from "./stripe";
 
 const INR_PER_USD = 95;
@@ -54,7 +54,9 @@ export async function readCustomerMetadata(): Promise<CustomerMetaMap> {
     if (!custId) continue;
     const raw = (c: number) => c >= 0 ? String(row[c] ?? "").trim() : "";
     const clean = (v: string) => ["#N/A","N/A","#VALUE!","#REF!"].includes(v) ? "" : v;
-    map.set(custId, { customer_name_sheet: clean(raw(nameCol)), domain: clean(raw(domainCol)), status: clean(raw(statusCol)), business: clean(raw(bizCol)), cs_email: clean(raw(csCol)) });
+    // Untagged Business defaults to "AI Agents" so every tab (Outstanding, Ledger, Plan Changes) shows a consistent value.
+    const business = clean(raw(bizCol)) || "AI Agents";
+    map.set(custId, { customer_name_sheet: clean(raw(nameCol)), domain: clean(raw(domainCol)), status: clean(raw(statusCol)), business, cs_email: clean(raw(csCol)) });
   }
   return map;
 }
@@ -67,6 +69,130 @@ async function ensureTabExists(sheets: any, sheetId: string, tabName: string) {
   if (!exists) {
     await sheets.spreadsheets.batchUpdate({ spreadsheetId: sheetId, requestBody: { requests: [{ addSheet: { properties: { title: tabName } } }] } });
   }
+}
+
+// ── Plan snapshot & change-log persistence (for upgrade/downgrade tracking) ────
+// Vercel functions are stateless between invocations, so the "last known plan"
+// per customer is persisted in a Google Sheet tab and diffed against on each check.
+export interface PlanSnapshotRow {
+  customer_id: string;
+  account: string;
+  currency: string;
+  plan_value: number;
+  price_ids: string;
+  plan_summary: string;
+  checked_at: string;
+}
+
+export interface PlanChangeRow {
+  detected_at: string;
+  customer_id: string;
+  account: string;
+  customer_name: string;
+  domain: string;
+  business: string;
+  cs_email: string;
+  /** "Upgrade" | "Downgrade" | "Currency Switch" (currency switches are excluded from up/down totals) */
+  change_type: string;
+  previous_value: number;
+  new_value: number;
+  previous_currency: string;
+  new_currency: string;
+  previous_plan: string;
+  new_plan: string;
+}
+
+const SNAPSHOT_TAB = "Plan Snapshots";
+const CHANGES_TAB  = "Plan Changes";
+const SNAPSHOT_HEADERS = ["Customer ID","Account","Currency","Plan Value","Price IDs","Plan Summary","Checked At"];
+const CHANGES_HEADERS  = ["Detected At","Customer ID","Account","Customer Name","Domain","Business","CS Owner","Change Type","Previous Value","New Value","Previous Currency","New Currency","Previous Plan","New Plan"];
+
+function planSheetId(): string {
+  const sheetId = process.env.GOOGLE_EXPORT_SHEET_ID ?? process.env.GOOGLE_SHEET_ID;
+  if (!sheetId) throw new Error("Missing GOOGLE_EXPORT_SHEET_ID or GOOGLE_SHEET_ID env var.");
+  return sheetId;
+}
+
+export async function readPlanSnapshots(): Promise<Map<string, PlanSnapshotRow>> {
+  const sheetId = planSheetId();
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  const map = new Map<string, PlanSnapshotRow>();
+  let rows: string[][];
+  try {
+    const res = await sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: SNAPSHOT_TAB });
+    rows = (res.data.values ?? []) as string[][];
+  } catch {
+    // Tab doesn't exist yet — treat as no prior snapshot (first run).
+    return map;
+  }
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r?.[0]) continue;
+    const row: PlanSnapshotRow = {
+      customer_id: String(r[0] ?? ""), account: String(r[1] ?? ""), currency: String(r[2] ?? ""),
+      plan_value: parseFloat(r[3] ?? "0") || 0, price_ids: String(r[4] ?? ""), plan_summary: String(r[5] ?? ""),
+      checked_at: String(r[6] ?? ""),
+    };
+    map.set(`${row.account}::${row.customer_id}`, row);
+  }
+  return map;
+}
+
+export async function writePlanSnapshots(rows: PlanSnapshotRow[]): Promise<void> {
+  const sheetId = planSheetId();
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  await ensureTabExists(sheets, sheetId, SNAPSHOT_TAB);
+  const values = [SNAPSHOT_HEADERS, ...rows.map(r => [r.customer_id, r.account, r.currency, r.plan_value, r.price_ids, r.plan_summary, r.checked_at])];
+  await sheets.spreadsheets.values.clear({ spreadsheetId: sheetId, range: SNAPSHOT_TAB });
+  await sheets.spreadsheets.values.update({ spreadsheetId: sheetId, range: `${SNAPSHOT_TAB}!A1`, valueInputOption: "USER_ENTERED", requestBody: { values } });
+}
+
+export async function appendPlanChanges(rows: PlanChangeRow[]): Promise<void> {
+  if (!rows.length) return;
+  const sheetId = planSheetId();
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  await ensureTabExists(sheets, sheetId, CHANGES_TAB);
+  const existing = await sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: CHANGES_TAB }).catch(() => null);
+  const needsHeader = !existing?.data.values || existing.data.values.length === 0;
+  const values = rows.map(r => [
+    r.detected_at, r.customer_id, r.account, r.customer_name, r.domain, r.business, r.cs_email,
+    r.change_type, r.previous_value, r.new_value, r.previous_currency, r.new_currency, r.previous_plan, r.new_plan,
+  ]);
+  if (needsHeader) {
+    await sheets.spreadsheets.values.update({ spreadsheetId: sheetId, range: `${CHANGES_TAB}!A1`, valueInputOption: "USER_ENTERED", requestBody: { values: [CHANGES_HEADERS, ...values] } });
+  } else {
+    await sheets.spreadsheets.values.append({ spreadsheetId: sheetId, range: CHANGES_TAB, valueInputOption: "USER_ENTERED", insertDataOption: "INSERT_ROWS", requestBody: { values } });
+  }
+}
+
+export async function readPlanChanges(): Promise<PlanChangeRow[]> {
+  const sheetId = planSheetId();
+  const auth = getAuth();
+  const sheets = google.sheets({ version: "v4", auth });
+  let rows: string[][];
+  try {
+    const res = await sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: CHANGES_TAB });
+    rows = (res.data.values ?? []) as string[][];
+  } catch {
+    return [];
+  }
+  const out: PlanChangeRow[] = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r?.[1]) continue;
+    out.push({
+      detected_at: String(r[0] ?? ""), customer_id: String(r[1] ?? ""), account: String(r[2] ?? ""),
+      customer_name: String(r[3] ?? ""), domain: String(r[4] ?? ""), business: String(r[5] ?? ""), cs_email: String(r[6] ?? ""),
+      change_type: String(r[7] ?? ""), previous_value: parseFloat(r[8] ?? "0") || 0, new_value: parseFloat(r[9] ?? "0") || 0,
+      previous_currency: String(r[10] ?? ""), new_currency: String(r[11] ?? ""), previous_plan: String(r[12] ?? ""), new_plan: String(r[13] ?? ""),
+    });
+  }
+  // Most recent first
+  out.sort((a, b) => b.detected_at.localeCompare(a.detected_at));
+  return out;
 }
 
 export async function exportToSheets(invoices: InvoiceRow[], dso: CustomerDSO[]): Promise<{ url: string }> {
