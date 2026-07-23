@@ -122,6 +122,27 @@ export interface AllCustomer {
   /** All invoices in the 18-month window, sorted newest first */
   invoices: AllCustomerInvoice[];
 }
+
+// ── Plan snapshot types (for upgrade/downgrade tracking) ───────────────────────
+export interface CustomerPlanSnapshot {
+  customer_id: string;
+  account: "India" | "US";
+  customer_name: string;
+  customer_email: string;
+  domain: string;
+  business: string;
+  cs_email: string;
+  customer_status: string;
+  /** Native subscription currency (e.g. "USD", "INR") */
+  currency: string;
+  /** Sum of (unit_amount * quantity) across all active/trialing subscription items, in native currency (major units) */
+  plan_value: number;
+  /** Human-readable summary, e.g. "Pro Plan (monthly) x1, Add-on x2" */
+  plan_summary: string;
+  /** Comma-joined, sorted Stripe price IDs — a stable fingerprint of "what they're subscribed to" */
+  price_ids: string;
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const SKIP = new Set(["paid", "void", "draft", "uncollectible"]);
 function bucket(d: number): AgingBucket {
@@ -389,7 +410,7 @@ export async function getAllInvoices(
     return {
       ...inv,
       domain: meta?.domain ?? "",
-      business: meta?.business ?? "",
+      business: meta?.business ?? "AI Agents",
       cs_email: meta?.cs_email ?? "",
       customer_status: meta?.status ?? "",
     };
@@ -459,7 +480,7 @@ export async function getAllInvoices(
       customer_name:    paid.customer_name,
       customer_email:   paid.customer_email,
       domain:           meta?.domain   ?? "",
-      business:         meta?.business ?? "",
+      business:         meta?.business ?? "AI Agents",
       cs_email:         meta?.cs_email ?? "",
       customer_status:  meta?.status   ?? "",
       account,
@@ -545,7 +566,7 @@ export async function getAllCustomers(
       customer_name:        meta.customer_name ?? "",
       customer_email:       meta.customer_email ?? "",
       domain:               sheetMeta?.domain   ?? "",
-      business:             sheetMeta?.business ?? "",
+      business:             sheetMeta?.business ?? "AI Agents",
       cs_email:             sheetMeta?.cs_email ?? "",
       customer_status:      status,
       account:              meta.account ?? "India",
@@ -561,4 +582,102 @@ export async function getAllCustomers(
     (b.latest_invoice_date ?? "").localeCompare(a.latest_invoice_date ?? "")
   );
   return result;
+}
+
+// ── Fetch subscription-based plan snapshots (for upgrade/downgrade tracking) ──
+type RawPlanSnapshot = Omit<CustomerPlanSnapshot, "domain" | "business" | "cs_email" | "customer_status">;
+
+async function fetchPlanSnapshots(
+  stripe: Stripe,
+  account: "India" | "US"
+): Promise<RawPlanSnapshot[]> {
+  // Aggregate multiple subscriptions per customer (rare, but possible) into one row.
+  const map = new Map<string, RawPlanSnapshot & { priceIdSet: Set<string> }>();
+  let hasMore = true;
+  let startingAfter: string | undefined;
+  while (hasMore) {
+    const page = await stripe.subscriptions.list({
+      status: "all",
+      limit: 100,
+      expand: ["data.items.data.price", "data.customer"],
+      ...(startingAfter ? { starting_after: startingAfter } : {}),
+    });
+    for (const sub of page.data) {
+      // Only count subscriptions that are actually "in force" for plan comparison
+      if (sub.status !== "active" && sub.status !== "trialing" && sub.status !== "past_due") continue;
+      const cObj =
+        typeof sub.customer === "object" && sub.customer !== null
+          ? (sub.customer as Stripe.Customer)
+          : null;
+      const cId = typeof sub.customer === "string" ? sub.customer : (cObj?.id ?? "");
+      if (!cId) continue;
+      const currency = sub.currency.toUpperCase();
+      const items = sub.items.data;
+      let itemValue = 0;
+      const priceIds: string[] = [];
+      const summaryParts: string[] = [];
+      for (const item of items) {
+        const price = item.price as Stripe.Price | null;
+        const unitAmount = (price?.unit_amount ?? 0) / 100;
+        const qty = item.quantity ?? 1;
+        itemValue += unitAmount * qty;
+        if (price?.id) priceIds.push(price.id);
+        const interval = price?.recurring?.interval ?? "";
+        summaryParts.push(`${price?.nickname ?? price?.id ?? "item"}${interval ? ` (${interval}ly)` : ""} x${qty}`);
+      }
+      const key = `${account}::${cId}`;
+      if (!map.has(key)) {
+        map.set(key, {
+          customer_id: cId,
+          account,
+          customer_name: cObj?.name ?? "Unknown",
+          customer_email: cObj?.email ?? "",
+          currency,
+          plan_value: 0,
+          plan_summary: "",
+          price_ids: "",
+          priceIdSet: new Set<string>(),
+        });
+      }
+      const entry = map.get(key)!;
+      // Ignore cross-currency subscriptions on the same customer when summing value —
+      // extremely rare, but avoids silently mixing currencies into one number.
+      if (entry.currency === currency || entry.plan_value === 0) {
+        entry.currency = currency;
+        entry.plan_value += itemValue;
+      }
+      priceIds.forEach(p => entry.priceIdSet.add(p));
+      entry.plan_summary = entry.plan_summary
+        ? `${entry.plan_summary}; ${summaryParts.join(", ")}`
+        : summaryParts.join(", ");
+    }
+    hasMore = page.has_more;
+    startingAfter = page.data.length > 0 ? page.data[page.data.length - 1].id : undefined;
+    if (!page.data.length) hasMore = false;
+  }
+  return Array.from(map.values()).map(({ priceIdSet, ...rest }) => ({
+    ...rest,
+    plan_value: Math.round(rest.plan_value * 100) / 100,
+    price_ids: Array.from(priceIdSet).sort().join(","),
+  }));
+}
+
+export async function getPlanSnapshots(
+  metaMap: CustomerMetaMap = new Map()
+): Promise<CustomerPlanSnapshot[]> {
+  const { india, us } = getStripeClients();
+  const [indiaSnaps, usSnaps] = await Promise.all([
+    fetchPlanSnapshots(india, "India"),
+    fetchPlanSnapshots(us, "US"),
+  ]);
+  return [...indiaSnaps, ...usSnaps].map(s => {
+    const meta = metaMap.get(s.customer_id);
+    return {
+      ...s,
+      domain: meta?.domain ?? "",
+      business: meta?.business ?? "",
+      cs_email: meta?.cs_email ?? "",
+      customer_status: meta?.status ?? "",
+    };
+  });
 }
