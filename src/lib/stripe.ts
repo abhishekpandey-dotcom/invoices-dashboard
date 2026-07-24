@@ -130,6 +130,8 @@ export interface AllCustomer {
   business: string;
   cs_email: string;
   customer_status: string;
+  /** From the "Onboarding Call Date" sheet column — used only for onboarding-anchored churn timing in the Monthly Revenue view. */
+  onboarding_date: string | null;
   account: "India" | "US";
   collection_method: "charge_automatically" | "send_invoice";
   /** Oldest invoice date found in the 18-month window */
@@ -579,9 +581,6 @@ export async function getAllCustomers(
     fetchAllCustomerInvoices(india, "India", since18m),
     fetchAllCustomerInvoices(us, "US", since18m),
   ]);
-  const threeMonthsAgo = new Date(now - 90 * 24 * 3600 * 1000)
-    .toISOString()
-    .split("T")[0];
   const result: AllCustomer[] = [];
   for (const [, { meta, invoices }] of new Map([...indiaMap, ...usMap]).entries()) {
     const custId = meta.customer_id ?? "";
@@ -592,8 +591,9 @@ export async function getAllCustomers(
     const firstDate  = dates[dates.length - 1] ?? null;
     const sheetMeta = metaMap.get(custId);
     const status    = sheetMeta?.status ?? "";
-    // Exclude churned customers who have had no invoice in the last 3 months
-    if (status === "Churned" && (!latestDate || latestDate < threeMonthsAgo)) continue;
+    // NOTE: customers already tagged "Churned" in the sheet are intentionally NOT excluded here anymore —
+    // the Monthly Revenue view needs their full invoice history to correctly detect and display churn,
+    // and the 18-month window above already bounds how far back this goes.
     result.push({
       customer_id:          custId,
       customer_name:        meta.customer_name ?? "",
@@ -602,6 +602,7 @@ export async function getAllCustomers(
       business:             sheetMeta?.business ?? "AI Agents",
       cs_email:             sheetMeta?.cs_email ?? "",
       customer_status:      status,
+      onboarding_date:      sheetMeta?.onboarding_date ?? null,
       account:              meta.account ?? "India",
       currency:             meta.currency ?? "USD",
       collection_method:    meta.collection_method ?? "send_invoice",
