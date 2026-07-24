@@ -23,11 +23,20 @@ function getAuth() {
   return new google.auth.JWT(email, undefined, rawKey.replace(/\\n/g, "\n"), ["https://www.googleapis.com/auth/spreadsheets"]);
 }
 
-export interface CustomerMeta { customer_name_sheet: string; domain: string; status: string; business: string; cs_email: string; }
+export interface CustomerMeta { customer_name_sheet: string; domain: string; status: string; business: string; cs_email: string; onboarding_date: string | null; }
 export type CustomerMetaMap = Map<string, CustomerMeta>;
 
 function findCol(headers: string[], aliases: string[]): number {
   return headers.findIndex(h => aliases.some(a => h.includes(a)));
+}
+
+/** Parses a sheet cell into an ISO "YYYY-MM-DD" date, tolerant of common formats
+ *  (Google Sheets date strings, "3/15/2026", "2026-03-15", "March 15, 2026", etc). */
+function parseSheetDate(raw: string): string | null {
+  if (!raw) return null;
+  const d = new Date(raw);
+  if (isNaN(d.getTime())) return null;
+  return d.toISOString().split("T")[0];
 }
 
 export async function readCustomerMetadata(): Promise<CustomerMetaMap> {
@@ -46,6 +55,7 @@ export async function readCustomerMetadata(): Promise<CustomerMetaMap> {
   const statusCol = findCol(headers, ["status"]);
   const bizCol    = findCol(headers, ["business"]);
   const csCol     = findCol(headers, ["cs name", "cs email"]);
+  const onboardCol = findCol(headers, ["onboarding call date", "onboarding date", "onboarding"]);
   if (idCol === -1) { console.warn("[readCustomerMetadata] No customer-ID column found."); return new Map(); }
   const map: CustomerMetaMap = new Map();
   for (let i = 1; i < rows.length; i++) {
@@ -56,7 +66,8 @@ export async function readCustomerMetadata(): Promise<CustomerMetaMap> {
     const clean = (v: string) => ["#N/A","N/A","#VALUE!","#REF!"].includes(v) ? "" : v;
     // Untagged Business defaults to "AI Agents" so every tab (Outstanding, Ledger, Plan Changes) shows a consistent value.
     const business = clean(raw(bizCol)) || "AI Agents";
-    map.set(custId, { customer_name_sheet: clean(raw(nameCol)), domain: clean(raw(domainCol)), status: clean(raw(statusCol)), business, cs_email: clean(raw(csCol)) });
+    const onboarding_date = parseSheetDate(clean(raw(onboardCol)));
+    map.set(custId, { customer_name_sheet: clean(raw(nameCol)), domain: clean(raw(domainCol)), status: clean(raw(statusCol)), business, cs_email: clean(raw(csCol)), onboarding_date });
   }
   return map;
 }
