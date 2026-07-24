@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-07-24T11:02:47.021Z",
-  "rowCount": 739,
+  "lastUpdated": "2026-07-24T11:03:22.300Z",
+  "rowCount": 740,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -5913,6 +5913,14 @@
       "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "muddasir.h@gushwork.ai"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://unleashx.ai/",
+      "Status": "Active",
+      "Business": "",
+      "CS Name": ""
     }
   ]
 }
