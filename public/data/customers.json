@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T14:58:27.736Z",
+  "lastUpdated": "2026-07-24T14:58:40.837Z",
   "rowCount": 740,
   "data": [
     {
@@ -4099,7 +4099,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Ute7BrAcdBdhDR",
       "Domain name": "https://www.morrelltargets.com/",
       "Status": "Active",
       "Business": "AI Agents",
