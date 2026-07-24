@@ -665,46 +665,21 @@ export default function Dashboard() {
 
   interface RevenueInvoiceRef {
     invoice_number: string; invoice_date: string; paid_at: string | null; amount: number; status: string;
-    /** True if this row is only a fractional share of the invoice for THIS month (multi-month period) */
-    prorated: boolean; period_start: string | null; period_end: string | null;
   }
   interface RevenueMonthCell {
     amount: number; currency: string; invoices: RevenueInvoiceRef[];
-    /** product_key -> { name, total amount for this month }, aggregated across all invoices in the month,
-     *  prorated the same way as the invoice total when a period spans multiple months.
+    /** product_key -> { name, total amount for this month }, aggregated across all invoices booked to this month.
      *  Raw Stripe line amounts (not GST/credit-note adjusted) — used only to explain WHY the total moved. */
     products: Map<string, { name: string; amount: number }>;
   }
   interface RevenueCustomerEntry {
     domain: string; customer_name: string; business: string; cs_email: string;
     account: "India" | "US"; customer_status: string;
-    monthly: Map<string, RevenueMonthCell>; // "YYYY-MM" -> total recognized revenue that month, ex-GST/ex-credit-note for India
-  }
-  /** Splits a service period into calendar months with a day-weighted fraction each.
-   *  Stripe's line.period.end is exclusive (the instant the next period begins), so we count
-   *  days in [start, end). Falls back to a single full month if start/end aren't a real range,
-   *  or if the span looks like bad data (e.g. a mistakenly far-future period_end) rather than a
-   *  genuine multi-month plan — capped at ~13 months so one bad invoice can't smear tiny revenue
-   *  slivers years into the future and hijack "which months are recent." */
-  const MAX_PRORATE_DAYS = 400;
-  function prorateAcrossMonths(periodStart: string | null, periodEnd: string | null, fallbackYm: string): { ym: string; fraction: number }[] {
-    if (!periodStart || !periodEnd) return [{ ym: fallbackYm, fraction: 1 }];
-    const start = new Date(`${periodStart}T00:00:00Z`);
-    const end = new Date(`${periodEnd}T00:00:00Z`);
-    if (!(end.getTime() > start.getTime())) return [{ ym: fallbackYm, fraction: 1 }];
-    const spanDays = Math.round((end.getTime() - start.getTime()) / 86_400_000);
-    if (spanDays > MAX_PRORATE_DAYS) return [{ ym: fallbackYm, fraction: 1 }];
-    const dayCounts = new Map<string, number>();
-    const cursor = new Date(start);
-    let totalDays = 0;
-    for (let i = 0; i < MAX_PRORATE_DAYS && cursor.getTime() < end.getTime(); i++) {
-      const ym = `${cursor.getUTCFullYear()}-${String(cursor.getUTCMonth() + 1).padStart(2, "0")}`;
-      dayCounts.set(ym, (dayCounts.get(ym) ?? 0) + 1);
-      totalDays++;
-      cursor.setUTCDate(cursor.getUTCDate() + 1);
-    }
-    if (totalDays === 0) return [{ ym: fallbackYm, fraction: 1 }];
-    return Array.from(dayCounts.entries()).map(([ym, days]) => ({ ym, fraction: days / totalDays }));
+    monthly: Map<string, RevenueMonthCell>; // "YYYY-MM" -> total revenue booked to that month (full invoice amount, ex-GST/ex-credit-note for India)
+    /** Every invoice's [period_start, period_end) as real Date ranges — used only to tell whether a
+     *  zero-revenue month is still "covered" by an earlier multi-month invoice (so it doesn't falsely
+     *  read as Churned), NOT to split dollars across months. */
+    coverage: { start: number; end: number }[];
   }
   const revenueByCustomer = useMemo(() => {
     const map = new Map<string, RevenueCustomerEntry>();
@@ -714,43 +689,47 @@ export default function Dashboard() {
         map.set(key, {
           domain: cust.domain, customer_name: cust.customer_name, business: cust.business,
           cs_email: cust.cs_email, account: cust.account, customer_status: cust.customer_status,
-          monthly: new Map(),
+          monthly: new Map(), coverage: [],
         });
       }
       const entry = map.get(key)!;
       for (const inv of cust.invoices) {
         if (inv.status === "void") continue; // voided invoices aren't real revenue
-        const totalAmount = recognizedRevenue(inv, cust.account);
-        const fallbackYm = (inv.period_start ?? inv.invoice_date).slice(0, 7);
-        // Read the FULL service period (start AND end), not just the start month — a multi-month
-        // period (e.g. Feb–Jul) gets its revenue spread across every month it actually covers,
-        // day-weighted, instead of dumping the whole invoice into the start month and leaving
-        // every later covered month looking like $0 revenue (which used to falsely read as Churned).
-        const allocations = prorateAcrossMonths(inv.period_start, inv.period_end, fallbackYm);
-        const prorated = allocations.length > 1;
-        for (const alloc of allocations) {
-          const allocAmount = totalAmount * alloc.fraction;
-          const invRef: RevenueInvoiceRef = {
-            invoice_number: inv.invoice_number, invoice_date: inv.invoice_date, paid_at: inv.paid_at,
-            amount: allocAmount, status: inv.status, prorated,
-            period_start: inv.period_start, period_end: inv.period_end,
-          };
-          if (!entry.monthly.has(alloc.ym)) entry.monthly.set(alloc.ym, { amount: 0, currency: inv.currency, invoices: [], products: new Map() });
-          const cell = entry.monthly.get(alloc.ym)!;
-          cell.amount += allocAmount;
-          cell.currency = inv.currency;
-          cell.invoices.push(invRef);
-          for (const line of inv.line_items) {
-            const lineAlloc = line.amount * alloc.fraction;
-            const p = cell.products.get(line.product_key);
-            if (p) p.amount += lineAlloc;
-            else cell.products.set(line.product_key, { name: line.name, amount: lineAlloc });
-          }
+        const amount = recognizedRevenue(inv, cust.account);
+        // Bucket the FULL amount into the period's start month (falls back to invoice_date) — a
+        // Jun 23–Jul 23 period is simply June revenue, no day-by-day splitting.
+        const ym = (inv.period_start ?? inv.invoice_date).slice(0, 7);
+        const invRef: RevenueInvoiceRef = { invoice_number: inv.invoice_number, invoice_date: inv.invoice_date, paid_at: inv.paid_at, amount, status: inv.status };
+        if (!entry.monthly.has(ym)) entry.monthly.set(ym, { amount: 0, currency: inv.currency, invoices: [], products: new Map() });
+        const cell = entry.monthly.get(ym)!;
+        cell.amount += amount;
+        cell.currency = inv.currency;
+        cell.invoices.push(invRef);
+        for (const line of inv.line_items) {
+          const p = cell.products.get(line.product_key);
+          if (p) p.amount += line.amount;
+          else cell.products.set(line.product_key, { name: line.name, amount: line.amount });
+        }
+        // Track coverage separately from the dollar bucketing — this is what lets a multi-month
+        // period (e.g. Jan–Jul) keep the intervening months from looking like Churn, without
+        // touching how the revenue dollars themselves are counted.
+        if (inv.period_start && inv.period_end) {
+          const s = new Date(`${inv.period_start}T00:00:00Z`).getTime();
+          const e = new Date(`${inv.period_end}T00:00:00Z`).getTime();
+          if (e > s) entry.coverage.push({ start: s, end: e });
         }
       }
     }
     return map;
   }, [ledgerData]);
+
+  /** True if `ym` ("YYYY-MM") falls inside any invoice's [period_start, period_end) range for this customer. */
+  function isCoveredInMonth(coverage: { start: number; end: number }[], ym: string): boolean {
+    const [y, m] = ym.split("-").map(Number);
+    const monthStart = Date.UTC(y, m - 1, 1);
+    const monthEnd = Date.UTC(y, m, 1); // exclusive
+    return coverage.some(c => c.start < monthEnd && c.end > monthStart);
+  }
 
   /** Compares two months' product-level totals for one customer and explains WHY the total moved:
    *  new products added, products that dropped off, and existing products whose amount changed. */
@@ -815,14 +794,30 @@ export default function Dashboard() {
     return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
   }
 
+  /** Walks backward from `ym` (inclusive) through months with no new billing event, as long as they're
+   *  still "covered" by an earlier multi-month invoice, until it finds the last month with real booked
+   *  revenue. Returns null once it hits a month that's neither billed nor covered — a genuine gap, not
+   *  just a quiet month mid-way through an already-paid period. This is what lets a Jun–Dec period keep
+   *  July–Nov from falsely reading as Churned/Downgrade, without splitting the dollars across those months. */
+  function effectiveMonthState(entry: RevenueCustomerEntry, ym: string): { ym: string; amount: number; currency: string } | null {
+    let cursor = ym;
+    for (let i = 0; i < 60; i++) { // cap: 5 years back, plenty for any realistic gap
+      const cell = entry.monthly.get(cursor);
+      if (cell && cell.amount > 0) return { ym: cursor, amount: cell.amount, currency: cell.currency };
+      if (!isCoveredInMonth(entry.coverage, cursor)) return null;
+      cursor = monthBefore(cursor);
+    }
+    return null;
+  }
+
   interface RevenueMonthCol {
     ym: string; amount: number; currency: string;
     prevYm: string; prevAmount: number; prevCurrency: string;
-    /** "Upgrade" | "Downgrade" | "Currency Switch" | "New/Reactivated" | "Churned" | "Flat" | "—" — always vs the true previous calendar month */
+    /** "Upgrade" | "Downgrade" | "Currency Switch" | "New/Reactivated" | "Churned" | "Flat" | "—" */
     change_type: string;
     /** The specific invoice(s) that make up THIS month's amount — lets an upsell/downgrade be traced to its source invoice(s) */
     invoices: RevenueInvoiceRef[];
-    /** WHY the total moved vs the true previous calendar month: new/removed products, or price changes on existing ones */
+    /** WHY the total moved vs the previous real billing state: new/removed products, or price changes on existing ones */
     reasons: RevenueReason[];
   }
   interface RevenueRow {
@@ -854,59 +849,70 @@ export default function Dashboard() {
       }
       const monthCols: RevenueMonthCol[] = selected.map(ym => {
         const cur = entry.monthly.get(ym);
-        const prevYm = monthBefore(ym);
-        const prev = entry.monthly.get(prevYm);
-        const amount = cur?.amount ?? 0;
+        const amount = cur?.amount ?? 0; // RAW booked amount this month — did a real billing event happen?
         const currency = cur?.currency ?? "";
-        const prevAmount = prev?.amount ?? 0;
-        const prevCurrency = prev?.currency ?? "";
-        // This month's total invoiced minus the actual previous calendar month's total invoiced —
-        // simple subtraction, always against the true prior month regardless of which other months are checked.
+        const currCovered = isCoveredInMonth(entry.coverage, ym);
+        const prevState = effectiveMonthState(entry, monthBefore(ym));
+        const prevAmount = prevState?.amount ?? 0;
+        const prevCurrency = prevState?.currency ?? "";
+        const prevYm = prevState?.ym ?? monthBefore(ym);
+        const prevHas = prevAmount > 0;
+
         let change_type = "—";
-        const prevHas = prevAmount > 0, currHas = amount > 0;
-        if (!prevHas && currHas) change_type = "New/Reactivated";
-        else if (prevHas && !currHas) change_type = "Churned";
-        else if (prevHas && currHas) {
-          // Same guardrail as the subscription-tier view: only classify Upgrade/Downgrade
-          // when the currency matches — a currency difference alone is never an upgrade/downgrade.
-          if (prevCurrency && currency && prevCurrency !== currency) change_type = "Currency Switch";
+        if (amount > 0) {
+          // A real invoice landed this month — compare against the last actual billing state.
+          if (!prevHas) change_type = "New/Reactivated";
+          else if (prevCurrency && currency && prevCurrency !== currency) change_type = "Currency Switch";
           else if (Math.abs(amount - prevAmount) < 0.01) change_type = "Flat";
           else change_type = amount > prevAmount ? "Upgrade" : "Downgrade";
+        } else if (currCovered) {
+          change_type = "—"; // mid-period quiet month, still actively covered — nothing to report
+        } else if (prevHas) {
+          change_type = "Churned"; // was active, no longer covered, and no new invoice this month
         }
-        const reasons = (change_type === "Upgrade" || change_type === "Downgrade") ? diffProducts(cur?.products, prev?.products) : [];
+
+        const reasons = (change_type === "Upgrade" || change_type === "Downgrade") ? diffProducts(cur?.products, entry.monthly.get(prevYm)?.products) : [];
         return { ym, amount, currency, prevYm, prevAmount, prevCurrency, change_type, invoices: cur?.invoices ?? [], reasons };
       });
       if (monthCols.length > 0 && monthCols.every(c => c.amount === 0 && c.prevAmount === 0)) continue; // nothing to show
 
       const latest = monthCols.length > 0 ? monthCols[monthCols.length - 1] : undefined;
 
-      // Net change across the full selected range (e.g. a quarter): last selected month vs first.
+      // Net change across the full selected range (e.g. a quarter): last selected month vs first —
+      // using the same "effective state" logic, so picking a quiet-but-covered month as an endpoint
+      // doesn't manufacture a fake churn/downgrade.
       let net_change_type = "—";
       let net_delta = 0;
-      const first = monthCols[0];
-      const last = monthCols[monthCols.length - 1];
-      if (monthCols.length >= 2 && first && last) {
-        const firstHas = first.amount > 0, lastHas = last.amount > 0;
-        net_delta = last.amount - first.amount;
+      const firstCol = monthCols[0];
+      const lastCol = monthCols[monthCols.length - 1];
+      let net_first_eff: { ym: string; amount: number; currency: string } | null = null;
+      let net_last_eff: { ym: string; amount: number; currency: string } | null = null;
+      if (monthCols.length >= 2 && firstCol && lastCol) {
+        net_first_eff = effectiveMonthState(entry, firstCol.ym);
+        net_last_eff = effectiveMonthState(entry, lastCol.ym);
+        const firstAmount = net_first_eff?.amount ?? 0, lastAmount = net_last_eff?.amount ?? 0;
+        const firstCurrency = net_first_eff?.currency ?? "", lastCurrency = net_last_eff?.currency ?? "";
+        const firstHas = firstAmount > 0, lastHas = lastAmount > 0;
+        net_delta = lastAmount - firstAmount;
         if (!firstHas && lastHas) net_change_type = "New/Reactivated";
         else if (firstHas && !lastHas) net_change_type = "Churned";
         else if (firstHas && lastHas) {
-          if (first.currency && last.currency && first.currency !== last.currency) net_change_type = "Currency Switch";
+          if (firstCurrency && lastCurrency && firstCurrency !== lastCurrency) net_change_type = "Currency Switch";
           else if (Math.abs(net_delta) < 0.01) net_change_type = "Flat";
           else net_change_type = net_delta > 0 ? "Upgrade" : "Downgrade";
         }
       }
       const net_reasons = (net_change_type === "Upgrade" || net_change_type === "Downgrade")
-        ? diffProducts(entry.monthly.get(last?.ym ?? "")?.products, entry.monthly.get(first?.ym ?? "")?.products)
+        ? diffProducts(entry.monthly.get(net_last_eff?.ym ?? "")?.products, entry.monthly.get(net_first_eff?.ym ?? "")?.products)
         : [];
 
       rows.push({
         key, domain: entry.domain, customer_name: entry.customer_name, business: entry.business, cs_email: entry.cs_email,
         account: entry.account, customer_status: entry.customer_status, monthCols,
         change_type: latest?.change_type ?? "—",
-        net_first_ym: first?.ym, net_first_amount: first?.amount, net_first_currency: first?.currency,
-        net_last_ym: last?.ym, net_last_amount: last?.amount, net_last_currency: last?.currency,
-        net_last_invoices: last?.invoices ?? [],
+        net_first_ym: net_first_eff?.ym ?? firstCol?.ym, net_first_amount: net_first_eff?.amount ?? 0, net_first_currency: net_first_eff?.currency,
+        net_last_ym: net_last_eff?.ym ?? lastCol?.ym, net_last_amount: net_last_eff?.amount ?? 0, net_last_currency: net_last_eff?.currency,
+        net_last_invoices: entry.monthly.get(lastCol?.ym ?? "")?.invoices ?? [],
         net_reasons,
         net_change_type, net_delta,
       });
@@ -1072,7 +1078,7 @@ export default function Dashboard() {
   // ── Revenue month-over-month exports ──────────────────────────────────────
   function invoiceRefsToText(invs: RevenueInvoiceRef[]): string {
     if (!invs.length) return "";
-    return invs.map(iv => `${iv.invoice_number} (raised ${iv.invoice_date}${iv.paid_at ? `, paid ${iv.paid_at}` : `, ${iv.status}`}${iv.prorated && iv.period_start && iv.period_end ? `, prorated share of ${iv.period_start} to ${iv.period_end}` : ""})`).join("; ");
+    return invs.map(iv => `${iv.invoice_number} (raised ${iv.invoice_date}${iv.paid_at ? `, paid ${iv.paid_at}` : `, ${iv.status}`})`).join("; ");
   }
   function reasonsToText(reasons: RevenueReason[], currency: string): string {
     if (!reasons.length) return "";
@@ -1927,7 +1933,7 @@ export default function Dashboard() {
                                       <div style={{ marginTop: 3, fontSize: 10, color: "#94a3b8", fontWeight: 400, lineHeight: 1.5 }}>
                                         {c.invoices.map(iv => (
                                           <div key={iv.invoice_number} style={{ whiteSpace: "nowrap" }}>
-                                            {iv.status === "paid" ? "✓" : "○"} {iv.invoice_number} · raised {fmtDate(iv.invoice_date)}{iv.paid_at ? ` · paid ${fmtDate(iv.paid_at)}` : ` · ${iv.status}`}{iv.prorated && iv.period_start && iv.period_end ? ` · prorated share of ${fmtDate(iv.period_start)} to ${fmtDate(iv.period_end)}` : ""}
+                                            {iv.status === "paid" ? "✓" : "○"} {iv.invoice_number} · raised {fmtDate(iv.invoice_date)}{iv.paid_at ? ` · paid ${fmtDate(iv.paid_at)}` : ` · ${iv.status}`}
                                           </div>
                                         ))}
                                       </div>
@@ -1975,7 +1981,7 @@ export default function Dashboard() {
                                   <div style={{ marginTop: 3, fontSize: 10, color: "#94a3b8", lineHeight: 1.5 }}>
                                     {r.net_last_invoices.map(iv => (
                                       <div key={iv.invoice_number} style={{ whiteSpace: "nowrap" }}>
-                                        {iv.status === "paid" ? "✓" : "○"} {iv.invoice_number} · raised {fmtDate(iv.invoice_date)}{iv.paid_at ? ` · paid ${fmtDate(iv.paid_at)}` : ` · ${iv.status}`}{iv.prorated && iv.period_start && iv.period_end ? ` · prorated share of ${fmtDate(iv.period_start)} to ${fmtDate(iv.period_end)}` : ""}
+                                        {iv.status === "paid" ? "✓" : "○"} {iv.invoice_number} · raised {fmtDate(iv.invoice_date)}{iv.paid_at ? ` · paid ${fmtDate(iv.paid_at)}` : ` · ${iv.status}`}
                                       </div>
                                     ))}
                                   </div>
@@ -1988,7 +1994,7 @@ export default function Dashboard() {
                     </table>
                   </div>
                   <div style={{ textAlign: "center", padding: "12px 0", color: "#94a3b8", fontSize: 12 }}>
-                    Revenue is spread day-weighted across every calendar month the invoice&apos;s service period actually covers (e.g. a Feb–Jul period contributes a share to each of those 6 months, not just Feb), voided invoices excluded, <b>net of Credit Notes</b> (a fully-credited invoice counts as no sale), <b>ex-GST for India</b> (uses Stripe&apos;s tax figure when available, else assumes 18%) · each month cell is compared to its own actual previous calendar month · &quot;Net Change&quot; compares the last selected month directly against the first selected month — e.g. selecting a full quarter shows the net movement across that quarter · Upgrade/Downgrade reasons are matched by Stripe product (falls back to line description if a line has no Price/Product attached) and use raw line amounts, not GST/Credit-Note adjusted
+                    Revenue = full invoice amount booked to its service period&apos;s start month (e.g. Jun 23–Jul 23 counts entirely as June, no day-splitting), voided invoices excluded, <b>net of Credit Notes</b> (a fully-credited invoice counts as no sale), <b>ex-GST for India</b> (uses Stripe&apos;s tax figure when available, else assumes 18%) · a quiet month still covered by an earlier multi-month invoice shows &quot;—&quot; rather than a false Churned/Downgrade · &quot;Net Change&quot; compares the last selected month directly against the first selected month, using the last real billing state for each · Upgrade/Downgrade reasons are matched by Stripe product (falls back to line description if a line has no Price/Product attached) and use raw line amounts, not GST/Credit-Note adjusted
                   </div>
                 </>
               )}
