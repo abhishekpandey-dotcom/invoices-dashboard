@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T15:00:15.030Z",
+  "lastUpdated": "2026-07-24T15:00:40.703Z",
   "rowCount": 740,
   "data": [
     {
@@ -4218,7 +4218,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UiRcKLFq2ps9BI",
       "Domain name": "https://packagewarehouse.com/",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "sushant.singh@gushwork.ai",
       "Onboarding Call Date": "2026-06-15T18:30:00.000Z"
@@ -4389,7 +4389,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Envirofan_dummy",
       "Domain name": "www.envirofan.com",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "sarvesh.shetty@gushwork.ai",
       "Onboarding Call Date": "2026-06-22T18:30:00.000Z"
@@ -4461,7 +4461,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UlXHR7s40frpSk",
       "Domain name": "https://jacobsfamilyinsurance.net/",
-      "Status": "Active",
+      "Status": "#N/A",
       "Business": "AI Agents",
       "CS Name": "manan.vispute@gushwork.ai",
       "Onboarding Call Date": "#N/A"
