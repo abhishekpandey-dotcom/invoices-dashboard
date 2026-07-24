@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-07-24T15:04:06.477Z",
-  "rowCount": 740,
+  "lastUpdated": "2026-07-24T15:04:16.825Z",
+  "rowCount": 739,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -5473,15 +5473,6 @@
       "Business": "AI Agents",
       "CS Name": "dheeraj.soni@gushwork.ai",
       "Onboarding Call Date": "2026-06-23T18:30:00.000Z"
-    },
-    {
-      "Customer Name": "",
-      "Stripe Customer ID": "#N/A",
-      "Domain name": "https://jacobsfamilyinsurance.net/",
-      "Status": "#N/A",
-      "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
     },
     {
       "Customer Name": "",
