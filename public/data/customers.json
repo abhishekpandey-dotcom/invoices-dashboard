@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T11:02:37.405Z",
+  "lastUpdated": "2026-07-24T11:02:39.845Z",
   "rowCount": 739,
   "data": [
     {
@@ -5908,11 +5908,11 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_URFYrHyH00Z6Ch",
       "Domain name": "www.gilcospring.com",
       "Status": "Post Onboarding Drop Off",
-      "Business": "",
-      "CS Name": ""
+      "Business": "AI Agents",
+      "CS Name": "muddasir.h@gushwork.ai"
     }
   ]
 }
