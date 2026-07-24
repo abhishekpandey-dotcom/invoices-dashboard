@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T15:01:19.873Z",
+  "lastUpdated": "2026-07-24T15:03:09.946Z",
   "rowCount": 740,
   "data": [
     {
@@ -3082,12 +3082,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "#N/A",
-      "Domain name": "https://tariffrefunds.priceridge.com/",
-      "Status": "#N/A",
+      "Stripe Customer ID": "cus_UXyMFmMvJB5RpT",
+      "Domain name": "tariffclaimprocessing.com",
+      "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "muddasir.h@gushwork.ai",
+      "Onboarding Call Date": "2026-05-18T18:30:00.000Z"
     },
     {
       "Customer Name": "",
