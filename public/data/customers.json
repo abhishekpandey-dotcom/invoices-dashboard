@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T14:58:40.837Z",
+  "lastUpdated": "2026-07-24T14:58:42.588Z",
   "rowCount": 740,
   "data": [
     {
@@ -4117,7 +4117,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Respondpropertysolutions_dummy",
       "Domain name": "respondpropertysolutions.com",
       "Status": "Active",
       "Business": "AI Agents",
