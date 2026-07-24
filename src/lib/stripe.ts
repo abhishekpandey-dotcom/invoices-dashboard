@@ -79,6 +79,15 @@ export interface CustomerDSO {
   collection_method: "charge_automatically" | "send_invoice";
 }
 // ── AllCustomer types (for the full ledger tab) ────────────────────────────────
+export interface AllCustomerInvoiceLine {
+  /** Stable identity for matching the "same product" across months: the Stripe Product ID when
+   *  available, otherwise a normalized version of the line's description as a fallback. */
+  product_key: string;
+  /** Human-readable name to display: price nickname, else the line description, else the price ID. */
+  name: string;
+  /** Amount for this line item, native currency (Stripe's raw line amount — not GST/credit-note adjusted). */
+  amount: number;
+}
 export interface AllCustomerInvoice {
   id: string;
   invoice_number: string;
@@ -88,6 +97,8 @@ export interface AllCustomerInvoice {
   amount: number;
   /** Tax (e.g. GST) amount included in `amount`, in native currency. 0 if Stripe reports none/unavailable. */
   tax: number;
+  /** Total amount credited back via Credit Notes (pre + post payment), native currency. A fully-credited invoice should count as 0 revenue. */
+  credited: number;
   /** Amount already paid (native currency) */
   amount_paid: number;
   currency: string;
@@ -95,6 +106,8 @@ export interface AllCustomerInvoice {
   invoice_date: string;
   /** ISO date of due date (null if none) */
   due_date: string | null;
+  /** ISO date the invoice was actually marked paid (null if not paid, or Stripe has no record) */
+  paid_at: string | null;
   /** Start of service period from first line item */
   period_start: string | null;
   /** End of service period from first line item */
@@ -105,6 +118,9 @@ export interface AllCustomerInvoice {
   receipt_url: string | null;
   description: string;
   collection_method: "charge_automatically" | "send_invoice";
+  /** Per-line-item breakdown (product identity + amount) — used to explain WHY a month's total changed:
+   *  new product added, a product dropped off, or an existing product's price/amount changed. */
+  line_items: AllCustomerInvoiceLine[];
 }
 export interface AllCustomer {
   customer_id: string;
@@ -317,7 +333,7 @@ async function fetchAllCustomerInvoices(
       limit: 100,
       created: { gte: since },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expand: ["data.charge"] as any,
+      expand: ["data.charge", "data.lines.data.price"] as any,
       ...(startingAfter ? { starting_after: startingAfter } : {}),
     });
     for (const inv of page.data) {
@@ -352,16 +368,30 @@ async function fetchAllCustomerInvoices(
       const dueDateStr = inv.due_date
         ? new Date(inv.due_date * 1000).toISOString().split("T")[0]
         : null;
+      const paidAtStr = inv.status_transitions?.paid_at
+        ? new Date(inv.status_transitions.paid_at * 1000).toISOString().split("T")[0]
+        : null;
+      const lineItems: AllCustomerInvoiceLine[] = (inv.lines?.data ?? []).map(line => {
+        const price = line.price && typeof line.price === "object" ? line.price : null;
+        const productId = price?.product
+          ? (typeof price.product === "string" ? price.product : price.product.id)
+          : null;
+        const productKey = productId ?? ((line.description ?? "").trim().toLowerCase() || `line_${line.id}`);
+        const name = price?.nickname ?? line.description ?? price?.id ?? "Item";
+        return { product_key: productKey, name, amount: (line.amount ?? 0) / 100 };
+      });
       const invoiceRow: AllCustomerInvoice = {
         id: inv.id,
         invoice_number: inv.number ?? inv.id,
         status: inv.status ?? "open",
         amount: (inv.amount_due ?? inv.total ?? 0) / 100,
         tax: (inv.tax ?? 0) / 100,
+        credited: ((inv.pre_payment_credit_notes_amount ?? 0) + (inv.post_payment_credit_notes_amount ?? 0)) / 100,
         amount_paid: (inv.amount_paid ?? 0) / 100,
         currency: inv.currency.toUpperCase(),
         invoice_date: invoiceDate,
         due_date: dueDateStr,
+        paid_at: paidAtStr,
         period_start: periodStart,
         period_end: periodEnd,
         invoice_url: inv.hosted_invoice_url ?? null,
@@ -369,6 +399,7 @@ async function fetchAllCustomerInvoices(
         receipt_url: receiptUrl,
         description: inv.description ?? "",
         collection_method: cm,
+        line_items: lineItems,
       };
       if (!map.has(key)) {
         map.set(key, {
