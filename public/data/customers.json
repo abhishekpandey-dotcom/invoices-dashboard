@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T14:58:42.588Z",
+  "lastUpdated": "2026-07-24T14:58:44.073Z",
   "rowCount": 740,
   "data": [
     {
@@ -4126,7 +4126,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Ductincorporated_dummy",
       "Domain name": "https://ductincorporated.com/",
       "Status": "Active",
       "Business": "AI Agents",
