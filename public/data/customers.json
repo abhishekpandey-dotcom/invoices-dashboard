@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T15:03:29.238Z",
+  "lastUpdated": "2026-07-24T15:03:50.688Z",
   "rowCount": 740,
   "data": [
     {
@@ -4999,12 +4999,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "#N/A",
-      "Domain name": "actioneer.com",
-      "Status": "#N/A",
+      "Stripe Customer ID": "cus_Actioneer_dummy",
+      "Domain name": "actioneer.com ",
+      "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "abhinav.chaturvedi@gushwork.ai",
+      "Onboarding Call Date": "2026-06-14T18:30:00.000Z"
     },
     {
       "Customer Name": "",
