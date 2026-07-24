@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T15:03:09.946Z",
+  "lastUpdated": "2026-07-24T15:03:24.762Z",
   "rowCount": 740,
   "data": [
     {
@@ -4459,12 +4459,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_UlXHR7s40frpSk",
-      "Domain name": "https://jacobsfamilyinsurance.net/",
-      "Status": "#N/A",
+      "Stripe Customer ID": "#N/A",
+      "Domain name": "https://jacobs-familyinsurance.com",
+      "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "carlisle.dcosta@gushwork.ai",
+      "Onboarding Call Date": "2026-06-23T18:30:00.000Z"
     },
     {
       "Customer Name": "",
