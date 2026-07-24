@@ -682,17 +682,22 @@ export default function Dashboard() {
   }
   /** Splits a service period into calendar months with a day-weighted fraction each.
    *  Stripe's line.period.end is exclusive (the instant the next period begins), so we count
-   *  days in [start, end). Falls back to a single full month if start/end aren't a real range. */
+   *  days in [start, end). Falls back to a single full month if start/end aren't a real range,
+   *  or if the span looks like bad data (e.g. a mistakenly far-future period_end) rather than a
+   *  genuine multi-month plan — capped at ~13 months so one bad invoice can't smear tiny revenue
+   *  slivers years into the future and hijack "which months are recent." */
+  const MAX_PRORATE_DAYS = 400;
   function prorateAcrossMonths(periodStart: string | null, periodEnd: string | null, fallbackYm: string): { ym: string; fraction: number }[] {
     if (!periodStart || !periodEnd) return [{ ym: fallbackYm, fraction: 1 }];
     const start = new Date(`${periodStart}T00:00:00Z`);
     const end = new Date(`${periodEnd}T00:00:00Z`);
     if (!(end.getTime() > start.getTime())) return [{ ym: fallbackYm, fraction: 1 }];
+    const spanDays = Math.round((end.getTime() - start.getTime()) / 86_400_000);
+    if (spanDays > MAX_PRORATE_DAYS) return [{ ym: fallbackYm, fraction: 1 }];
     const dayCounts = new Map<string, number>();
     const cursor = new Date(start);
     let totalDays = 0;
-    // Safety cap so a malformed/very long period can't hang the browser
-    for (let i = 0; i < 3660 && cursor.getTime() < end.getTime(); i++) {
+    for (let i = 0; i < MAX_PRORATE_DAYS && cursor.getTime() < end.getTime(); i++) {
       const ym = `${cursor.getUTCFullYear()}-${String(cursor.getUTCMonth() + 1).padStart(2, "0")}`;
       dayCounts.set(ym, (dayCounts.get(ym) ?? 0) + 1);
       totalDays++;
@@ -783,12 +788,21 @@ export default function Dashboard() {
     return Array.from(months).sort().reverse(); // newest first
   }, [revenueByCustomer]);
 
-  // Default to the 2 most recent months once data is available (only fires while empty)
+  /** The 2 most recent months to default to — excludes anything after the real current month, so a single
+   *  invoice with a mistaken far-future period_end can't hijack "recent" and make the view default to
+   *  a near-empty future month. Falls back to the raw newest 2 only if literally everything is in the future. */
+  const sensibleDefaultMonths = useMemo(() => {
+    const nowYm = new Date().toISOString().slice(0, 7);
+    const notFuture = revenueMonthOptions.filter(ym => ym <= nowYm);
+    return (notFuture.length > 0 ? notFuture : revenueMonthOptions).slice(0, 2);
+  }, [revenueMonthOptions]);
+
+  // Default to the 2 most recent (non-future) months once data is available (only fires while empty)
   useEffect(() => {
-    if (planViewMode === "revenue" && revenueMonthsF.size === 0 && revenueMonthOptions.length > 0) {
-      setRevenueMonthsF(new Set(revenueMonthOptions.slice(0, 2)));
+    if (planViewMode === "revenue" && revenueMonthsF.size === 0 && sensibleDefaultMonths.length > 0) {
+      setRevenueMonthsF(new Set(sensibleDefaultMonths));
     }
-  }, [planViewMode, revenueMonthOptions, revenueMonthsF.size]);
+  }, [planViewMode, sensibleDefaultMonths, revenueMonthsF.size]);
 
   function toggleRevenueMonth(ym: string) {
     setRevenueMonthsF(prev => { const n = new Set(prev); n.has(ym) ? n.delete(ym) : n.add(ym); return n; });
@@ -1820,7 +1834,7 @@ export default function Dashboard() {
                           ))}
                           <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9" }}>
                             <button
-                              onClick={() => setRevenueMonthsF(new Set(revenueMonthOptions.slice(0, 2)))}
+                              onClick={() => setRevenueMonthsF(new Set(sensibleDefaultMonths))}
                               style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
                               Reset to latest 2
                             </button>
