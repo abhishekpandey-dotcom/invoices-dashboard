@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T14:54:06.057Z",
+  "lastUpdated": "2026-07-24T14:54:43.780Z",
   "rowCount": 740,
   "data": [
     {
@@ -4063,12 +4063,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_UjctFhKo10UKPX",
-      "Domain name": "https://concept32designs.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#N/A",
+      "Domain name": "https://concept32design.com/",
+      "Status": "#N/A",
       "Business": "AI Agents",
-      "CS Name": "sushant.singh@gushwork.ai",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "#N/A",
+      "Onboarding Call Date": "2026-06-16T18:30:00.000Z"
     },
     {
       "Customer Name": "",
