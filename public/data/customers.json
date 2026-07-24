@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T15:03:50.688Z",
+  "lastUpdated": "2026-07-24T15:04:06.477Z",
   "rowCount": 740,
   "data": [
     {
@@ -5224,12 +5224,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "#N/A",
-      "Domain name": "www.nimblemfg.co",
-      "Status": "#N/A",
+      "Stripe Customer ID": "cus_Nimblemfg_dummy",
+      "Domain name": "www.nimblemfg.co ",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "ramin.joseph@gushwork.ai",
+      "Onboarding Call Date": "2026-06-17T18:30:00.000Z"
     },
     {
       "Customer Name": "",
