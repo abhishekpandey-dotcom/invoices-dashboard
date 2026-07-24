@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T14:54:43.780Z",
+  "lastUpdated": "2026-07-24T14:54:52.605Z",
   "rowCount": 740,
   "data": [
     {
@@ -4065,7 +4065,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "#N/A",
       "Domain name": "https://concept32design.com/",
-      "Status": "#N/A",
+      "Status": "#REF!",
       "Business": "AI Agents",
       "CS Name": "#N/A",
       "Onboarding Call Date": "2026-06-16T18:30:00.000Z"
