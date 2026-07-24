@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T15:04:16.825Z",
+  "lastUpdated": "2026-07-24T15:04:28.286Z",
   "rowCount": 739,
   "data": [
     {
@@ -6133,12 +6133,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "#N/A",
-      "Domain name": "www.artisticiron.com",
-      "Status": "#N/A",
+      "Stripe Customer ID": "",
+      "Domain name": "www.artisticiron.com ",
+      "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "ramin.joseph@gushwork.ai",
+      "Onboarding Call Date": "2026-07-08T18:30:00.000Z"
     },
     {
       "Customer Name": "",
