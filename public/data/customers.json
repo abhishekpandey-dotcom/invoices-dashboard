@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T14:53:04.778Z",
+  "lastUpdated": "2026-07-24T14:54:06.057Z",
   "rowCount": 740,
   "data": [
     {
@@ -3487,12 +3487,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "#N/A",
-      "Domain name": "https://www.algorithmshift.ai",
-      "Status": "#N/A",
+      "Stripe Customer ID": "cus_Dual7_dummy",
+      "Domain name": "https://www.dual7.ai/",
+      "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "alfia.k@gushwork.ai",
+      "Onboarding Call Date": "2026-05-25T18:30:00.000Z"
     },
     {
       "Customer Name": "",
