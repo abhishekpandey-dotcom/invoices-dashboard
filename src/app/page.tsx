@@ -983,12 +983,36 @@ export default function Dashboard() {
     invoices: RevenueInvoiceRef[];
   }
   /** One row per detected change (Upgrade/Downgrade/Churned/New/Currency Switch) across the selected
-   *  months — a customer with 2 separate upsells gets 2 separate rows here, not netted into one. */
+   *  months — a customer with 2 separate upsells gets 2 separate rows here, not netted into one.
+   *  Special case: if a brand-new customer's first month has MORE THAN ONE invoice (e.g. a base plan
+   *  plus a same-month add-on, or a base plan plus a same-month price bump — whether that's a
+   *  different product or the same product re-invoiced for the same period), the first invoice
+   *  (by date) is the actual "New" signup and every additional invoice that month is its own separate
+   *  Upgrade event, instead of silently folding everything into one lump "New" total. */
   const revenueEvents = useMemo((): RevenueEvent[] => {
     const events: RevenueEvent[] = [];
     for (const r of revenueRows) {
       for (const c of r.monthCols) {
         if (c.change_type === "—" || c.change_type === "Flat") continue; // only real events are line items
+        if (c.change_type === "New/Reactivated" && c.invoices.length > 1) {
+          const sorted = [...c.invoices].sort((a, b) => a.invoice_date.localeCompare(b.invoice_date));
+          const [first, ...rest] = sorted;
+          events.push({
+            key: `${r.key}-${c.ym}-new`,
+            domain: r.domain, customer_name: r.customer_name, account: r.account, business: r.business, cs_email: r.cs_email,
+            currency: c.currency || c.prevCurrency || "", month: c.ym, change_type: "New/Reactivated",
+            prev_rate: 0, new_rate: first.amount, delta: first.amount, invoices: [first],
+          });
+          for (const iv of rest) {
+            events.push({
+              key: `${r.key}-${c.ym}-upsell-${iv.invoice_number}`,
+              domain: r.domain, customer_name: r.customer_name, account: r.account, business: r.business, cs_email: r.cs_email,
+              currency: c.currency || c.prevCurrency || "", month: c.ym, change_type: "Upgrade",
+              prev_rate: 0, new_rate: iv.amount, delta: iv.amount, invoices: [iv],
+            });
+          }
+          continue;
+        }
         events.push({
           key: `${r.key}-${c.ym}`,
           domain: r.domain, customer_name: r.customer_name, account: r.account, business: r.business, cs_email: r.cs_email,
@@ -1001,6 +1025,25 @@ export default function Dashboard() {
     events.sort((a, b) => b.month.localeCompare(a.month) || Math.abs(b.delta) - Math.abs(a.delta));
     return events;
   }, [revenueRows]);
+
+  /** Total upsell ($ from every "Upgrade" event, including the new-customer-add-on case above),
+   *  grouped per customer — answers "how much has this specific customer upsold in total." */
+  interface UpsellByCustomer { key: string; domain: string; customer_name: string; account: string; business: string; cs_email: string; currency: string; total: number; count: number; }
+  const revenueUpsellByCustomer = useMemo((): UpsellByCustomer[] => {
+    const map = new Map<string, UpsellByCustomer>();
+    for (const e of revenueEvents) {
+      if (e.change_type !== "Upgrade") continue;
+      const key = `${e.account}::${e.domain || e.customer_name}`;
+      if (!map.has(key)) {
+        map.set(key, { key, domain: e.domain, customer_name: e.customer_name, account: e.account, business: e.business, cs_email: e.cs_email, currency: e.currency, total: 0, count: 0 });
+      }
+      const entry = map.get(key)!;
+      entry.total += e.delta;
+      entry.count++;
+      if (e.currency) entry.currency = e.currency;
+    }
+    return Array.from(map.values()).sort((a, b) => b.total - a.total);
+  }, [revenueEvents]);
 
   const revenueUpgradeCount   = useMemo(() => revenueEvents.filter(e => e.change_type === "Upgrade").length,   [revenueEvents]);
   const revenueDowngradeCount = useMemo(() => revenueEvents.filter(e => e.change_type === "Downgrade").length, [revenueEvents]);
@@ -1164,6 +1207,9 @@ export default function Dashboard() {
   function downloadRevenueExcel() {
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([revenueHeaders(), ...revenueRowsForExport()]), "Revenue MoM");
+    const upsellHeaders = ["Domain","Customer","Account","Business","CS Owner","Currency","Total Upsell","# Upsells"];
+    const upsellRows = revenueUpsellByCustomer.map(u => [u.domain, u.customer_name, u.account, u.business, u.cs_email, u.currency, Number(u.total.toFixed(2)), u.count]);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([upsellHeaders, ...upsellRows]), "Upsell by Customer");
     XLSX.writeFile(wb, `revenue-month-over-month-${new Date().toISOString().split("T")[0]}.xlsx`);
   }
 
@@ -1887,11 +1933,16 @@ export default function Dashboard() {
                               {planMonthLabel(ym)}
                             </label>
                           ))}
-                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9", gap: 10 }}>
                             <button
                               onClick={() => setRevenueMonthsF(new Set(sensibleDefaultMonths))}
                               style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
                               Reset to latest 2
+                            </button>
+                            <button
+                              onClick={() => setRevenueMonthsF(new Set(revenueMonthOptions))}
+                              style={{ fontSize: 11, color: "#16a34a", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                              Select all
                             </button>
                             <button
                               onClick={() => setRevenueMonthPickerOpen(false)}
@@ -1916,10 +1967,39 @@ export default function Dashboard() {
                       </thead>
                       <tbody>
                         {revenueEvents.length === 0 ? (
-                          <tr><td colSpan={10} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
-                            <div style={{ fontSize: 32, marginBottom: 8 }}>💰</div>
-                            <div style={{ fontWeight: 600 }}>{revenueMonthsF.size === 0 ? "Select at least one month above" : "No changes detected in the selected months"}</div>
-                          </td></tr>
+                          revenueMonthsF.size === 0 ? (
+                            <tr><td colSpan={10} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
+                              <div style={{ fontSize: 32, marginBottom: 8 }}>💰</div>
+                              <div style={{ fontWeight: 600 }}>Select at least one month above</div>
+                            </td></tr>
+                          ) : planSearch && revenueRows.length > 0 ? (
+                            <tr><td colSpan={10} style={{ padding: 24 }}>
+                              <div style={{ textAlign: "center", color: "#94a3b8", marginBottom: 16 }}>
+                                <div style={{ fontSize: 28, marginBottom: 6 }}>📊</div>
+                                <div style={{ fontWeight: 600, color: "#475569" }}>
+                                  {revenueRows.length} customer{revenueRows.length !== 1 ? "s" : ""} matched &quot;{planSearch}&quot;, but no price change was detected in the selected months
+                                </div>
+                                <div style={{ fontSize: 12, marginTop: 2 }}>Their invoiced amount has been the same every cycle — here&apos;s what they&apos;ve actually been billed:</div>
+                              </div>
+                              {revenueRows.map(r => (
+                                <div key={r.key} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: "10px 14px", marginBottom: 8 }}>
+                                  <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a", marginBottom: 4 }}>{r.domain || r.customer_name}</div>
+                                  <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+                                    {r.monthCols.map(c => (
+                                      <span key={c.ym} style={{ fontSize: 12, color: "#475569" }}>
+                                        {planMonthLabel(c.ym)}: <b>{c.amount > 0 ? `${c.currency} ${c.amount.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : "—"}</b>
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </td></tr>
+                          ) : (
+                            <tr><td colSpan={10} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
+                              <div style={{ fontSize: 32, marginBottom: 8 }}>💰</div>
+                              <div style={{ fontWeight: 600 }}>No changes detected in the selected months</div>
+                            </td></tr>
+                          )
                         ) : revenueEvents.map((e, i) => {
                           const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
                           const chipStyle = (t: string): React.CSSProperties =>
@@ -1964,6 +2044,39 @@ export default function Dashboard() {
                   <div style={{ textAlign: "center", padding: "12px 0", color: "#94a3b8", fontSize: 12 }}>
                     Revenue booked to the invoice&apos;s period start month · ex-GST/Credit-Note for India · one row per detected change — a customer with 2 upsells shows 2 rows
                   </div>
+
+                  {revenueUpsellByCustomer.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      <div style={S.sectionLabel}>Total Upsell by Customer</div>
+                      <div style={S.tableWrap}>
+                        <table style={S.table}>
+                          <thead>
+                            <tr>
+                              {["Domain","Account","Business","CS Owner","Currency","Total Upsell","# Upsells"].map(label => (
+                                <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {revenueUpsellByCustomer.map((u, i) => (
+                              <tr key={u.key} style={{ background: i % 2 === 0 ? "#fff" : "#fafbff" }}>
+                                <td style={S.td}>
+                                  <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{u.domain || "—"}</div>
+                                  <div style={{ fontSize: 11, color: "#94a3b8" }}>{u.customer_name}</div>
+                                </td>
+                                <td style={S.td}><span style={acctStyle(u.account)}>{u.account}</span></td>
+                                <td style={S.td}>{u.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
+                                <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{u.cs_email?.split("@")[0] || "—"}</span></td>
+                                <td style={{ ...S.td, fontWeight: 700, color: "#475569" }}>{u.currency || "—"}</td>
+                                <td style={{ ...S.td, fontWeight: 700, color: "#16a34a" }}>{u.total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                <td style={S.td}>{u.count}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
             </>
