@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-28T10:59:01.867Z",
+  "lastUpdated": "2026-07-28T10:59:20.449Z",
   "rowCount": 740,
   "data": [
     {
@@ -6556,12 +6556,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "#N/A",
-      "Domain name": "filevision.net",
-      "Status": "#N/A",
+      "Stripe Customer ID": "",
+      "Domain name": "Filevisionhousing.net",
+      "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "sushant.singh@gushwork.ai",
+      "Onboarding Call Date": "2026-07-16T18:30:00.000Z"
     },
     {
       "Customer Name": "",
