@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-07-28T10:54:47.754Z",
-  "rowCount": 739,
+  "lastUpdated": "2026-07-28T10:55:34.864Z",
+  "rowCount": 740,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -6652,6 +6652,15 @@
       "Business": "AI Agents",
       "CS Name": "sukriti.shukla@gushwork.ai",
       "Onboarding Call Date": "2026-03-24T18:30:00.000Z"
+    },
+    {
+      "Customer Name": "",
+      "Stripe Customer ID": "",
+      "Domain name": "https://alwaysazul.com/",
+      "Status": "To be Onboarded",
+      "Business": "",
+      "CS Name": "",
+      "Onboarding Call Date": ""
     }
   ]
 }
