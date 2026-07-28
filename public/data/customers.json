@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-24T15:06:56.239Z",
+  "lastUpdated": "2026-07-28T10:53:14.153Z",
   "rowCount": 739,
   "data": [
     {
@@ -13,7 +13,7 @@
     },
     {
       "Customer Name": "Abba HVAC Inc",
-      "Stripe Customer ID": "cus_TBj5AjAtb6lcdw",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.abbahvac.com/",
       "Status": "Inactive",
       "Business": "AI Agents",
@@ -22,12 +22,12 @@
     },
     {
       "Customer Name": "Acadia Stairs, LLC",
-      "Stripe Customer ID": "cus_TuEE97heAoOyEn",
-      "Domain name": "https://www.acadiastairs.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2026-01-13T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Accurate Automatic Mfg",
@@ -40,16 +40,16 @@
     },
     {
       "Customer Name": "ACH Engineering Inc.",
-      "Stripe Customer ID": "cus_TeRWiy4bzirRvl",
-      "Domain name": "https://www.achengineering.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2025-12-21T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "AiPrise Inc",
-      "Stripe Customer ID": "cus_QjPrC0bj9Iv7rF",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "www.aiprise.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -58,7 +58,7 @@
     },
     {
       "Customer Name": "Akiflow Inc",
-      "Stripe Customer ID": "cus_Rr6PS3UsPUqIbu",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://akiflow.com/",
       "Status": "Inactive",
       "Business": "Services",
@@ -67,7 +67,7 @@
     },
     {
       "Customer Name": "ALAANPAY TECHNOLOGY FZCO",
-      "Stripe Customer ID": "cus_QrbHZNg7EohXnc",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "alaan.com",
       "Status": "Active",
       "Business": "Services",
@@ -103,7 +103,7 @@
     },
     {
       "Customer Name": "AQUARIUM PARADISE",
-      "Stripe Customer ID": "cus_SPHX5FXSuOZ41q",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "theaquariumparadise.com",
       "Status": "Active",
       "Business": "Services",
@@ -121,7 +121,7 @@
     },
     {
       "Customer Name": "BCD ROYALE LLP",
-      "Stripe Customer ID": "cus_R4NxLbKegRpGU8",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "bcdindia.com",
       "Status": "Active",
       "Business": "Services",
@@ -139,7 +139,7 @@
     },
     {
       "Customer Name": "Bourbon Science Inc.",
-      "Stripe Customer ID": "cus_RzhWnEzkSWOHo1",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.zoko.io/",
       "Status": "Inactive",
       "Business": "Services",
@@ -157,16 +157,16 @@
     },
     {
       "Customer Name": "CA Home Solar",
-      "Stripe Customer ID": "cus_TeX5J2xlu5G7Oi",
-      "Domain name": "https://cahomesolar.com",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2025-12-11T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "CandorIQ Inc.",
-      "Stripe Customer ID": "cus_SE4zF3M1Rh00t2",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.candoriq.com/",
       "Status": "Active",
       "Business": "Services",
@@ -184,25 +184,25 @@
     },
     {
       "Customer Name": "Central Air & Refrigeration",
-      "Stripe Customer ID": "cus_TN88s2LJFDw5FX",
-      "Domain name": "https://centralairandrefrigeration.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2025-11-02T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "CHEMITEK PROCESS EQUIPMENTS PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_SdaE2Cg5SS7ge7",
-      "Domain name": "https://www.chemitek.co.in/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2025-06-30T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Cipher Group Technologies Inc.",
-      "Stripe Customer ID": "cus_S0yUPTThGn7TrC",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "lumenci.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -211,7 +211,7 @@
     },
     {
       "Customer Name": "Clockwise, Inc",
-      "Stripe Customer ID": "cus_RDLNzQTt2PRqpy",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "www.getclockwise.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -220,12 +220,12 @@
     },
     {
       "Customer Name": "cnsrv inc",
-      "Stripe Customer ID": "cus_U11WBH3SgzrLj8",
-      "Domain name": "https://cnsrv.com/",
-      "Status": "Post Onboarding Drop Off",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2026-02-09T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "CODEWAVE TECHNOLOGIES PRIVATE LIMITED",
@@ -238,7 +238,7 @@
     },
     {
       "Customer Name": "COFFYE INNOVATIONS PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_TeLWLVJkAGJzH8",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "appmaker.xyz",
       "Status": "Active",
       "Business": "Services",
@@ -247,7 +247,7 @@
     },
     {
       "Customer Name": "Commenda Technologies, Inc",
-      "Stripe Customer ID": "cus_RdLvsbAYfe490h",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "commenda.io",
       "Status": "Inactive",
       "Business": "Services",
@@ -265,7 +265,7 @@
     },
     {
       "Customer Name": "Coverage Now Insurance Agency LLC",
-      "Stripe Customer ID": "cus_QN6g8B1DMCNtR4",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "skhan@twfg.com",
       "Status": "Active",
       "Business": "Services",
@@ -283,7 +283,7 @@
     },
     {
       "Customer Name": "CuriousRubik Pte Ltd",
-      "Stripe Customer ID": "cus_SqyHwY9VA5kjC9",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://riooapp.com/",
       "Status": "Active",
       "Business": "Services",
@@ -292,7 +292,7 @@
     },
     {
       "Customer Name": "DASHVERSE CORP",
-      "Stripe Customer ID": "cus_PuYe1gORRG9b2h",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "frameo.ai",
       "Status": "Active",
       "Business": "Services",
@@ -301,12 +301,12 @@
     },
     {
       "Customer Name": "Detroit Sealing Components",
-      "Stripe Customer ID": "cus_TaLjFzz5as1357",
-      "Domain name": "https://detroitsealing.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2025-12-10T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Douglas Machine & Engineering LLC",
@@ -328,7 +328,7 @@
     },
     {
       "Customer Name": "EMA UNLIMITED, INC.",
-      "Stripe Customer ID": "cus_QmsbxnxGyGzc0n",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "ema.co",
       "Status": "Active",
       "Business": "Services",
@@ -346,7 +346,7 @@
     },
     {
       "Customer Name": "Entelligence AI INC",
-      "Stripe Customer ID": "cus_TEWpP67lyfJNOX",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.entelligence.ai/",
       "Status": "Inactive",
       "Business": "Services",
@@ -355,43 +355,43 @@
     },
     {
       "Customer Name": "Evok Polymers",
-      "Stripe Customer ID": "cus_Tso5UYWuzRoehC",
-      "Domain name": "https://evokpoly.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2026-01-28T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Excellerant, Inc",
-      "Stripe Customer ID": "cus_TzVj8Mca462rXY",
-      "Domain name": "https://excellerant-mfg.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2026-01-26T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Expanda Stand Private Limited",
-      "Stripe Customer ID": "cus_SQnKJ4BQMgwhNL",
-      "Domain name": "https://www.expandastands.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2025-05-31T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Field Flower Collective",
-      "Stripe Customer ID": "cus_TuWXTjw5wYegOW",
-      "Domain name": "https://www.fieldflowercollective.com/",
-      "Status": "Churned",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "alfia.k@gushwork.ai",
-      "Onboarding Call Date": "2026-02-03T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "fielddrive BV",
-      "Stripe Customer ID": "cus_RNEWiJu9BoW83C",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "fielddrive.com",
       "Status": "Active",
       "Business": "Services",
@@ -400,7 +400,7 @@
     },
     {
       "Customer Name": "Founderlink Technologies Private Limited",
-      "Stripe Customer ID": "cus_QWLTG9SZgi3Dcd",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "www.recurclub.com/",
       "Status": "Inactive",
       "Business": "Services",
@@ -409,16 +409,16 @@
     },
     {
       "Customer Name": "FSR Radiators & Racing Products",
-      "Stripe Customer ID": "cus_TZBrCaKSq6hGJD",
-      "Domain name": "https://www.fsrproducts.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2025-12-02T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "FUN WORLD AND RESORTS INDIA PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_S2llvel9YeIiNP",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.funworldblr.com",
       "Status": "Active",
       "Business": "Services",
@@ -427,7 +427,7 @@
     },
     {
       "Customer Name": "Funfox",
-      "Stripe Customer ID": "cus_ONSWhvsUl5e5Hd",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://funfoxprogram.com.au/",
       "Status": "Active",
       "Business": "Services",
@@ -445,12 +445,12 @@
     },
     {
       "Customer Name": "GANNAYAK PACKAGING PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_TZ9gTaPIHRG362",
-      "Domain name": "https://gannayakpackaging.com/",
-      "Status": "Churned",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2025-11-24T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "GMS Industries Inc.",
@@ -472,7 +472,7 @@
     },
     {
       "Customer Name": "GrowthDuty Inc.",
-      "Stripe Customer ID": "cus_RSSCvoe2SlEMT2",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "segwise.ai",
       "Status": "Inactive",
       "Business": "Services",
@@ -490,7 +490,7 @@
     },
     {
       "Customer Name": "Hal Simplify",
-      "Stripe Customer ID": "cus_RAZu2fGwKBbAbM",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "halsimplify.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -499,7 +499,7 @@
     },
     {
       "Customer Name": "Halsted Financial Services LLC",
-      "Stripe Customer ID": "cus_PLhpYyU8dywmb3",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "halstedfinancialservices.com",
       "Status": "Active",
       "Business": "Services",
@@ -517,12 +517,12 @@
     },
     {
       "Customer Name": "Higginbotham Design LLC",
-      "Stripe Customer ID": "cus_Tsniuctw5wcXR0",
-      "Domain name": "https://www.higginbothamdesignllcofga.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2026-01-26T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Humphries Casters",
@@ -535,7 +535,7 @@
     },
     {
       "Customer Name": "Inventive AI Inc.",
-      "Stripe Customer ID": "cus_S8Ll2OQWwgO1cG",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.inventive.ai/",
       "Status": "Active",
       "Business": "Services",
@@ -544,7 +544,7 @@
     },
     {
       "Customer Name": "iOrders Technology Services Inc.",
-      "Stripe Customer ID": "cus_R9dZOBmnXzMmqR",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "iorders.ca",
       "Status": "Inactive",
       "Business": "Services",
@@ -562,12 +562,12 @@
     },
     {
       "Customer Name": "JAMES CALVERT",
-      "Stripe Customer ID": "cus_T5JS1OQ27j8kz8",
-      "Domain name": "https://www.apg-go.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2025-09-21T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Jesica Williams",
@@ -580,7 +580,7 @@
     },
     {
       "Customer Name": "JOEY YOUNGER",
-      "Stripe Customer ID": "cus_PQcnPCuExLURjP",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.theforesthillmanagement.com/",
       "Status": "Active",
       "Business": "Services",
@@ -598,7 +598,7 @@
     },
     {
       "Customer Name": "Keyaro Edutech Private Limited",
-      "Stripe Customer ID": "cus_QiJgC4R8yVO9YV",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "seekho.in",
       "Status": "Inactive",
       "Business": "Services",
@@ -607,16 +607,16 @@
     },
     {
       "Customer Name": "Lashley, Cohen and Associates, Inc.",
-      "Stripe Customer ID": "cus_TudmHwhvh6ZGkf",
-      "Domain name": "https://lashleycohen.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2026-01-29T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Law Offices of Sweta Khandelwal",
-      "Stripe Customer ID": "cus_Ned7fm4LWJImzV",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "khandelwalaw.com",
       "Status": "Active",
       "Business": "Services",
@@ -625,43 +625,43 @@
     },
     {
       "Customer Name": "Level Solutions Corp.",
-      "Stripe Customer ID": "cus_TuzeWeKDF5c7P2",
-      "Domain name": "https://levelsolutionsusa.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2026-02-02T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Local Air HVAC",
-      "Stripe Customer ID": "cus_TnYoAAVXA8Qxlq",
-      "Domain name": "https://www.localairhvac.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2026-01-15T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Machine Applications Corporation",
-      "Stripe Customer ID": "cus_TZFNoTasMcq0Zt",
-      "Domain name": "https://macinstruments.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2025-12-07T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Md Plastics Inc.",
-      "Stripe Customer ID": "cus_TF3U2Msvy7VQEY",
-      "Domain name": "https://mdplastics.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2025-09-21T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "MedSource, LLC",
-      "Stripe Customer ID": "cus_SOX8MbmcxlfjAq",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://insurancecoveredbreastpumps.com/",
       "Status": "Active",
       "Business": "Services",
@@ -670,61 +670,61 @@
     },
     {
       "Customer Name": "metro wholesale,inc",
-      "Stripe Customer ID": "cus_TuJjVRlB9jMoLh",
-      "Domain name": "https://www.metrowholesalesd.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2026-01-29T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Mideast Equipment Auctions, LLC",
-      "Stripe Customer ID": "cus_TuH2yu6X1KbW4G",
-      "Domain name": "https://www.mideastequip.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "alfia.k@gushwork.ai",
-      "Onboarding Call Date": "2026-01-26T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Mixing Systems, Inc.",
-      "Stripe Customer ID": "cus_TwpvPohly3AfD4",
-      "Domain name": "https://mixing.com",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2026-02-05T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Nesho Entertainment Private Limited",
-      "Stripe Customer ID": "cus_TsdxwK2eiEeyDy",
-      "Domain name": "https://www.madverse.co/",
-      "Status": "Churned",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2026-01-19T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "New American Reel Company",
-      "Stripe Customer ID": "cus_Toz2MD2HIlYg6G",
-      "Domain name": "https://www.narco.us/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2026-01-15T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Ni-Cad Systems, Inc.",
-      "Stripe Customer ID": "cus_TwtZ5uSb9HwXCi",
-      "Domain name": "https://www.nicadsystems.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2026-01-29T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Nurix Labs Private Limited",
-      "Stripe Customer ID": "cus_QUV1D8MSIXcQ2r",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "nurix.ai",
       "Status": "Active",
       "Business": "Services",
@@ -733,30 +733,30 @@
     },
     {
       "Customer Name": "On Line Controls, Inc.",
-      "Stripe Customer ID": "cus_TZYOCCAonjLmEA",
-      "Domain name": "https://onlinecontrols.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2025-12-07T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Opus KSD, Inc.",
-      "Stripe Customer ID": "cus_TyKDksb34THHxX",
-      "Domain name": "https://www.subq-it.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2026-02-12T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Orion Cordage",
-      "Stripe Customer ID": "cus_TznAWf3VWRpIid",
-      "Domain name": "https://orioncordage.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2026-01-22T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Pacific Wood and Iron, LLC",
@@ -769,7 +769,7 @@
     },
     {
       "Customer Name": "PAYGLOCAL TECHNOLOGIES PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_QcMGTCzeiN6ss1",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "payglocal.in",
       "Status": "Active",
       "Business": "Services",
@@ -778,7 +778,7 @@
     },
     {
       "Customer Name": "Pazago Inc",
-      "Stripe Customer ID": "cus_PTCgGpbIjM9PEk",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "pazago.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -787,25 +787,25 @@
     },
     {
       "Customer Name": "Percy's Lawn Care and Sons",
-      "Stripe Customer ID": "cus_RPNFNQ2QvgnCh6",
-      "Domain name": "https://www.percyslawncare.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "hridya.das@gushwork.ai",
-      "Onboarding Call Date": "2026-03-23T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Pico Systems",
-      "Stripe Customer ID": "cus_TWv3XeT8rmNFU7",
-      "Domain name": "https://picosystems.store/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2025-11-30T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "SPEEL FINANCE COMPANY PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_QeChVPLnMcxrot",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "pocketly.in",
       "Status": "Active",
       "Business": "Services",
@@ -814,25 +814,25 @@
     },
     {
       "Customer Name": "Poison-Free LLC",
-      "Stripe Customer ID": "cus_Tt5rK0WPSeJQ4x",
-      "Domain name": "https://www.privatelabelmanufacturing.biz/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2026-01-25T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Powell Systems, Inc.",
-      "Stripe Customer ID": "cus_Tn9xs4t6wT3mUn",
-      "Domain name": "https://www.powellsystems.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "alfia.k@gushwork.ai",
-      "Onboarding Call Date": "2026-01-13T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Pro Coffee Gear LLC",
-      "Stripe Customer ID": "cus_Ri5jUXgqQsVpYx",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "procoffeegear.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -841,7 +841,7 @@
     },
     {
       "Customer Name": "Proponitis Tech Private Limited",
-      "Stripe Customer ID": "cus_POIURu9qrpYeJL",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "simply.coach",
       "Status": "Inactive",
       "Business": "Services",
@@ -859,7 +859,7 @@
     },
     {
       "Customer Name": "Resemble AI",
-      "Stripe Customer ID": "cus_QbzSXcFDDhGyao",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "resemble.ai",
       "Status": "Active",
       "Business": "Services",
@@ -868,12 +868,12 @@
     },
     {
       "Customer Name": "Robert Wilson",
-      "Stripe Customer ID": "cus_TJHDrUdhhZRuMy",
-      "Domain name": "https://www.valuadd.net/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2025-10-21T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Rodgers Ent.  Dist. Inc.",
@@ -886,21 +886,21 @@
     },
     {
       "Customer Name": "Sarkinen Calibrating llc",
-      "Stripe Customer ID": "cus_Twuor4Zb7Ec5tF",
-      "Domain name": "https://www.sarkinencalibrating.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "alfia.k@gushwork.ai",
-      "Onboarding Call Date": "2026-02-08T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Scan Sound, Inc.",
-      "Stripe Customer ID": "cus_TZYHHoK4zV0kNx",
-      "Domain name": "https://scansound.com/",
-      "Status": "Churned",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2025-12-02T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "SCRUB UP CAR WASH L.L.C",
@@ -913,7 +913,7 @@
     },
     {
       "Customer Name": "Segmind Inc.",
-      "Stripe Customer ID": "cus_QmQtCJo5sxiURj",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "segmind.com",
       "Status": "Active",
       "Business": "Services",
@@ -922,7 +922,7 @@
     },
     {
       "Customer Name": "Seven Billion Technologies Pvt Ltd",
-      "Stripe Customer ID": "cus_SOroww5ch472Yg",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.nector.io/",
       "Status": "Inactive",
       "Business": "Services",
@@ -931,7 +931,7 @@
     },
     {
       "Customer Name": "Shepherd Outsourcing",
-      "Stripe Customer ID": "cus_PLoEcYM8Ai7eNb",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "shepherdoutsourcing.com",
       "Status": "Active",
       "Business": "Services",
@@ -940,12 +940,12 @@
     },
     {
       "Customer Name": "SHRIDHAM GLOBAL VENTURES PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_TLOi1aECUZsvpO",
-      "Domain name": "https://www.graintraderindia.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2025-09-30T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Simon Lee",
@@ -958,7 +958,7 @@
     },
     {
       "Customer Name": "SKO Development LLC",
-      "Stripe Customer ID": "cus_RG1Djgb646OUuv",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://planacan.io/",
       "Status": "Active",
       "Business": "Services",
@@ -976,7 +976,7 @@
     },
     {
       "Customer Name": "SMALLEST INC",
-      "Stripe Customer ID": "cus_RPRTKAK6IHkiRW",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "Smallest.ai",
       "Status": "Inactive",
       "Business": "Services",
@@ -985,12 +985,12 @@
     },
     {
       "Customer Name": "Softrol Systems, Inc.",
-      "Stripe Customer ID": "cus_TJxXY22MfIgXYA",
-      "Domain name": "https://softrol.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2025-10-27T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Source Equipment",
@@ -1003,7 +1003,7 @@
     },
     {
       "Customer Name": "South East Client Services",
-      "Stripe Customer ID": "cus_OeBewfAsk3Zf3V",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "southeastclientservicesinc.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -1012,7 +1012,7 @@
     },
     {
       "Customer Name": "Spire Recovery Solutions",
-      "Stripe Customer ID": "cus_O6hxXticxfPMvj",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "spirerec.com",
       "Status": "Active",
       "Business": "Services",
@@ -1048,25 +1048,25 @@
     },
     {
       "Customer Name": "Sure-loc Edging/Wolverine Tools",
-      "Stripe Customer ID": "cus_U0Gy3cQXZZRyg8",
-      "Domain name": "https://surelocedging.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2026-02-11T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "SURELOCK PLASTICS PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_S3XSFkenmoybNc",
-      "Domain name": "https://www.surelock.in/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2025-05-31T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "SYNERGITA SOFTWARE PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_Sg2SKskwaha4ii",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.synergita.com/",
       "Status": "Inactive",
       "Business": "Services",
@@ -1075,7 +1075,7 @@
     },
     {
       "Customer Name": "TBWS, LLC",
-      "Stripe Customer ID": "cus_SilDlTmAIzyEbk",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://twobrokewatchsnobs.com/",
       "Status": "Active",
       "Business": "Services",
@@ -1102,21 +1102,21 @@
     },
     {
       "Customer Name": "ToDo Robotics LLC",
-      "Stripe Customer ID": "cus_TZqU4j52nIdaud",
-      "Domain name": "https://todorobotics.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2025-12-08T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "TorcSill Foundations LLC",
-      "Stripe Customer ID": "cus_TdMSqcnOsHtsNJ",
-      "Domain name": "https://torcsill.com/",
-      "Status": "Churned",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2025-12-18T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Trash Truck Rental Inc",
@@ -1129,7 +1129,7 @@
     },
     {
       "Customer Name": "Tratta",
-      "Stripe Customer ID": "cus_NYb0h6UleGYgIq",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "tratta.io",
       "Status": "Active",
       "Business": "Services",
@@ -1138,25 +1138,25 @@
     },
     {
       "Customer Name": "TriNu Powder Coating LLC",
-      "Stripe Customer ID": "cus_TxFVzI2SmssdO9",
-      "Domain name": "http://www.trinupowdercoating.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2026-01-27T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Truecost Group LLC",
-      "Stripe Customer ID": "cus_TuAm3xWc579076",
-      "Domain name": "https://truecostgroup.us/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "alfia.k@gushwork.ai",
-      "Onboarding Call Date": "2026-01-23T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "TSH Anywhere",
-      "Stripe Customer ID": "cus_QhHYAnFHc2jUOH",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "theschoolhouse.org",
       "Status": "Active",
       "Business": "Services",
@@ -1165,7 +1165,7 @@
     },
     {
       "Customer Name": "Ulabs Inc",
-      "Stripe Customer ID": "cus_RSNjpVWm1p4WzE",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "udext.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -1174,7 +1174,7 @@
     },
     {
       "Customer Name": "VComply Technologies, Inc",
-      "Stripe Customer ID": "cus_PIG2tJJCPdFhI6",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "v-comply.com",
       "Status": "Inactive",
       "Business": "Services",
@@ -1183,7 +1183,7 @@
     },
     {
       "Customer Name": "VELANTIS DERMATOLOGY (OPC) PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_TaLR52yIrmD4ZT",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "velantisdermatology.com",
       "Status": "Active",
       "Business": "Services",
@@ -1201,12 +1201,12 @@
     },
     {
       "Customer Name": "What if Design",
-      "Stripe Customer ID": "cus_Tui7kHe1ZweoEl",
-      "Domain name": "https://www.whatifdesign.co/",
-      "Status": "Churned",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2026-01-19T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "William Bedillion",
@@ -1219,16 +1219,16 @@
     },
     {
       "Customer Name": "Wintegral Engineering Pvt. Ltd.",
-      "Stripe Customer ID": "cus_ThnpWw2Ue7dlOa",
-      "Domain name": "https://www.wintegral.co.in/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sushanth.raj@gushwork.ai",
-      "Onboarding Call Date": "2025-12-28T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "ZOHO CORPORATION PRIVATE LIMITED",
-      "Stripe Customer ID": "cus_SIw2Qewne0uWvp",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.zoho.com/creator/",
       "Status": "Inactive",
       "Business": "Services",
@@ -1237,12 +1237,12 @@
     },
     {
       "Customer Name": "Buffalo Computer Graphics",
-      "Stripe Customer ID": "cus_UFZ4TUQkPB6Waz",
-      "Domain name": "https://www.buffalocomputergraphics.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "ashmini.poddar@gushwork.ai",
-      "Onboarding Call Date": "2026-02-01T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Innovative Machine Tool Solutions",
@@ -1300,12 +1300,12 @@
     },
     {
       "Customer Name": "ahshydraulics",
-      "Stripe Customer ID": "cus_UCblkhkHxIrhFx",
-      "Domain name": "https://ahshydraulics.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2026-01-29T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Cygnet Infotech Private Limited",
@@ -1327,12 +1327,12 @@
     },
     {
       "Customer Name": "Pillars FinCrime Advisory",
-      "Stripe Customer ID": "cus_UCzlYpPPc4OEA8",
-      "Domain name": "https://pillarsfincrimeadvisory.com/ ",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "sana.shaik@gushwork.ai",
-      "Onboarding Call Date": "2026-03-23T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Level-EZE",
@@ -1426,12 +1426,12 @@
     },
     {
       "Customer Name": "NV Mechanics Design Ltd",
-      "Stripe Customer ID": "cus_UARJw72vBY6gD8",
-      "Domain name": "https://underwateractuators.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "alfia.k@gushwork.ai",
-      "Onboarding Call Date": "2026-03-11T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "T.R. Wigglesworth Machinery Company",
@@ -1453,7 +1453,7 @@
     },
     {
       "Customer Name": "Distil",
-      "Stripe Customer ID": "cus_UogXcabYVemMnx",
+      "Stripe Customer ID": "cus_UAJVZ0wDPtTCeM",
       "Domain name": "https://www.distil.market/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -1750,12 +1750,12 @@
     },
     {
       "Customer Name": "Sabertooth Tech Group, LLC.",
-      "Stripe Customer ID": "cus_UDjXXW5b73Vbac",
-      "Domain name": "https://sabertoothpro.com/",
-      "Status": "Active",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "harikrishnan.en@gushwork.ai",
-      "Onboarding Call Date": "2026-03-25T18:30:00.000Z"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "CIVICGRID TECHNOLOGIES PRIVATE LIMITED",
@@ -1930,12 +1930,12 @@
     },
     {
       "Customer Name": "Nextlevel Consulting",
-      "Stripe Customer ID": "cus_ULeeElHP9tVPoS",
-      "Domain name": "#N/A",
-      "Status": "#N/A",
+      "Stripe Customer ID": "#REF!",
+      "Domain name": "#REF!",
+      "Status": "#REF!",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "#REF!",
+      "Onboarding Call Date": "#REF!"
     },
     {
       "Customer Name": "Omnisafe Co.",
@@ -2461,7 +2461,7 @@
     },
     {
       "Customer Name": "Nippon Doors General Trading LLC",
-      "Stripe Customer ID": "cus_S95nIGim3CSSoX",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "",
       "Status": "Inactive",
       "Business": "Services",
@@ -2470,7 +2470,7 @@
     },
     {
       "Customer Name": "Facteye Tech Labs Pvt Ltd,",
-      "Stripe Customer ID": "cus_QqC5vxakNunaO9",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "",
       "Status": "Inactive",
       "Business": "Services",
@@ -2479,7 +2479,7 @@
     },
     {
       "Customer Name": "KNOWBAL GROUP PTY LTD",
-      "Stripe Customer ID": "cus_R49NCILcXbCkVL",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "",
       "Status": "Inactive",
       "Business": "Services",
@@ -2515,7 +2515,7 @@
     },
     {
       "Customer Name": "Liam Alexander",
-      "Stripe Customer ID": "cus_P6MuigvipG7w1x",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "",
       "Status": "Active",
       "Business": "Services",
@@ -2587,7 +2587,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Luxurious Homes_dummy",
       "Domain name": "https://luxuriousHomes.com",
       "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
@@ -2641,7 +2641,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Baycopyanddata_dummy",
       "Domain name": "https://baycopyanddata.com",
       "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
@@ -3118,7 +3118,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Yushinamerica_dummy",
+      "Stripe Customer ID": "cus_UxjZ1jIIRaY1m1",
       "Domain name": "https://www.yushinamerica.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3244,7 +3244,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Writerrelocations_dummy",
+      "Stripe Customer ID": "cus_UsmtFbS6zg3ssa",
       "Domain name": "https://writerrelocations.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3316,7 +3316,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Wooqer_dummy",
+      "Stripe Customer ID": "cus_UwTVNLnWbOpL6t",
       "Domain name": "https://www.wooqer.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3703,7 +3703,7 @@
     },
     {
       "Customer Name": "Tri-state Asset Recovery",
-      "Stripe Customer ID": "cus_NbB7Um1GSFlAb2",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "tristateassetrecovery.com",
       "Status": "Active",
       "Business": "Services",
@@ -3766,7 +3766,7 @@
     },
     {
       "Customer Name": "Universal Engineering Services",
-      "Stripe Customer ID": "cus_Pb2atmvh051Yy8",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "ues.net",
       "Status": "Active",
       "Business": "Services",
@@ -3829,7 +3829,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Kustomerkinetics_dummy",
       "Domain name": "www.kustomerkinetics.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3847,7 +3847,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Uptiq_dummy",
       "Domain name": "https://www.uptiq.ai/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3856,7 +3856,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Gomyto_dummy",
       "Domain name": "gomyto.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3892,7 +3892,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Yourhealthyourmoneyaz_dummy",
       "Domain name": "https://www.yourhealthyourmoneyaz.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3901,7 +3901,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Aretiz_dummy",
       "Domain name": "https://aretiz.com/",
       "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
@@ -3955,7 +3955,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Optimist_dummy",
       "Domain name": "https://optimist.in/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3973,7 +3973,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Franklinfinancingservices_dummy",
       "Domain name": "franklinfinancingservices.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -3982,7 +3982,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UrMNO4pVmtnb2K",
       "Domain name": "https://www.megawall.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4036,7 +4036,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Gushwork_dummy",
       "Domain name": "gushwork.ai",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4153,7 +4153,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Lanesurf_dummy",
+      "Stripe Customer ID": "cus_UxhPxB2J1d3TvQ",
       "Domain name": "https://www.lanesurf.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4396,7 +4396,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Supremeofficetechnology_dummy",
+      "Stripe Customer ID": "cus_Uwd05bfW3hMPL8",
       "Domain name": "https://www.supremeofficetechnology.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4423,7 +4423,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Taxresgroup_dummy",
       "Domain name": "https://taxresgroup.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4432,7 +4432,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UqLEosDgbpHoM9",
       "Domain name": "https://www.alifewellorganized.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4468,7 +4468,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Iafrikey_dummy",
       "Domain name": "https://www.iafrikey.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -4641,7 +4641,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_Ulm93v2115SizW",
       "Domain name": "www.danielbrian.com",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "ramin.joseph@gushwork.ai",
       "Onboarding Call Date": "2026-06-03T18:30:00.000Z"
@@ -5017,7 +5017,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Lanesurf_dummy",
+      "Stripe Customer ID": "cus_UxhPxB2J1d3TvQ",
       "Domain name": "https://www.lanesurf.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -5386,7 +5386,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Supremeofficetechnology_dummy",
+      "Stripe Customer ID": "cus_Uwd05bfW3hMPL8",
       "Domain name": "https://www.supremeofficetechnology.com/",
       "Status": "Active",
       "Business": "AI Agents",
@@ -5946,10 +5946,10 @@
       "Customer Name": "",
       "Stripe Customer ID": "",
       "Domain name": "multipli.tech",
-      "Status": "To be Onboarded",
+      "Status": "Pre Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "manthan.gupta@gushwork.ai",
-      "Onboarding Call Date": "2026-07-26T18:30:00.000Z"
+      "Onboarding Call Date": ""
     },
     {
       "Customer Name": "",
@@ -5971,12 +5971,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_Vynoxsecurity_dummy",
       "Domain name": "vynoxsecurity.com",
-      "Status": "Active",
+      "Status": "Post Onboarding Drop Off",
       "Business": "AI Agents",
       "CS Name": "sukriti.shukla@gushwork.ai",
-      "Onboarding Call Date": "2026-06-30T18:30:00.000Z"
+      "Onboarding Call Date": "2026-04-29T18:30:00.000Z"
     },
     {
       "Customer Name": "",
@@ -6403,12 +6403,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "cus_Uu7hQNSkCEkPyb",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "https://www.americanhomeinvestmentsatlanta.com/",
-      "Status": "Active",
+      "Status": "#N/A",
       "Business": "AI Agents",
-      "CS Name": "shameer.syed@gushwork.ai",
-      "Onboarding Call Date": "2026-07-14T18:30:00.000Z"
+      "CS Name": "#N/A",
+      "Onboarding Call Date": "#N/A"
     },
     {
       "Customer Name": "",
@@ -6484,7 +6484,7 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "cus_UwlfznieqjtqCs",
       "Domain name": "filecenter.com",
       "Status": "Active",
       "Business": "AI Agents",
@@ -6556,18 +6556,18 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "",
+      "Stripe Customer ID": "#N/A",
       "Domain name": "filevision.net",
-      "Status": "Active",
+      "Status": "#N/A",
       "Business": "AI Agents",
-      "CS Name": "akshay.krishna@gushwork.ai",
-      "Onboarding Call Date": "2026-07-16T18:30:00.000Z"
+      "CS Name": "#N/A",
+      "Onboarding Call Date": "#N/A"
     },
     {
       "Customer Name": "",
       "Stripe Customer ID": "",
       "Domain name": "biminipethealth.com",
-      "Status": "To be Onboarded",
+      "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "manthan.gupta@gushwork.ai",
       "Onboarding Call Date": "2026-07-26T18:30:00.000Z"
@@ -6576,7 +6576,7 @@
       "Customer Name": "",
       "Stripe Customer ID": "cus_UthKnZPIP9NkDZ",
       "Domain name": "https://www.busch-machinery.com/",
-      "Status": "To be Onboarded",
+      "Status": "Active",
       "Business": "AI Agents",
       "CS Name": "rayan.sadiq@gushwork.ai",
       "Onboarding Call Date": "2026-07-21T18:30:00.000Z"
