@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-07-28T11:00:01.619Z",
-  "rowCount": 740,
+  "lastUpdated": "2026-07-28T11:39:05.129Z",
+  "rowCount": 739,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -3772,15 +3772,6 @@
       "Business": "Services",
       "CS Name": "shubham.kumar@gushwork.ai",
       "Onboarding Call Date": "#N/A"
-    },
-    {
-      "Customer Name": "Casting Technologies Inc",
-      "Stripe Customer ID": "cus_UkcWUx0sxeGatI",
-      "Domain name": "https://stainlesssteelfloatballs.com/",
-      "Status": "Active",
-      "Business": "Services",
-      "CS Name": "muddasir.h@gushwork.ai",
-      "Onboarding Call Date": "2026-05-26T18:30:00.000Z"
     },
     {
       "Customer Name": "Kochar Innnovations Private Limited",
