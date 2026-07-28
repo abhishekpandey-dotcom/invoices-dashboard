@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-28T10:57:25.472Z",
+  "lastUpdated": "2026-07-28T10:59:01.867Z",
   "rowCount": 740,
   "data": [
     {
@@ -6403,12 +6403,12 @@
     },
     {
       "Customer Name": "",
-      "Stripe Customer ID": "#N/A",
-      "Domain name": "https://www.americanhomeinvestmentsatlanta.com/",
-      "Status": "#N/A",
+      "Stripe Customer ID": "cus_Uu7hQNSkCEkPyb",
+      "Domain name": "https://communityhomebuyersatlanta.com/",
+      "Status": "Active",
       "Business": "AI Agents",
-      "CS Name": "#N/A",
-      "Onboarding Call Date": "#N/A"
+      "CS Name": "pooja.janardhan@gushwork.ai",
+      "Onboarding Call Date": "2026-07-14T18:30:00.000Z"
     },
     {
       "Customer Name": "",
