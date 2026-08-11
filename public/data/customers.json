@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-08-11T09:27:53.100Z",
-  "rowCount": 738,
+  "lastUpdated": "2026-08-11T09:28:11.551Z",
+  "rowCount": 737,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -5509,15 +5509,6 @@
       "Business": "AI Agents",
       "CS Name": "manan.vispute@gushwork.ai",
       "Onboarding Call Date": "2026-06-25T18:30:00.000Z"
-    },
-    {
-      "Customer Name": "",
-      "Stripe Customer ID": "cus_Ul7tVKa5LW7TCb",
-      "Domain name": "https://www.vitolilandscapedesign.com/",
-      "Status": "Active",
-      "Business": "AI Agents",
-      "CS Name": "hridya.das@gushwork.ai",
-      "Onboarding Call Date": "2026-06-24T18:30:00.000Z"
     },
     {
       "Customer Name": "",
