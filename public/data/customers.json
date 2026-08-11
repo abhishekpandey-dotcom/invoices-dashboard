@@ -1,6 +1,6 @@
 {
-  "lastUpdated": "2026-08-11T09:27:22.188Z",
-  "rowCount": 739,
+  "lastUpdated": "2026-08-11T09:27:53.100Z",
+  "rowCount": 738,
   "data": [
     {
       "Customer Name": "A&B Ingredients",
@@ -4456,15 +4456,6 @@
       "Business": "AI Agents",
       "CS Name": "manan.vispute@gushwork.ai",
       "Onboarding Call Date": "2026-06-23T18:30:00.000Z"
-    },
-    {
-      "Customer Name": "",
-      "Stripe Customer ID": "",
-      "Domain name": "https://www.iafrikey.com/",
-      "Status": "Post Onboarding Drop Off",
-      "Business": "AI Agents",
-      "CS Name": "sarvesh.shetty@gushwork.ai",
-      "Onboarding Call Date": "2026-06-22T18:30:00.000Z"
     },
     {
       "Customer Name": "",
