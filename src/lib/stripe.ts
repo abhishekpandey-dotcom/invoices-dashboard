@@ -506,8 +506,8 @@ export async function getAllInvoices(
   for (const [salesKey, paid] of salesMap.entries()) {
     const parts   = salesKey.split("::");
     const account = parts[0] as "India" | "US";
-    const custId  = parts[1];
-    const key     = `${account}::${custId}::${paid.currency}`;
+    const custId = parts[1];
+    const key     = `${account}:: ${custId}::${paid.currency}`;
     if (custMap.has(key)) continue;
     const meta = metaMap.get(custId);
     custMap.set(key, {
@@ -611,7 +611,36 @@ export async function getAllCustomers(
       invoices,
     });
   }
-  // Sort by latest invoice date descending
+  // ── Supplement with sheet customers not found in Stripe invoice history ────────
+  // Customers whose last invoice was >18 months ago (or who have never been invoiced
+  // in Stripe) are invisible to the Stripe query above, but they still exist in the
+  // metaMap from the Google Sheet. We add them here with an empty invoices array so
+  // they appear in the All Customers Data tab.
+  // NOTE: `account` defaults to "India" because the sheet has no Account column.
+  // To fix this precisely, add an "Account" (India/US) column to the
+  // "Customer Domain Name" sheet and surface it through CustomerMeta.
+  const foundIds = new Set(result.map(c => c.customer_id));
+  for (const [custId, meta] of metaMap.entries()) {
+    if (foundIds.has(custId)) continue; // already present from Stripe invoice data
+    result.push({
+      customer_id:       custId,
+      customer_name:     meta.customer_name_sheet,
+      customer_email:    "",
+      domain:            meta.domain,
+      business:          meta.business,
+      cs_email:          meta.cs_email,
+      customer_status:   meta.status,
+      onboarding_date:   meta.onboarding_date,
+      account:           "India",          // fallback — no account info in sheet
+      currency:          "INR",            // fallback
+      collection_method: "send_invoice",   // fallback
+      first_invoice_date:  null,
+      latest_invoice_date: null,
+      invoices:          [],
+    });
+  }
+
+  // Sort by latest invoice date descending (customers with no invoices go to the bottom)
   result.sort((a, b) =>
     (b.latest_invoice_date ?? "").localeCompare(a.latest_invoice_date ?? "")
   );
