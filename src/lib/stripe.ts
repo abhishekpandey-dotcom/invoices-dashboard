@@ -12,7 +12,7 @@ export function getStripeClients() {
     us:    new Stripe(usKey, { apiVersion: "2024-04-10" }),
   };
 }
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ── Types ────────────────────────────────────────────────────────────────────
 export type AgingBucket = "0-30" | "31-60" | "61-90" | "90-180" | "180+";
 export interface InvoiceRow {
   id: string;
@@ -320,6 +320,39 @@ async function fetchPaidSales(
   }
   return map;
 }
+// ── Fetch ALL Stripe customers (regardless of invoice history) ───────────────
+async function fetchAllStripeCustomers(
+  stripe: Stripe,
+  account: "India" | "US"
+): Promise<Map<string, Partial<AllCustomer>>> {
+  const map = new Map<string, Partial<AllCustomer>>();
+  let hasMore = true;
+  let startingAfter: string | undefined;
+  while (hasMore) {
+    const page = await stripe.customers.list({
+      limit: 100,
+      ...(startingAfter ? { starting_after: startingAfter } : {}),
+    });
+    for (const cust of page.data) {
+      if (!cust.id) continue;
+      const key = `${account}::${cust.id}`;
+      if (!map.has(key)) {
+        map.set(key, {
+          customer_id:       cust.id,
+          customer_name:     cust.name ?? cust.email ?? "Unknown",
+          customer_email:    cust.email ?? "",
+          account,
+          currency:          cust.currency?.toUpperCase() ?? (account === "India" ? "INR" : "USD"),
+          collection_method: "send_invoice",
+        });
+      }
+    }
+    hasMore = page.has_more;
+    startingAfter = page.data.length > 0 ? page.data[page.data.length - 1].id : undefined;
+    if (!page.data.length) hasMore = false;
+  }
+  return map;
+}
 // ── Fetch all invoices for the ledger tab ─────────────────────────────────────
 async function fetchAllCustomerInvoices(
   stripe: Stripe,
@@ -506,8 +539,8 @@ export async function getAllInvoices(
   for (const [salesKey, paid] of salesMap.entries()) {
     const parts   = salesKey.split("::");
     const account = parts[0] as "India" | "US";
-    const custId = parts[1];
-    const key     = `${account}:: ${custId}::${paid.currency}`;
+    const custId  = parts[1];
+    const key     = `${account}::${custId}::${paid.currency}`;
     if (custMap.has(key)) continue;
     const meta = metaMap.get(custId);
     custMap.set(key, {
@@ -577,66 +610,64 @@ export async function getAllCustomers(
   const { india, us } = getStripeClients();
   const now = Date.now();
   const since18m = now - 18 * 30 * 24 * 3600 * 1000;
-  const [indiaMap, usMap] = await Promise.all([
+
+  // Fetch ALL Stripe customers (primary source — co date filter) AND their invoice
+  // history in parallel. Every customer in Stripe will appear regardless of whether
+  // they have been invoiced yet.
+  const [
+    indiaCusts,
+    usCusts,
+    indiaInvMap,
+    usInvMap,
+  ] = await Promise.all([
+    fetchAllStripeCustomers(india, "India"),
+    fetchAllStripeCustomers(us, "US"),
     fetchAllCustomerInvoices(india, "India", since18m),
     fetchAllCustomerInvoices(us, "US", since18m),
   ]);
+
+  // Merge: start from the full customer list, overlay invoice data where it exists
+  const merged = new Map<string, { meta: Partial<AllCustomer>; invoices: AllCustomerInvoice[] }>();
+  for (const [key, custMeta] of new Map([...indiaCusts, ...usCusts]).entries()) {
+    const invEntry = indiaInvMap.get(key) ?? usInvMap.get(key);
+    merged.set(key, {
+      meta: { ...custMeta, ...(invEntry?.meta ?? {}) },
+      invoices: invEntry?.invoices ?? [],
+    });
+  }
+  // Also include any invoice entries whose customer was deleted in Stripe
+  // (so they no longer appear in customers.list but still have invoices)
+  for (const [key, invEntry] of new Map([...indiaInvMap, ...usInvMap]).entries()) {
+    if (!merged.has(key)) merged.set(key, invEntry);
+  }
+
   const result: AllCustomer[] = [];
-  for (const [, { meta, invoices }] of new Map([...indiaMap, ...usMap]).entries()) {
+  for (const [, { meta, invoices }] of merged.entries()) {
     const custId = meta.customer_id ?? "";
+    if (!custId) continue;
     // Sort newest first
     invoices.sort((a, b) => b.invoice_date.localeCompare(a.invoice_date));
     const dates = invoices.map(i => i.invoice_date).filter(Boolean);
     const latestDate = dates[0] ?? null;
     const firstDate  = dates[dates.length - 1] ?? null;
-    const sheetMeta = metaMap.get(custId);
-    const status    = sheetMeta?.status ?? "";
-    // NOTE: customers already tagged "Churned" in the sheet are intentionally NOT excluded here anymore —
-    // the Monthly Revenue view needs their full invoice history to correctly detect and display churn,
-    // and the 18-month window above already bounds how far back this goes.
+    const sheetMeta  = metaMap.get(custId);
+    // NOTE: customers already tagged "Churned" in the sheet are intentionally NOT excluded here —
+    // the Monthly Revenue view needs their full invoice history to correctly detect and display churn.
     result.push({
       customer_id:          custId,
-      customer_name:        meta.customer_name ?? "",
+      customer_name:        sheetMeta?.customer_name_sheet ?? meta.customer_name ?? "",
       customer_email:       meta.customer_email ?? "",
       domain:               sheetMeta?.domain   ?? "",
       business:             sheetMeta?.business ?? "AI Agents",
       cs_email:             sheetMeta?.cs_email ?? "",
-      customer_status:      status,
+      customer_status:      sheetMeta?.status   ?? "",
       onboarding_date:      sheetMeta?.onboarding_date ?? null,
       account:              meta.account ?? "India",
-      currency:             meta.currency ?? "USD",
+      currency:             meta.currency ?? (meta.account === "US" ? "USD" : "INR"),
       collection_method:    meta.collection_method ?? "send_invoice",
       first_invoice_date:   firstDate,
       latest_invoice_date:  latestDate,
       invoices,
-    });
-  }
-  // ── Supplement with sheet customers not found in Stripe invoice history ────────
-  // Customers whose last invoice was >18 months ago (or who have never been invoiced
-  // in Stripe) are invisible to the Stripe query above, but they still exist in the
-  // metaMap from the Google Sheet. We add them here with an empty invoices array so
-  // they appear in the All Customers Data tab.
-  // NOTE: `account` defaults to "India" because the sheet has no Account column.
-  // To fix this precisely, add an "Account" (India/US) column to the
-  // "Customer Domain Name" sheet and surface it through CustomerMeta.
-  const foundIds = new Set(result.map(c => c.customer_id));
-  for (const [custId, meta] of metaMap.entries()) {
-    if (foundIds.has(custId)) continue; // already present from Stripe invoice data
-    result.push({
-      customer_id:       custId,
-      customer_name:     meta.customer_name_sheet,
-      customer_email:    "",
-      domain:            meta.domain,
-      business:          meta.business,
-      cs_email:          meta.cs_email,
-      customer_status:   meta.status,
-      onboarding_date:   meta.onboarding_date,
-      account:           "India",          // fallback — no account info in sheet
-      currency:          "INR",            // fallback
-      collection_method: "send_invoice",   // fallback
-      first_invoice_date:  null,
-      latest_invoice_date: null,
-      invoices:          [],
     });
   }
 
