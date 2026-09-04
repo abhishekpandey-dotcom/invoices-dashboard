@@ -193,8 +193,6 @@ async function fetchOpenInvoices(
       const cm = (inv.collection_method ?? "send_invoice") as
         | "charge_automatically"
         | "send_invoice";
-      // For autopay customers with no due_date, use invoice creation date as the
-      // effective due date so they are correctly aged instead of landing in 0-30.
       const effectiveDueDateMs = inv.due_date
         ? inv.due_date * 1000
         : cm === "charge_automatically"
@@ -204,7 +202,6 @@ async function fetchOpenInvoices(
         effectiveDueDateMs && effectiveDueDateMs < now
           ? Math.floor((now - effectiveDueDateMs) / 86_400_000)
           : 0;
-      // Always compute aging from invoice date regardless of collection method
       const daysFromInvoice = Math.max(
         0,
         Math.floor((now - invoiceDateMs) / 86_400_000)
@@ -227,8 +224,6 @@ async function fetchOpenInvoices(
         status: inv.status ?? "open",
         amount_due: inv.amount_due / 100,
         tax: (inv.tax ?? 0) / 100,
-        // subtotal_excluding_tax handles inclusive GST (common in India);
-        // subtotal handles exclusive GST; amount_due is the last resort
         subtotal: (inv.subtotal_excluding_tax ?? inv.subtotal ?? inv.amount_due) / 100,
         currency: inv.currency.toUpperCase(),
         invoice_date: new Date(invoiceDateMs).toISOString().split("T")[0],
@@ -298,7 +293,6 @@ async function fetchPaidSales(
       const cName  = cObj?.name  ?? inv.customer_name  ?? inv.customer_email ?? "Unknown";
       const cEmail = cObj?.email ?? inv.customer_email ?? "";
       const invDate = new Date(inv.created * 1000).toISOString().split("T")[0];
-      // subtotal_excluding_tax handles inclusive GST; subtotal handles exclusive GST
       const paidAmtExTax = (inv.subtotal_excluding_tax ?? inv.subtotal ?? (inv.amount_paid ?? inv.total ?? 0)) / 100;
       if (!map.has(key)) {
         map.set(key, { total_12m: 0, total_3m: 0, currency, collection_method: cm, customer_name: cName, customer_email: cEmail, latestPaidAmtExTax: 0, latestPaidDate: "" });
@@ -307,7 +301,6 @@ async function fetchPaidSales(
       s.total_12m += amount;
       if (inv.created >= since3m) s.total_3m += amount;
       s.collection_method = cm;
-      // Track most recent paid invoice as MRR fallback
       if (!s.latestPaidDate || invDate > s.latestPaidDate) {
         s.latestPaidDate       = invDate;
         s.latestPaidAmtExTax   = paidAmtExTax;
@@ -316,6 +309,39 @@ async function fetchPaidSales(
     hasMore = page.has_more;
     startingAfter =
       page.data.length > 0 ? page.data[page.data.length - 1].id : undefined;
+    if (!page.data.length) hasMore = false;
+  }
+  return map;
+}
+// ── Fetch ALL Stripe customers (regardless of invoice history) ───────────────
+async function fetchAllStripeCustomers(
+  stripe: Stripe,
+  account: "India" | "US"
+): Promise<Map<string, Partial<AllCustomer>>> {
+  const map = new Map<string, Partial<AllCustomer>>();
+  let hasMore = true;
+  let startingAfter: string | undefined;
+  while (hasMore) {
+    const page = await stripe.customers.list({
+      limit: 100,
+      ...(startingAfter ? { starting_after: startingAfter } : {}),
+    });
+    for (const cust of page.data) {
+      if (!cust.id) continue;
+      const key = `${account}::${cust.id}`;
+      if (!map.has(key)) {
+        map.set(key, {
+          customer_id:       cust.id,
+          customer_name:     cust.name ?? cust.email ?? "Unknown",
+          customer_email:    cust.email ?? "",
+          account,
+          currency:          cust.currency?.toUpperCase() ?? (account === "India" ? "INR" : "USD"),
+          collection_method: "send_invoice",
+        });
+      }
+    }
+    hasMore = page.has_more;
+    startingAfter = page.data.length > 0 ? page.data[page.data.length - 1].id : undefined;
     if (!page.data.length) hasMore = false;
   }
   return map;
@@ -339,7 +365,6 @@ async function fetchAllCustomerInvoices(
       ...(startingAfter ? { starting_after: startingAfter } : {}),
     });
     for (const inv of page.data) {
-      // Skip drafts — they're not real invoices yet
       if (inv.status === "draft") continue;
       const cObj =
         typeof inv.customer === "object" && inv.customer !== null
@@ -352,7 +377,6 @@ async function fetchAllCustomerInvoices(
       const cm = (inv.collection_method ?? "send_invoice") as
         | "charge_automatically"
         | "send_invoice";
-      // Service period from first line item
       const firstLine = inv.lines?.data?.[0];
       const periodStart = firstLine?.period?.start
         ? new Date(firstLine.period.start * 1000).toISOString().split("T")[0]
@@ -360,7 +384,6 @@ async function fetchAllCustomerInvoices(
       const periodEnd = firstLine?.period?.end
         ? new Date(firstLine.period.end * 1000).toISOString().split("T")[0]
         : null;
-      // Receipt URL from expanded charge (available on paid invoices)
       const charge =
         inv.charge && typeof inv.charge === "object"
           ? (inv.charge as Stripe.Charge)
@@ -418,7 +441,6 @@ async function fetchAllCustomerInvoices(
       }
       const entry = map.get(key)!;
       entry.invoices.push(invoiceRow);
-      // Keep most-recent collection_method
       entry.meta.collection_method = cm;
     }
     hasMore = page.has_more;
@@ -457,11 +479,8 @@ export async function getAllInvoices(
     totalOutstanding: number; count: number;
     total_sales_12m: number; sales_3m: number;
     collection_method: "charge_automatically" | "send_invoice";
-    /** Sum of subtotal across all open invoices — used for DSO numerator */
     totalOutstandingExTax: number;
-    /** subtotal of the most recent open invoice — used as MRR proxy */
     latestInvoiceAmtExTax: number;
-    /** Invoice date of the most recent open invoice */
     latestInvoiceDate: string;
   }
   const custMap = new Map<string, CustAgg>();
@@ -484,7 +503,6 @@ export async function getAllInvoices(
         count:            0,
         total_sales_12m:  paid?.total_12m     ?? 0,
         sales_3m:         paid?.total_3m      ?? 0,
-        // Open invoice's collection_method takes priority over paid history
         collection_method: inv.collection_method ?? paid?.collection_method ?? "send_invoice",
         totalOutstandingExTax: 0,
         latestInvoiceAmtExTax: 0,
@@ -494,9 +512,7 @@ export async function getAllInvoices(
     const c = custMap.get(key)!;
     c.totalOutstanding += inv.amount_due;
     c.count++;
-    // DSO: use subtotal (Stripe's pre-tax field) — correct for both inclusive and exclusive GST
     c.totalOutstandingExTax += inv.subtotal;
-    // Track the most recent invoice as MRR proxy
     if (!c.latestInvoiceDate || inv.invoice_date > c.latestInvoiceDate) {
       c.latestInvoiceDate     = inv.invoice_date;
       c.latestInvoiceAmtExTax = inv.subtotal;
@@ -506,8 +522,8 @@ export async function getAllInvoices(
   for (const [salesKey, paid] of salesMap.entries()) {
     const parts   = salesKey.split("::");
     const account = parts[0] as "India" | "US";
-    const custId = parts[1];
-    const key     = `${account}:: ${custId}::${paid.currency}`;
+    const custId  = parts[1];
+    const key     = `${account}::${custId}::${paid.currency}`;
     if (custMap.has(key)) continue;
     const meta = metaMap.get(custId);
     custMap.set(key, {
@@ -531,10 +547,6 @@ export async function getAllInvoices(
     });
   }
   const dso: CustomerDSO[] = Array.from(custMap.values()).map(c => {
-    // DSO = Total Outstanding (ex-tax) / Daily MRR
-    // Daily MRR = Last Invoice Amount (ex-tax) / 30
-    // Use most recent invoice (open OR paid) as MRR proxy — critical for inactive
-    // customers whose most recent invoice was their last paid subscription charge.
     const salesKey  = `${c.account}::${c.customer_id}`;
     const paidEntry = salesMap.get(salesKey);
     const useOpenAsMrr =
@@ -577,66 +589,62 @@ export async function getAllCustomers(
   const { india, us } = getStripeClients();
   const now = Date.now();
   const since18m = now - 18 * 30 * 24 * 3600 * 1000;
-  const [indiaMap, usMap] = await Promise.all([
+
+  // Fetch ALL Stripe customers (primary source — no date filter) AND their invoice
+  // history in parallel. Every customer in Stripe will appear regardless of whether
+  // they have been invoiced yet.
+  const [
+    indiaCusts,
+    usCusts,
+    indiaInvMap,
+    usInvMap,
+  ] = await Promise.all([
+    fetchAllStripeCustomers(india, "India"),
+    fetchAllStripeCustomers(us, "US"),
     fetchAllCustomerInvoices(india, "India", since18m),
     fetchAllCustomerInvoices(us, "US", since18m),
   ]);
+
+  // Merge: start from the full customer list, overlay invoice data where it exists
+  const merged = new Map<string, { meta: Partial<AllCustomer>; invoices: AllCustomerInvoice[] }>();
+  for (const [key, custMeta] of new Map([...indiaCusts, ...usCusts]).entries()) {
+    const invEntry = indiaInvMap.get(key) ?? usInvMap.get(key);
+    merged.set(key, {
+      meta: { ...custMeta, ...(invEntry?.meta ?? {}) },
+      invoices: invEntry?.invoices ?? [],
+    });
+  }
+  // Also include any invoice entries whose customer was deleted in Stripe
+  // (so they no longer appear in customers.list but still have invoices)
+  for (const [key, invEntry] of new Map([...indiaInvMap, ...usInvMap]).entries()) {
+    if (!merged.has(key)) merged.set(key, invEntry);
+  }
+
   const result: AllCustomer[] = [];
-  for (const [, { meta, invoices }] of new Map([...indiaMap, ...usMap]).entries()) {
+  for (const [, { meta, invoices }] of merged.entries()) {
     const custId = meta.customer_id ?? "";
+    if (!custId) continue;
     // Sort newest first
     invoices.sort((a, b) => b.invoice_date.localeCompare(a.invoice_date));
     const dates = invoices.map(i => i.invoice_date).filter(Boolean);
     const latestDate = dates[0] ?? null;
     const firstDate  = dates[dates.length - 1] ?? null;
-    const sheetMeta = metaMap.get(custId);
-    const status    = sheetMeta?.status ?? "";
-    // NOTE: customers already tagged "Churned" in the sheet are intentionally NOT excluded here anymore —
-    // the Monthly Revenue view needs their full invoice history to correctly detect and display churn,
-    // and the 18-month window above already bounds how far back this goes.
+    const sheetMeta  = metaMap.get(custId);
     result.push({
       customer_id:          custId,
-      customer_name:        meta.customer_name ?? "",
+      customer_name:        sheetMeta?.customer_name_sheet ?? meta.customer_name ?? "",
       customer_email:       meta.customer_email ?? "",
       domain:               sheetMeta?.domain   ?? "",
       business:             sheetMeta?.business ?? "AI Agents",
       cs_email:             sheetMeta?.cs_email ?? "",
-      customer_status:      status,
+      customer_status:      sheetMeta?.status   ?? "",
       onboarding_date:      sheetMeta?.onboarding_date ?? null,
       account:              meta.account ?? "India",
-      currency:             meta.currency ?? "USD",
+      currency:             meta.currency ?? (meta.account === "US" ? "USD" : "INR"),
       collection_method:    meta.collection_method ?? "send_invoice",
       first_invoice_date:   firstDate,
       latest_invoice_date:  latestDate,
       invoices,
-    });
-  }
-  // ── Supplement with sheet customers not found in Stripe invoice history ────────
-  // Customers whose last invoice was >18 months ago (or who have never been invoiced
-  // in Stripe) are invisible to the Stripe query above, but they still exist in the
-  // metaMap from the Google Sheet. We add them here with an empty invoices array so
-  // they appear in the All Customers Data tab.
-  // NOTE: `account` defaults to "India" because the sheet has no Account column.
-  // To fix this precisely, add an "Account" (India/US) column to the
-  // "Customer Domain Name" sheet and surface it through CustomerMeta.
-  const foundIds = new Set(result.map(c => c.customer_id));
-  for (const [custId, meta] of metaMap.entries()) {
-    if (foundIds.has(custId)) continue; // already present from Stripe invoice data
-    result.push({
-      customer_id:       custId,
-      customer_name:     meta.customer_name_sheet,
-      customer_email:    "",
-      domain:            meta.domain,
-      business:          meta.business,
-      cs_email:          meta.cs_email,
-      customer_status:   meta.status,
-      onboarding_date:   meta.onboarding_date,
-      account:           "India",          // fallback — no account info in sheet
-      currency:          "INR",            // fallback
-      collection_method: "send_invoice",   // fallback
-      first_invoice_date:  null,
-      latest_invoice_date: null,
-      invoices:          [],
     });
   }
 
@@ -654,7 +662,6 @@ async function fetchPlanSnapshots(
   stripe: Stripe,
   account: "India" | "US"
 ): Promise<RawPlanSnapshot[]> {
-  // Aggregate multiple subscriptions per customer (rare, but possible) into one row.
   const map = new Map<string, RawPlanSnapshot & { priceIdSet: Set<string> }>();
   let hasMore = true;
   let startingAfter: string | undefined;
@@ -666,7 +673,6 @@ async function fetchPlanSnapshots(
       ...(startingAfter ? { starting_after: startingAfter } : {}),
     });
     for (const sub of page.data) {
-      // Only count subscriptions that are actually "in force" for plan comparison
       if (sub.status !== "active" && sub.status !== "trialing" && sub.status !== "past_due") continue;
       const cObj =
         typeof sub.customer === "object" && sub.customer !== null
@@ -703,8 +709,6 @@ async function fetchPlanSnapshots(
         });
       }
       const entry = map.get(key)!;
-      // Ignore cross-currency subscriptions on the same customer when summing value —
-      // extremely rare, but avoids silently mixing currencies into one number.
       if (entry.currency === currency || entry.plan_value === 0) {
         entry.currency = currency;
         entry.plan_value += itemValue;
