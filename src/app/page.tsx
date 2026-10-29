@@ -325,14 +325,7 @@ export default function Dashboard() {
     if (activeTab === "creditNotes" && !cnDump && !cnLoading) loadCnDump();
   }, [activeTab, cnDump, cnLoading, loadCnDump]);
 
-  // 5-min auto-refresh for Invoice Dump and Credit Notes
-  useEffect(() => {
-    const id = setInterval(() => {
-      if (activeTab === "invoiceDump") loadInvDump();
-      if (activeTab === "creditNotes") loadCnDump();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, [activeTab, loadInvDump, loadCnDump]);
+  // No auto-refresh for Invoice Dump / Credit Notes — load once per session, manual refresh only.
 
   const allInvoices = useMemo(() => data?.invoices ?? [], [data]);
 
@@ -2240,7 +2233,7 @@ export default function Dashboard() {
       )}
 
       {/* ── All other tabs ── */}
-      {activeTab !== "ledger" && activeTab !== "planChanges" && (
+      {activeTab !== "ledger" && activeTab !== "planChanges" && activeTab !== "invoiceDump" && activeTab !== "creditNotes" && (
         <>
           {/* ── TOP STAT CARDS ── */}
           <div style={S.statsRow}>
