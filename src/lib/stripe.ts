@@ -53,6 +53,12 @@ export interface InvoiceRow {
   invoice_pdf: string | null;
   description: string;
   collection_method: "charge_automatically" | "send_invoice";
+  /** Stripe PaymentIntent failure code (null if autopay never attempted or succeeded) */
+  failure_code: string | null;
+  /** Human-readable Stripe failure message */
+  failure_message: string | null;
+  /** Card network decline code (more specific than failure_code) */
+  decline_code: string | null;
 }
 export interface CustomerDSO {
   customer_id: string;
@@ -185,11 +191,18 @@ async function fetchOpenInvoices(
     const page = await stripe.invoices.list({
       status: "open",
       limit: 100,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expand: ["data.payment_intent"] as any,
       ...(startingAfter ? { starting_after: startingAfter } : {}),
     });
     for (const inv of page.data) {
       if (SKIP.has(inv.status ?? "")) continue;
       const invoiceDateMs = inv.created * 1000;
+      // Extract autopay failure reason from the payment intent
+      const pi = inv.payment_intent && typeof inv.payment_intent === "object"
+        ? (inv.payment_intent as Stripe.PaymentIntent)
+        : null;
+      const lastErr = pi?.last_payment_error ?? null;
       const cm = (inv.collection_method ?? "send_invoice") as
         | "charge_automatically"
         | "send_invoice";
@@ -238,6 +251,9 @@ async function fetchOpenInvoices(
         invoice_pdf: inv.invoice_pdf        ?? null,
         description: inv.description ?? "",
         collection_method: cm,
+        failure_code:    lastErr?.code         ?? null,
+        failure_message: lastErr?.message      ?? null,
+        decline_code:    lastErr?.decline_code ?? null,
       });
     }
     hasMore = page.has_more;
