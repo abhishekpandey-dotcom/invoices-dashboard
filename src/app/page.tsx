@@ -393,14 +393,8 @@ export default function Dashboard() {
         if (![inv.customer_name, inv.customer_email, inv.domain, inv.business, inv.cs_email]
             .some(v => v?.toLowerCase().includes(q))) continue;
       }
-      if (activeTab === "active"   && inv.customer_status !== "Active")              continue;
-      if (activeTab === "inactive" && inv.customer_status === "Active")              continue;
-      if (activeTab === "autopay"  && inv.collection_method !== "charge_automatically") continue;
-      if (activeTab === "manual"   && inv.collection_method !== "send_invoice")      continue;
-      if (activeTab !== "autopay" && activeTab !== "manual") {
-        if (pmF === "auto"   && inv.collection_method !== "charge_automatically") continue;
-        if (pmF === "manual" && inv.collection_method !== "send_invoice")         continue;
-      }
+      if (pmF === "auto"   && inv.collection_method !== "charge_automatically") continue;
+      if (pmF === "manual" && inv.collection_method !== "send_invoice")         continue;
 
       const key = `${inv.account}::${inv.customer_id}`;
       if (!map.has(key)) {
@@ -473,55 +467,9 @@ export default function Dashboard() {
       b0_30F, b31_60F, b61_90F, b90_180F, b180plusF, dsoF, totalF, sortCol, sortDir,
       getBucket]);
 
-  // ── Auto Pay / Manual full customer list ──────────────────────────────────
-  const payModeCustRows = useMemo((): CustRow[] => {
-    if (activeTab !== "autopay" && activeTab !== "manual") return [];
-    const targetCm = activeTab === "autopay" ? "charge_automatically" : "send_invoice";
-    return (data?.dso ?? [])
-      .filter(d => d.collection_method === targetCm)
-      .filter(d => bizF  === "All" || d.business === bizF)
-      .filter(d => acctF === "All" || d.account  === acctF)
-      .filter(d => statF === "All" || d.customer_status === statF)
-      .filter(d => csF   === "All" || d.cs_email  === csF)
-      .filter(d => {
-        if (!search) return true;
-        const q = search.toLowerCase();
-        return [d.customer_name, d.customer_email, d.domain, d.business, d.cs_email]
-          .some(v => v?.toLowerCase().includes(q));
-      })
-      .map(d => {
-        const key  = `${d.account}::${d.customer_id}`;
-        const open = openInvoiceMap.get(key) ?? { b0_30: 0, b31_60: 0, b61_90: 0, b90_180: 0, b180plus: 0, total: 0, invoice_count: 0 };
-        return {
-          key,
-          customer_name:    d.customer_name,
-          customer_email:   d.customer_email,
-          domain:           d.domain,
-          customer_status:  d.customer_status,
-          business:         d.business,
-          cs_email:         d.cs_email,
-          account:          d.account,
-          b0_30:     open.b0_30,
-          b31_60:    open.b31_60,
-          b61_90:    open.b61_90,
-          b90_180:   open.b90_180,
-          b180plus:  open.b180plus,
-          total:         open.total,
-          invoice_count: open.invoice_count,
-          dso_days:      d.dso_days,
-          total_outstanding_ex_tax:  d.total_outstanding_ex_tax  ?? 0,
-          latest_invoice_amt_ex_tax: d.latest_invoice_amt_ex_tax ?? 0,
-          collection_method: d.collection_method,
-          sales_3m_usd:  d.sales_3m_usd,
-        };
-      })
-      .sort((a, b) => {
-        const av = a[sortCol], bv = b[sortCol];
-        const cmp = typeof av === "number" && typeof bv === "number"
-          ? av - bv : String(av ?? "").localeCompare(String(bv ?? ""));
-        return sortDir === "asc" ? cmp : -cmp;
-      });
-  }, [activeTab, data, bizF, acctF, statF, csF, search, openInvoiceMap, sortCol, sortDir]);
+  // ── Auto Pay / Manual full customer list (legacy tabs removed – always empty) ─
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const payModeCustRows = useMemo((): CustRow[] => [], []);
 
   const displayRows = custRows;
 
@@ -1852,87 +1800,7 @@ export default function Dashboard() {
             <AgingModeToggle />
           </div>
 
-          {/* ── TAB QUICK FILTERS (Active / Inactive tabs) ── */}
-          {(activeTab === "active" || activeTab === "inactive") && (
-            <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 16, background: "#fff", padding: "14px 18px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", flexWrap: "wrap" }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" as const, letterSpacing: 0.6 }}>Filter:</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Business Type</label>
-                <select style={{ ...sel, width: 160 }} value={bizF} onChange={e => setBizF(e.target.value)}>
-                  <option value="All">All</option>
-                  {bizTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Payment Mode</label>
-                <select style={{ ...sel, width: 150 }} value={pmF} onChange={e => setPmF(e.target.value)}>
-                  <option value="All">All</option>
-                  <option value="auto">🤖 Auto Pay</option>
-                  <option value="manual">📧 Manual</option>
-                </select>
-              </div>
-              {(bizF !== "All" || pmF !== "All") && (
-                <button onClick={() => { setBizF("All"); setPmF("All"); }}
-                  style={{ fontSize: 12, color: "#ef4444", background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 20, padding: "5px 14px", cursor: "pointer", fontWeight: 600 }}>✕ Clear</button>
-              )}
-            </div>
-          )}
 
-          {/* ── AUTO PAY / MANUAL SUMMARY CARD ── */}
-          {(activeTab === "autopay" || activeTab === "manual") && (() => {
-            const failed  = displayRows.filter(r => r.total > 0);
-            const healthy = displayRows.filter(r => r.total === 0);
-            const isAuto  = activeTab === "autopay";
-            return (
-              <div style={{ marginBottom: 16, background: "#fff", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: isAuto ? "1px solid #c4b5fd" : "1px solid #fde68a" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
-                  <div style={{ fontSize: 15, fontWeight: 800, color: "#0f172a" }}>
-                    {isAuto ? "🤖 Auto Pay" : "📧 Manual Pay"} — {displayRows.length} customers
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <div style={{ display: "flex", width: 140, height: 10, borderRadius: 5, overflow: "hidden", gap: 1 }}>
-                      <div style={{ flex: autoPayStats.autoPay, background: "#6366f1", minWidth: 4 }} />
-                      <div style={{ flex: autoPayStats.manual,  background: "#f59e0b", minWidth: 4 }} />
-                    </div>
-                    <span style={{ fontSize: 12, color: "#6366f1", fontWeight: 700 }}>{autoPayStats.autoPayPct}% auto pay</span>
-                    <span style={{ fontSize: 12, color: "#64748b" }}>({autoPayStats.autoPay} of {autoPayStats.total} total customers)</span>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
-                    <label style={{ fontSize: 12, color: "#475569", fontWeight: 600 }}>Business</label>
-                    <select style={{ ...sel, width: 150 }} value={bizF} onChange={e => setBizF(e.target.value)}>
-                      <option value="All">All types</option>
-                      {bizTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                  </div>
-                </div>
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-                  <div style={{ flex: 1, minWidth: 180, background: "#f0fdf4", borderRadius: 10, padding: "14px 18px", border: "1px solid #bbf7d0" }}>
-                    <div style={{ fontSize: 11, fontWeight: 700, color: "#166534", textTransform: "uppercase" as const, letterSpacing: 0.5, marginBottom: 4 }}>
-                      {isAuto ? "✓ Auto Pay Working" : "📧 Manual — Up to date"}
-                    </div>
-                    <div style={{ fontSize: 26, fontWeight: 800, color: "#15803d" }}>{healthy.length}</div>
-                    <div style={{ fontSize: 12, color: "#166534" }}>customers · $0 outstanding</div>
-                  </div>
-                  {failed.length > 0 && (
-                    <div
-                      onClick={() => setPmTabExpanded(v => !v)}
-                      style={{ flex: 1, minWidth: 180, background: "#fef2f2", borderRadius: 10, padding: "14px 18px", border: "1px solid #fecaca", cursor: "pointer" }}>
-                      <div style={{ fontSize: 11, fontWeight: 700, color: "#991b1b", textTransform: "uppercase" as const, letterSpacing: 0.5, marginBottom: 4 }}>
-                        {isAuto ? "⚠ Auto Pay Paused / Failed" : "⚠ Outstanding Invoices"}
-                      </div>
-                      <div style={{ fontSize: 26, fontWeight: 800, color: "#dc2626" }}>{failed.length}</div>
-                      <div style={{ fontSize: 12, color: "#991b1b" }}>
-                        customers · {fmtUSD(grandTotal)} outstanding
-                      </div>
-                      <div style={{ fontSize: 11, color: "#6366f1", marginTop: 6, fontWeight: 600 }}>
-                        {pmTabExpanded ? "▲ Collapse list" : "▼ Click to see customer list"}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })()}
 
           {/* ── BUSINESS TYPE BREAKDOWN (All tab only) ── */}
           {activeTab === "all" && <div style={{ marginBottom: 20 }}>
@@ -1985,7 +1853,7 @@ export default function Dashboard() {
           </div>}
 
           {/* ── SEARCH + FILTER BAR + TABLE ── */}
-          {(activeTab !== "autopay" && activeTab !== "manual") || pmTabExpanded ? <>
+          {<>
 
           <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
             <input style={S.searchInput} placeholder="🔍  Search customer, domain, email..." value={search} onChange={e => setSearch(e.target.value)} />
@@ -2085,14 +1953,13 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {displayRows.filter(r => r.total > 0 || activeTab === "all" || activeTab === "active" || activeTab === "inactive").length === 0
+                {displayRows.filter(r => r.total > 0 || activeTab === "all").length === 0
                   ? <tr><td colSpan={13} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
                       <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
                       <div style={{ fontWeight: 600, marginBottom: 4 }}>No customers match your filters</div>
                       <button onClick={resetFilters} style={{ color: "#6366f1", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}>Clear all filters</button>
                     </td></tr>
                   : displayRows
-                      .filter(r => (activeTab === "autopay" || activeTab === "manual") ? r.total > 0 : true)
                       .map((r, i) => {
                       const isExp = expanded.has(r.key);
                       const invs  = (invoicesByKey.get(r.key) ?? []).sort((a, b) => b.days_overdue - a.days_overdue);
@@ -2209,7 +2076,7 @@ export default function Dashboard() {
             {agingMode === "due_date"     && <span style={{ marginLeft: 8, color: "#64748b" }}> · Aging from due date (autopay uses invoice date when no due date)</span>}
           </div>
 
-          </> : null}
+          </>}
         </>
       )}
     </div>
