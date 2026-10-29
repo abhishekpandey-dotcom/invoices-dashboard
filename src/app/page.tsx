@@ -172,6 +172,14 @@ export default function Dashboard() {
   const [activeTab, setActiveTab]     = useState<"all" | "ledger" | "invoiceDump" | "creditNotes">("all");
   const [pmTabExpanded, setPmTabExpanded] = useState(false);
 
+  // ── Admin gate ──────────────────────────────────────────────────────────────
+  const [isAdmin,          setIsAdmin]          = useState(() => {
+    try { return sessionStorage.getItem("dash_admin") === "1"; } catch { return false; }
+  });
+  const [showAdminModal,   setShowAdminModal]   = useState(false);
+  const [adminPwInput,     setAdminPwInput]     = useState("");
+  const [adminError,       setAdminError]       = useState("");
+
   /** "due_date" = use effective due date (autopay falls back to invoice date).
    *  "invoice_date" = always age from invoice creation date. */
   const [agingMode, setAgingMode] = useState<"due_date" | "invoice_date">("due_date");
@@ -1386,19 +1394,92 @@ export default function Dashboard() {
       {msg && <div style={S.toast}>{msg}</div>}
 
       {/* ── TABS ── */}
-      <div style={{ ...S.tabBar, width: "auto" }}>
+      <div style={{ ...S.tabBar, width: "auto", display: "flex", alignItems: "center" }}>
         {([
-          { key: "all",          label: "Customers with O/S Amount" },
-          { key: "ledger",       label: "📋 All Customers Data" },
-          { key: "invoiceDump",  label: "Invoice Dump" },
-          { key: "creditNotes",  label: "Credit Notes" },
-        ] as const).map(({ key, label }) => (
-          <button key={key} onClick={() => { setActiveTab(key); setBizF("All"); setPmTabExpanded(false); }}
+          { key: "all",          label: "Customers with O/S Amount", adminOnly: false },
+          { key: "ledger",       label: "📋 All Customers Data",     adminOnly: false },
+          { key: "invoiceDump",  label: "Invoice Dump",              adminOnly: true  },
+          { key: "creditNotes",  label: "Credit Notes",              adminOnly: true  },
+        ] as const).filter(t => !t.adminOnly || isAdmin).map(({ key, label }) => (
+          <button key={key} onClick={() => { setActiveTab(key as typeof activeTab); setBizF("All"); setPmTabExpanded(false); }}
             style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
             {label}
           </button>
         ))}
+
+        {/* Admin lock button */}
+        <button
+          onClick={() => {
+            if (isAdmin) {
+              setIsAdmin(false);
+              try { sessionStorage.removeItem("dash_admin"); } catch {}
+              if (activeTab === "invoiceDump" || activeTab === "creditNotes") setActiveTab("all");
+            } else {
+              setAdminPwInput(""); setAdminError(""); setShowAdminModal(true);
+            }
+          }}
+          title={isAdmin ? "Logged in as Admin — click to log out" : "Admin login"}
+          style={{
+            marginLeft: "auto", background: "none", border: "none", cursor: "pointer",
+            fontSize: 18, padding: "4px 8px", opacity: isAdmin ? 1 : 0.45,
+            color: isAdmin ? "#4f46e5" : "#64748b",
+          }}
+        >
+          {isAdmin ? "🔓" : "🔒"}
+        </button>
       </div>
+
+      {/* ── ADMIN LOGIN MODAL ── */}
+      {showAdminModal && (
+        <div style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1000,
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }} onClick={() => setShowAdminModal(false)}>
+          <div style={{
+            background: "#fff", borderRadius: 12, padding: "32px 36px", width: 340,
+            boxShadow: "0 20px 60px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", gap: 16,
+          }} onClick={e => e.stopPropagation()}>
+            <div style={{ fontWeight: 700, fontSize: 17 }}>🔒 Admin Login</div>
+            <div style={{ fontSize: 13, color: "#64748b" }}>Enter the admin password to unlock Invoice Dump and Credit Notes tabs.</div>
+            <input
+              type="password"
+              autoFocus
+              placeholder="Password"
+              value={adminPwInput}
+              onChange={e => { setAdminPwInput(e.target.value); setAdminError(""); }}
+              onKeyDown={async e => {
+                if (e.key === "Enter") {
+                  const res = await fetch("/api/admin-auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: adminPwInput }) });
+                  const { ok } = await res.json();
+                  if (ok) { setIsAdmin(true); try { sessionStorage.setItem("dash_admin", "1"); } catch {} setShowAdminModal(false); }
+                  else setAdminError("Incorrect password.");
+                }
+              }}
+              style={{
+                border: "1px solid #cbd5e1", borderRadius: 8, padding: "10px 14px",
+                fontSize: 14, outline: "none", width: "100%", boxSizing: "border-box",
+              }}
+            />
+            {adminError && <div style={{ color: "#ef4444", fontSize: 13 }}>{adminError}</div>}
+            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
+              <button onClick={() => setShowAdminModal(false)}
+                style={{ padding: "8px 18px", borderRadius: 8, border: "1px solid #cbd5e1", background: "#f8fafc", cursor: "pointer", fontSize: 13 }}>
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  const res = await fetch("/api/admin-auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: adminPwInput }) });
+                  const { ok } = await res.json();
+                  if (ok) { setIsAdmin(true); try { sessionStorage.setItem("dash_admin", "1"); } catch {} setShowAdminModal(false); }
+                  else setAdminError("Incorrect password.");
+                }}
+                style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: "#4f46e5", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
+                Login
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── LEDGER TAB ── */}
       {activeTab === "ledger" && (
