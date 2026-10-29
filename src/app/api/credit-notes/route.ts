@@ -36,7 +36,7 @@ function isoMonth(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
-arync function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[]> {
+async function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[]> {
   const stripe = new Stripe(key, { apiVersion: "2024-04-10" });
   const rows: CnDumpRow[] = [];
   let hasMore = true;
