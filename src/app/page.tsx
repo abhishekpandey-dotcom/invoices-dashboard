@@ -1059,13 +1059,13 @@ export default function Dashboard() {
   }, [loadInvDump, loadCnDump]);
 
   // ── CSV Download helper ──
-  function downloadCSV<T extends Record<string, unknown>>(
+  function downloadCSV<T extends object>(
     rows: T[], headers: string[], fields: string[], filename: string
   ) {
     const lines = [headers.join(",")];
     for (const row of rows) {
       lines.push(fields.map(f => {
-        const v = String(row[f] ?? "").replace(/"/g, '""');
+        const v = String((row as Record<string, unknown>)[f] ?? "").replace(/"/g, '""');
         return (v.includes(",") || v.includes('"') || v.includes("\n")) ? `"${v}"` : v;
       }).join(","));
     }
