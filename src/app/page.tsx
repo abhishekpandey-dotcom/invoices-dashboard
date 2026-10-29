@@ -2,6 +2,8 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import * as XLSX from "xlsx";
 import type { InvoiceRow, AgingBucket, AllCustomer, AllCustomerInvoice } from "@/lib/stripe";
+import type { InvoiceDumpRow } from "@/app/api/invoice-dump/route";
+import type { CnDumpRow } from "@/app/api/credit-notes/route";
 
 // ── Plan-change (upgrade/downgrade) API types ─────────────────────────────────
 interface PlanChangeRow {
@@ -167,7 +169,7 @@ export default function Dashboard() {
   const [expanded, setExpanded]       = useState<Set<string>>(new Set());
   const [sortCol, setSortCol]         = useState<keyof CustRow>("total");
   const [sortDir, setSortDir]         = useState<"asc" | "desc">("desc");
-  const [activeTab, setActiveTab]     = useState<"all" | "active" | "inactive" | "autopay" | "manual" | "ledger" | "planChanges">("all");
+  const [activeTab, setActiveTab]     = useState<"all" | "ledger" | "invoiceDump" | "creditNotes">("all");
   const [pmTabExpanded, setPmTabExpanded] = useState(false);
 
   /** "due_date" = use effective due date (autopay falls back to invoice date).
@@ -218,6 +220,17 @@ export default function Dashboard() {
   const [revenueMonthsF, setRevenueMonthsF] = useState<Set<string>>(new Set());
   const [revenueMonthPickerOpen, setRevenueMonthPickerOpen] = useState(false);
 
+  // ── Invoice Dump state ──
+  const [invDump,        setInvDump]        = useState<InvoiceDumpRow[] | null>(null);
+  const [invDumpLoading, setInvDumpLoading] = useState(false);
+  const [invDumpMonth,   setInvDumpMonth]   = useState("");
+  const [invGeneratedAt, setInvGeneratedAt] = useState<string | null>(null);
+  // ── Credit Notes state ──
+  const [cnDump,         setCnDump]         = useState<CnDumpRow[] | null>(null);
+  const [cnLoading,      setCnLoading]      = useState(false);
+  const [cnMonth,        setCnMonth]        = useState("");
+  const [cnGeneratedAt,  setCnGeneratedAt]  = useState<string | null>(null);
+
   // ── Data loading ─────────────────────────────────────────────────────────
   const loadData = useCallback((isRefresh = false) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
@@ -257,6 +270,28 @@ export default function Dashboard() {
       })
       .catch(e => setPlanError(e.message))
       .finally(() => setPlanLoading(false));
+  }, []);
+
+  const loadInvDump = useCallback(async () => {
+    setInvDumpLoading(true);
+    try {
+      const res  = await fetch("/api/invoice-dump");
+      const json = await res.json();
+      setInvDump(json.data);
+      setInvGeneratedAt(json.generatedAt);
+    } catch (e) { console.error("invoice-dump:", e); }
+    finally { setInvDumpLoading(false); }
+  }, []);
+
+  const loadCnDump = useCallback(async () => {
+    setCnLoading(true);
+    try {
+      const res  = await fetch("/api/credit-notes");
+      const json = await res.json();
+      setCnDump(json.data);
+      setCnGeneratedAt(json.generatedAt);
+    } catch (e) { console.error("credit-notes:", e); }
+    finally { setCnLoading(false); }
   }, []);
 
   useEffect(() => { loadData(false); }, [loadData]);
@@ -492,7 +527,7 @@ export default function Dashboard() {
       });
   }, [activeTab, data, bizF, acctF, statF, csF, search, openInvoiceMap, sortCol, sortDir]);
 
-  const displayRows = (activeTab === "autopay" || activeTab === "manual") ? payModeCustRows : custRows;
+  const displayRows = custRows;
 
   const invoicesByKey = useMemo(() => {
     const m = new Map<string, InvoiceRowWithUsd[]>();
@@ -1069,6 +1104,34 @@ export default function Dashboard() {
     return byCurrency;
   }, [revenueEvents]);
 
+  // ── Invoice Dump & Credit Notes: auto-load on mount ──
+  useEffect(() => { loadInvDump(); }, [loadInvDump]);
+  useEffect(() => { loadCnDump();  }, [loadCnDump]);
+
+  // Auto-refresh invoice dump and credit notes every 5 minutes
+  useEffect(() => {
+    const id = setInterval(() => { loadInvDump(); loadCnDump(); }, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [loadInvDump, loadCnDump]);
+
+  // ── CSV Download helper ──
+  function downloadCSV<T extends Record<string, unknown>>(
+    rows: T[], headers: string[], fields: string[], filename: string
+  ) {
+    const lines = [headers.join(",")];
+    for (const row of rows) {
+      lines.push(fields.map(f => {
+        const v = String(row[f] ?? "").replace(/"/g, '""');
+        return (v.includes(",") || v.includes('"') || v.includes("\n")) ? `"${v}"` : v;
+      }).join(","));
+    }
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
   // ── Actions ───────────────────────────────────────────────────────────────
   function toggleSort(k: keyof CustRow) {
     if (sortCol === k) setSortDir(d => d === "asc" ? "desc" : "asc");
@@ -1325,13 +1388,10 @@ export default function Dashboard() {
       {/* ── TABS ── */}
       <div style={{ ...S.tabBar, width: "auto" }}>
         {([
-          { key: "all",      label: "Customers with O/S Amount" },
-          { key: "active",   label: "Active" },
-          { key: "inactive", label: "Inactive" },
-          { key: "autopay",  label: "🤖 Auto Pay" },
-          { key: "manual",   label: "📧 Manual" },
-          { key: "ledger",   label: "📋 All Customers Data" },
-          { key: "planChanges", label: "📈 Plan Changes" },
+          { key: "all",          label: "Customers with O/S Amount" },
+          { key: "ledger",       label: "📋 All Customers Data" },
+          { key: "invoiceDump",  label: "Invoice Dump" },
+          { key: "creditNotes",  label: "Credit Notes" },
         ] as const).map(({ key, label }) => (
           <button key={key} onClick={() => { setActiveTab(key); setBizF("All"); setPmTabExpanded(false); }}
             style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
@@ -1590,502 +1650,107 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ── PLAN CHANGES (UPGRADE/DOWNGRADE) TAB ── */}
-      {activeTab === "planChanges" && (
-        <div>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-            <div style={{ display: "flex", background: "#f1f5f9", borderRadius: 8, padding: 3, gap: 2 }}>
-              <button
-                onClick={() => setPlanViewMode("tier")}
-                style={{ fontSize: 12, fontWeight: 700, padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer",
-                  background: planViewMode === "tier" ? "#6366f1" : "transparent", color: planViewMode === "tier" ? "#fff" : "#64748b" }}>
-                🎚 Subscription Tier
+      
+        {/* ─── INVOICE DUMP TAB ─── */}
+        {activeTab === "invoiceDump" && (
+          <div style={{ padding: "20px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", flexWrap: "wrap" }}>
+              <h2 style={{ margin: 0 }}>Invoice Dump</h2>
+              <select value={invDumpMonth} onChange={e => setInvDumpMonth(e.target.value)}
+                style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "14px" }}>
+                <option value="">All Months</option>
+                {invDump && Array.from(new Set(invDump.map(r => r.billedMonth))).sort().reverse().map(m => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+              <button onClick={loadInvDump} disabled={invDumpLoading}
+                style={{ padding: "6px 14px", borderRadius: "6px", background: "#0070f3", color: "#fff", border: "none", cursor: invDumpLoading ? "not-allowed" : "pointer" }}>
+                {invDumpLoading ? "Loading…" : "⟳ Refresh"}
               </button>
-              <button
-                onClick={() => setPlanViewMode("revenue")}
-                style={{ fontSize: 12, fontWeight: 700, padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer",
-                  background: planViewMode === "revenue" ? "#6366f1" : "transparent", color: planViewMode === "revenue" ? "#fff" : "#64748b" }}>
-                💰 Monthly Revenue
-              </button>
-            </div>
-            <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>
-              {planViewMode === "tier"
-                ? "Stripe subscription tier changes"
-                : "Month-over-month invoiced revenue"}
-            </div>
-            {planViewMode === "tier" ? (
-              <>
-                <button
-                  onClick={loadPlanChanges}
-                  disabled={planLoading}
-                  style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
-                  {planLoading ? "⟳ Checking..." : "⟳ Check for changes"}
-                </button>
-                <button onClick={downloadPlanCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+              {invDump && (
+                <button onClick={() => downloadCSV(invDump.filter(r => !invDumpMonth || r.billedMonth === invDumpMonth), ["Sr No", "Entity", "Number", "Month Attributed", "Revenue Type", "SEO/Non SEO", "Amount Due", "Currency", "Stripe Customer ID", "Invoice Status", "Invoice ID", "Customer Name", "Customer Email", "Billed Date", "Billed Month"], ["srNo", "entity", "number", "monthAttributed", "revenueType", "seoNonSeo", "amountDue", "currency", "stripeCustomerId", "invoiceStatus", "invoiceId", "customerName", "customerEmail", "billedDate", "billedMonth"], `invoice_dump_${invDumpMonth||"all"}.csv`)}
+                  style={{ padding: "6px 14px", borderRadius: "6px", background: "#28a745", color: "#fff", border: "none", cursor: "pointer" }}>
                   ⬇ CSV
                 </button>
-                <button onClick={downloadPlanExcel} style={{ fontSize: 12, background: "#f0f9ff", color: "#0369a1", border: "1px solid #7dd3fc", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
-                  ⬇ Excel (.xlsx)
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={() => loadLedger(true)}
-                  disabled={ledgerLoading}
-                  style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
-                  {ledgerLoading ? "⟳ Loading..." : "⟳ Refresh"}
-                </button>
-                <button onClick={downloadRevenueCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
-                  ⬇ CSV
-                </button>
-                <button onClick={downloadRevenueExcel} style={{ fontSize: 12, background: "#f0f9ff", color: "#0369a1", border: "1px solid #7dd3fc", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
-                  ⬇ Excel (.xlsx)
-                </button>
-              </>
+              )}
+              {invGeneratedAt && <span style={{ fontSize: "12px", color: "#888" }}>Updated: {new Date(invGeneratedAt).toLocaleString()}</span>}
+            </div>
+            {invDumpLoading && <div style={{ padding: "20px", textAlign: "center" }}>Loading invoices…</div>}
+            {!invDumpLoading && !invDump && (
+              <button onClick={loadInvDump} style={{ padding: "10px 20px", borderRadius: "6px", background: "#0070f3", color: "#fff", border: "none", cursor: "pointer", fontSize: "15px" }}>
+                Load Invoice Data
+              </button>
             )}
+            {!invDumpLoading && invDump && (() => {
+              const rows = invDump.filter(r => !invDumpMonth || r.billedMonth === invDumpMonth);
+              return (
+                <div style={{ overflowX: "auto" }}>
+                  <div style={{ marginBottom: "8px", fontSize: "13px", color: "#555" }}>{rows.length} records{invDumpMonth ? ` for ${invDumpMonth}` : ""}</div>
+                  <table style={S.table}>
+                    <thead><tr>{["Sr No", "Entity", "Number", "Month Attributed", "Revenue Type", "SEO/Non SEO", "Amount Due", "Currency", "Stripe Customer ID", "Invoice Status", "Invoice ID", "Customer Name", "Customer Email", "Billed Date", "Billed Month"].map(h => <th key={h} style={{ ...S.td, background: "#f0f0f0", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>)}</tr></thead>
+                    <tbody>{rows.map((row, i) => (
+                      <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f9f9f9" }}>
+                        {["srNo", "entity", "number", "monthAttributed", "revenueType", "seoNonSeo", "amountDue", "currency", "stripeCustomerId", "invoiceStatus", "invoiceId", "customerName", "customerEmail", "billedDate", "billedMonth"].map(f => <td key={f} style={{ ...S.td, whiteSpace: "nowrap" }}>{String(row[f as keyof typeof row] ?? "")}</td>)}
+                      </tr>
+                    ))}</tbody>
+                  </table>
+                </div>
+              );
+            })()}
           </div>
+        )}
 
-          {planViewMode === "tier" && (
-          <>
-          {!planLoading && planData && (
-            <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-              <div style={{ background: "#fff", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 18px" }}>
-                <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700, textTransform: "uppercase" as const }}>⬆ Upgrades</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>{planUpgradeCount}</div>
-              </div>
-              <div style={{ background: "#fff", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px" }}>
-                <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" as const }}>⬇ Downgrades</div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "#dc2626" }}>{planDowngradeCount}</div>
-              </div>
-            </div>
-          )}
-
-          {!planLoading && planData && planData.subscriptions_found === 0 && (
-            <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, padding: "14px 20px", color: "#92400e", marginBottom: 16, fontSize: 13 }}>
-              ⚠ Stripe returned <b>0 active/trialing subscription objects</b> across both accounts. This tab tracks changes to Stripe <b>Subscription</b> price/tier — if your customers are invoiced directly (one-off invoices, not attached to a Stripe Subscription), there's nothing here to track and this view will stay empty. The <b>💰 Monthly Revenue</b> view (based on actual invoices) is the one that will show data for that billing setup.
-            </div>
-          )}
-
-          {!planLoading && planData && planCurrentRows.length > 0 && (
-            <div style={{ marginBottom: 20 }}>
-              <div style={S.sectionLabel}>Current Subscriptions (as of last check)</div>
-              <div style={S.tableWrap}>
-                <table style={S.table}>
-                  <thead>
-                    <tr>
-                      {["Domain","Account","Business","CS Owner","Currency","Plan Value","Plan Summary","Status"].map(label => (
-                        <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {planCurrentRows.map((c, i) => {
-                      const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
-                      const statusStyle: React.CSSProperties =
-                        c.status === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
-                        c.status === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
-                        c.status === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
-                        c.status === "Baseline" ? { color: "#075985", background: "#e0f2fe", border: "1px solid #7dd3fc" } :
-                        c.status === "No Change" ? { color: "#64748b", background: "#f1f5f9", border: "1px solid #e2e8f0" } :
-                        { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
-                      return (
-                        <tr key={`${c.account}-${c.customer_id}`} style={{ background: rowBg }}>
-                          <td style={S.td}>
-                            <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{c.domain || "—"}</div>
-                            <div style={{ fontSize: 11, color: "#94a3b8" }}>{c.customer_name}</div>
-                          </td>
-                          <td style={S.td}><span style={acctStyle(c.account)}>{c.account}</span></td>
-                          <td style={S.td}>{c.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
-                          <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{c.cs_email?.split("@")[0] || "—"}</span></td>
-                          <td style={S.td}>{c.currency}</td>
-                          <td style={{ ...S.td, fontWeight: 700 }}>{c.plan_value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                          <td style={{ ...S.td, fontSize: 12, color: "#64748b" }}>{c.plan_summary || "—"}</td>
-                          <td style={S.td}>
-                            <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...statusStyle }}>
-                              {c.status === "Upgrade" ? "⬆ " : c.status === "Downgrade" ? "⬇ " : ""}{c.status}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {planLoading && (
-            <div style={S.center}>
-              <div style={S.spin} />
-              <p style={{ marginTop: 16, color: "#64748b", fontSize: 14 }}>Comparing current Stripe subscriptions against the last known snapshot...</p>
-            </div>
-          )}
-
-          {planError && (
-            <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "16px 20px", color: "#dc2626", marginBottom: 16 }}>
-              ⚠ {planError}
-            </div>
-          )}
-
-          {!planLoading && planData && (
-            <>
-              <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-                <input
-                  style={S.searchInput}
-                  placeholder="🔍  Search domain, customer, business..."
-                  value={planSearch}
-                  onChange={e => setPlanSearch(e.target.value)}
-                />
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Account</label>
-                  <select style={{ ...sel, width: 100 }} value={planAcctF} onChange={e => setPlanAcctF(e.target.value)}>
-                    <option value="All">All</option>
-                    <option value="India">India</option>
-                    <option value="US">US</option>
-                  </select>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Type</label>
-                  <select style={{ ...sel, width: 140 }} value={planTypeF} onChange={e => setPlanTypeF(e.target.value as typeof planTypeF)}>
-                    <option value="All">All</option>
-                    <option value="Upgrade">Upgrade</option>
-                    <option value="Downgrade">Downgrade</option>
-                    <option value="Currency Switch">Currency Switch</option>
-                    <option value="Plan Changed">Plan Changed</option>
-                  </select>
-                </div>
-                <div style={{ position: "relative" }}>
-                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap", marginRight: 6 }}>Month</label>
-                  <button
-                    onClick={() => setPlanMonthPickerOpen(v => !v)}
-                    style={{ ...sel, width: "auto", minWidth: 140, textAlign: "left", display: "inline-flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                    <span>
-                      {planMonthsF.size === 0
-                        ? "All months"
-                        : planMonthsF.size <= 2
-                          ? Array.from(planMonthsF).sort().reverse().map(planMonthLabel).join(", ")
-                          : `${planMonthsF.size} months selected`}
-                    </span>
-                    <span style={{ fontSize: 10 }}>{planMonthPickerOpen ? "▲" : "▼"}</span>
-                  </button>
-                  {planMonthPickerOpen && (
-                    <div style={{
-                      position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 20,
-                      background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8,
-                      boxShadow: "0 4px 16px rgba(0,0,0,0.12)", padding: 10, minWidth: 180, maxHeight: 240, overflowY: "auto",
-                    }}>
-                      {planMonthOptions.length === 0 ? (
-                        <div style={{ fontSize: 12, color: "#94a3b8", padding: "4px 6px" }}>No dated changes yet</div>
-                      ) : planMonthOptions.map(ym => (
-                        <label key={ym} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", padding: "4px 6px", cursor: "pointer", borderRadius: 5 }}>
-                          <input type="checkbox" checked={planMonthsF.has(ym)} onChange={() => togglePlanMonth(ym)} />
-                          {planMonthLabel(ym)}
-                        </label>
-                      ))}
-                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9" }}>
-                        <button
-                          onClick={() => setPlanMonthsF(new Set())}
-                          style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
-                          Clear
-                        </button>
-                        <button
-                          onClick={() => setPlanMonthPickerOpen(false)}
-                          style={{ fontSize: 11, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
-                          Done
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>{planRows.length} changes</span>
-              </div>
-
-              <div style={S.tableWrap}>
-                <table style={S.table}>
-                  <thead>
-                    <tr>
-                      {["Detected","Domain","Account","Business","CS Owner","Currency","Change","Previous Plan","New Plan"].map(label => (
-                        <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {planRows.length === 0 ? (
-                      <tr><td colSpan={9} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
-                        <div style={{ fontSize: 32, marginBottom: 8 }}>📈</div>
-                        <div style={{ fontWeight: 600 }}>No plan changes detected yet</div>
-                      </td></tr>
-                    ) : planRows.map((c, i) => {
-                      const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
-                      const typeStyle: React.CSSProperties =
-                        c.change_type === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
-                        c.change_type === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
-                        c.change_type === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
-                        { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
-                      return (
-                        <tr key={`${c.customer_id}-${c.account}-${c.detected_at}`} style={{ background: rowBg }}>
-                          <td style={{ ...S.td, fontSize: 12, color: "#475569" }}>{fmtDate(c.detected_at.split("T")[0])}</td>
-                          <td style={S.td}>
-                            <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{c.domain || "—"}</div>
-                            <div style={{ fontSize: 11, color: "#94a3b8" }}>{c.customer_name}</div>
-                          </td>
-                          <td style={S.td}><span style={acctStyle(c.account)}>{c.account}</span></td>
-                          <td style={S.td}>{c.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
-                          <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{c.cs_email?.split("@")[0] || "—"}</span></td>
-                          <td style={{ ...S.td, fontWeight: 700, color: "#475569" }}>{c.new_currency || c.previous_currency || "—"}</td>
-                          <td style={S.td}>
-                            <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", ...typeStyle }}>
-                              {c.change_type === "Upgrade" ? "⬆ " : c.change_type === "Downgrade" ? "⬇ " : ""}{c.change_type}
-                            </span>
-                          </td>
-                          <td style={{ ...S.td, fontSize: 12 }}>
-                            <div style={{ color: "#475569" }}>{c.previous_plan || "—"}</div>
-                            <div style={{ color: "#94a3b8" }}>{c.previous_value.toFixed(2)}</div>
-                          </td>
-                          <td style={{ ...S.td, fontSize: 12 }}>
-                            <div style={{ color: "#0f172a", fontWeight: 600 }}>{c.new_plan || "—"}</div>
-                            <div style={{ color: "#94a3b8" }}>{c.new_value.toFixed(2)}</div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
-          </>
-          )}
-
-          {planViewMode === "revenue" && (
-            <>
-              {ledgerLoading && (
-                <div style={S.center}>
-                  <div style={S.spin} />
-                  <p style={{ marginTop: 16, color: "#64748b", fontSize: 14 }}>Fetching invoice history from Stripe (this may take 20–40s)...</p>
-                </div>
+        {/* ─── CREDIT NOTES TAB ─── */}
+        {activeTab === "creditNotes" && (
+          <div style={{ padding: "20px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", flexWrap: "wrap" }}>
+              <h2 style={{ margin: 0 }}>Credit Note Dump</h2>
+              <select value={cnMonth} onChange={e => setCnMonth(e.target.value)}
+                style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "14px" }}>
+                <option value="">All Months</option>
+                {cnDump && Array.from(new Set(cnDump.map(r => r.effectiveMonth))).sort().reverse().map(m => (
+                  <option key={m} value={m}>{m}</option>
+                ))}
+              </select>
+              <button onClick={loadCnDump} disabled={cnLoading}
+                style={{ padding: "6px 14px", borderRadius: "6px", background: "#0070f3", color: "#fff", border: "none", cursor: cnLoading ? "not-allowed" : "pointer" }}>
+                {cnLoading ? "Loading…" : "⟳ Refresh"}
+              </button>
+              {cnDump && (
+                <button onClick={() => downloadCSV(cnDump.filter(r => !cnMonth || r.effectiveMonth === cnMonth), ["Sr No", "Credit Note #", "Stripe Customer ID", "Type", "Amount", "CN Status", "Currency", "Invoice ID", "Created Date", "Effective Date", "Effective Month Label", "Invoice Number", "Entity", "Customer Email", "Revenue Type", "SEO/Non SEO", "Invoice Amount", "Attributed Month", "Customer Name", "Memo"], ["srNo", "creditNoteNumber", "stripeCustomerId", "type", "amount", "cnStatus", "currency", "invoiceId", "createdDate", "effectiveDate", "effectiveMonthLabel", "invoiceNumber", "entity", "customerEmail", "revenueType", "seoNonSeo", "invoiceAmount", "attributedMonth", "customerName", "memo"], `credit_notes_${cnMonth||"all"}.csv`)}
+                  style={{ padding: "6px 14px", borderRadius: "6px", background: "#28a745", color: "#fff", border: "none", cursor: "pointer" }}>
+                  ⬇ CSV
+                </button>
               )}
-
-              {ledgerError && (
-                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "16px 20px", color: "#dc2626", marginBottom: 16 }}>
-                  ⚠ {ledgerError}
+              {cnGeneratedAt && <span style={{ fontSize: "12px", color: "#888" }}>Updated: {new Date(cnGeneratedAt).toLocaleString()}</span>}
+            </div>
+            {cnLoading && <div style={{ padding: "20px", textAlign: "center" }}>Loading credit notes…</div>}
+            {!cnLoading && !cnDump && (
+              <button onClick={loadCnDump} style={{ padding: "10px 20px", borderRadius: "6px", background: "#0070f3", color: "#fff", border: "none", cursor: "pointer", fontSize: "15px" }}>
+                Load Credit Note Data
+              </button>
+            )}
+            {!cnLoading && cnDump && (() => {
+              const rows = cnDump.filter(r => !cnMonth || r.effectiveMonth === cnMonth);
+              return (
+                <div style={{ overflowX: "auto" }}>
+                  <div style={{ marginBottom: "8px", fontSize: "13px", color: "#555" }}>{rows.length} records{cnMonth ? ` for ${cnMonth}` : ""}</div>
+                  <table style={S.table}>
+                    <thead><tr>{["Sr No", "Credit Note #", "Stripe Customer ID", "Type", "Amount", "CN Status", "Currency", "Invoice ID", "Created Date", "Effective Date", "Effective Month Label", "Invoice Number", "Entity", "Customer Email", "Revenue Type", "SEO/Non SEO", "Invoice Amount", "Attributed Month", "Customer Name", "Memo"].map(h => <th key={h} style={{ ...S.td, background: "#f0f0f0", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>)}</tr></thead>
+                    <tbody>{rows.map((row, i) => (
+                      <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f9f9f9" }}>
+                        {["srNo", "creditNoteNumber", "stripeCustomerId", "type", "amount", "cnStatus", "currency", "invoiceId", "createdDate", "effectiveDate", "effectiveMonthLabel", "invoiceNumber", "entity", "customerEmail", "revenueType", "seoNonSeo", "invoiceAmount", "attributedMonth", "customerName", "memo"].map(f => <td key={f} style={{ ...S.td, whiteSpace: "nowrap" }}>{String(row[f as keyof typeof row] ?? "")}</td>)}
+                      </tr>
+                    ))}</tbody>
+                  </table>
                 </div>
-              )}
-
-              {!ledgerLoading && ledgerData && (
-                <>
-                  <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-                    <div style={{ background: "#fff", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 18px" }}>
-                      <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700, textTransform: "uppercase" as const }}>⬆ Net Upsell (selected range)</div>
-                      <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>{revenueUpgradeCount}</div>
-                      <div style={{ fontSize: 12, color: "#16a34a", marginTop: 2 }}>
-                        {revenueNetUpsellTotals.size === 0 ? "—" : Array.from(revenueNetUpsellTotals.entries()).map(([cur, amt]) => `+${cur} ${amt.toLocaleString("en-US", { maximumFractionDigits: 0 })}`).join(" · ")}
-                      </div>
-                    </div>
-                    <div style={{ background: "#fff", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px" }}>
-                      <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" as const }}>⬇ Net Downgrade (selected range)</div>
-                      <div style={{ fontSize: 22, fontWeight: 800, color: "#dc2626" }}>{revenueDowngradeCount}</div>
-                      <div style={{ fontSize: 12, color: "#dc2626", marginTop: 2 }}>
-                        {revenueNetDowngradeTotals.size === 0 ? "—" : Array.from(revenueNetDowngradeTotals.entries()).map(([cur, amt]) => `-${cur} ${amt.toLocaleString("en-US", { maximumFractionDigits: 0 })}`).join(" · ")}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
-                    <input
-                      style={S.searchInput}
-                      placeholder="🔍  Search domain, customer, business..."
-                      value={planSearch}
-                      onChange={e => setPlanSearch(e.target.value)}
-                    />
-                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Account</label>
-                      <select style={{ ...sel, width: 100 }} value={planAcctF} onChange={e => setPlanAcctF(e.target.value)}>
-                        <option value="All">All</option>
-                        <option value="India">India</option>
-                        <option value="US">US</option>
-                      </select>
-                    </div>
-                    <div style={{ position: "relative" }}>
-                      <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap", marginRight: 6 }}>Months to compare</label>
-                      <button
-                        onClick={() => setRevenueMonthPickerOpen(v => !v)}
-                        style={{ ...sel, width: "auto", minWidth: 160, textAlign: "left", display: "inline-flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-                        <span>
-                          {revenueMonthsF.size === 0
-                            ? "Select months..."
-                            : Array.from(revenueMonthsF).sort().map(planMonthLabel).join(", ")}
-                        </span>
-                        <span style={{ fontSize: 10 }}>{revenueMonthPickerOpen ? "▲" : "▼"}</span>
-                      </button>
-                      {revenueMonthPickerOpen && (
-                        <div style={{
-                          position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 20,
-                          background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8,
-                          boxShadow: "0 4px 16px rgba(0,0,0,0.12)", padding: 10, minWidth: 180, maxHeight: 240, overflowY: "auto",
-                        }}>
-                          {revenueMonthOptions.length === 0 ? (
-                            <div style={{ fontSize: 12, color: "#94a3b8", padding: "4px 6px" }}>No invoiced months found</div>
-                          ) : revenueMonthOptions.map(ym => (
-                            <label key={ym} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", padding: "4px 6px", cursor: "pointer", borderRadius: 5 }}>
-                              <input type="checkbox" checked={revenueMonthsF.has(ym)} onChange={() => toggleRevenueMonth(ym)} />
-                              {planMonthLabel(ym)}
-                            </label>
-                          ))}
-                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9", gap: 10 }}>
-                            <button
-                              onClick={() => setRevenueMonthsF(new Set(sensibleDefaultMonths))}
-                              style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
-                              Reset to latest 2
-                            </button>
-                            <button
-                              onClick={() => setRevenueMonthsF(new Set(revenueMonthOptions))}
-                              style={{ fontSize: 11, color: "#16a34a", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
-                              Select all
-                            </button>
-                            <button
-                              onClick={() => setRevenueMonthPickerOpen(false)}
-                              style={{ fontSize: 11, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
-                              Done
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>{revenueEvents.length} changes · {revenueRows.length} customers</span>
-                  </div>
-
-                  <div style={S.tableWrap}>
-                    <table style={S.table}>
-                      <thead>
-                        <tr>
-                          {["Domain","Account","Business","CS Owner","Currency","Month","Change","Previous","New","Invoices"].map(label => (
-                            <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {revenueEvents.length === 0 ? (
-                          revenueMonthsF.size === 0 ? (
-                            <tr><td colSpan={10} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
-                              <div style={{ fontSize: 32, marginBottom: 8 }}>💰</div>
-                              <div style={{ fontWeight: 600 }}>Select at least one month above</div>
-                            </td></tr>
-                          ) : planSearch && revenueRows.length > 0 ? (
-                            <tr><td colSpan={10} style={{ padding: 24 }}>
-                              <div style={{ textAlign: "center", color: "#94a3b8", marginBottom: 16 }}>
-                                <div style={{ fontSize: 28, marginBottom: 6 }}>📊</div>
-                                <div style={{ fontWeight: 600, color: "#475569" }}>
-                                  {revenueRows.length} customer{revenueRows.length !== 1 ? "s" : ""} matched &quot;{planSearch}&quot;, but no price change was detected in the selected months
-                                </div>
-                                <div style={{ fontSize: 12, marginTop: 2 }}>Their invoiced amount has been the same every cycle — here&apos;s what they&apos;ve actually been billed:</div>
-                              </div>
-                              {revenueRows.map(r => (
-                                <div key={r.key} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: "10px 14px", marginBottom: 8 }}>
-                                  <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a", marginBottom: 4 }}>{r.domain || r.customer_name}</div>
-                                  <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
-                                    {r.monthCols.map(c => (
-                                      <span key={c.ym} style={{ fontSize: 12, color: "#475569" }}>
-                                        {planMonthLabel(c.ym)}: <b>{c.amount > 0 ? `${c.currency} ${c.amount.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : "—"}</b>
-                                      </span>
-                                    ))}
-                                  </div>
-                                </div>
-                              ))}
-                            </td></tr>
-                          ) : (
-                            <tr><td colSpan={10} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
-                              <div style={{ fontSize: 32, marginBottom: 8 }}>💰</div>
-                              <div style={{ fontWeight: 600 }}>No changes detected in the selected months</div>
-                            </td></tr>
-                          )
-                        ) : revenueEvents.map((e, i) => {
-                          const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
-                          const chipStyle = (t: string): React.CSSProperties =>
-                            t === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
-                            t === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
-                            t === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
-                            t === "New/Reactivated"  ? { color: "#075985", background: "#e0f2fe", border: "1px solid #7dd3fc" } :
-                            t === "Churned" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
-                            { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
-                          const showInvoices = (e.change_type === "Upgrade" || e.change_type === "Downgrade") && e.invoices.length > 0;
-                          return (
-                            <tr key={e.key} style={{ background: rowBg }}>
-                              <td style={S.td}>
-                                <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{e.domain || "—"}</div>
-                                <div style={{ fontSize: 11, color: "#94a3b8" }}>{e.customer_name}</div>
-                              </td>
-                              <td style={S.td}><span style={acctStyle(e.account)}>{e.account}</span></td>
-                              <td style={S.td}>{e.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
-                              <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{e.cs_email?.split("@")[0] || "—"}</span></td>
-                              <td style={{ ...S.td, fontWeight: 700, color: "#475569" }}>{e.currency || "—"}</td>
-                              <td style={{ ...S.td, fontSize: 12, color: "#475569" }}>{planMonthLabel(e.month)}</td>
-                              <td style={S.td}>
-                                <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...chipStyle(e.change_type) }}>
-                                  {e.change_type === "Upgrade" ? "⬆ " : e.change_type === "Downgrade" ? "⬇ " : ""}{e.change_type}
-                                </span>
-                              </td>
-                              <td style={{ ...S.td, fontSize: 13, color: e.prev_rate > 0 ? "#0f172a" : "#cbd5e1" }}>
-                                {e.prev_rate > 0 ? e.prev_rate.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—"}
-                              </td>
-                              <td style={{ ...S.td, fontSize: 13, fontWeight: 600, color: e.new_rate > 0 ? "#0f172a" : "#cbd5e1" }}>
-                                {e.new_rate > 0 ? e.new_rate.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—"}
-                              </td>
-                              <td style={{ ...S.td, fontSize: 11, color: "#475569" }}>
-                                {showInvoices ? e.invoices.map(iv => `${iv.invoice_number}${iv.status === "paid" ? "✓" : "○"}`).join(", ") : <span style={{ color: "#cbd5e1" }}>—</span>}
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div style={{ textAlign: "center", padding: "12px 0", color: "#94a3b8", fontSize: 12 }}>
-                    Revenue booked to the invoice&apos;s period start month · ex-GST/Credit-Note for India · one row per detected change — a customer with 2 upsells shows 2 rows
-                  </div>
-
-                  {revenueUpsellByCustomer.length > 0 && (
-                    <div style={{ marginTop: 8 }}>
-                      <div style={S.sectionLabel}>Total Upsell by Customer</div>
-                      <div style={S.tableWrap}>
-                        <table style={S.table}>
-                          <thead>
-                            <tr>
-                              {["Domain","Account","Business","CS Owner","Currency","Total Upsell","# Upsells"].map(label => (
-                                <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
-                              ))}
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {revenueUpsellByCustomer.map((u, i) => (
-                              <tr key={u.key} style={{ background: i % 2 === 0 ? "#fff" : "#fafbff" }}>
-                                <td style={S.td}>
-                                  <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{u.domain || "—"}</div>
-                                  <div style={{ fontSize: 11, color: "#94a3b8" }}>{u.customer_name}</div>
-                                </td>
-                                <td style={S.td}><span style={acctStyle(u.account)}>{u.account}</span></td>
-                                <td style={S.td}>{u.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
-                                <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{u.cs_email?.split("@")[0] || "—"}</span></td>
-                                <td style={{ ...S.td, fontWeight: 700, color: "#475569" }}>{u.currency || "—"}</td>
-                                <td style={{ ...S.td, fontWeight: 700, color: "#16a34a" }}>{u.total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                                <td style={S.td}>{u.count}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </>
-          )}
-        </div>
-      )}
+              );
+            })()}
+          </div>
+        )}
 
       {/* ── All other tabs ── */}
-      {activeTab !== "ledger" && activeTab !== "planChanges" && (
+      {activeTab !== "ledger" && activeTab !== "invoiceDump" && activeTab !== "creditNotes" && (
         <>
           {/* ── TOP STAT CARDS ── */}
           <div style={S.statsRow}>
