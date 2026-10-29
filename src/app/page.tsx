@@ -1093,7 +1093,7 @@ export default function Dashboard() {
     setDsoF("All"); setTotalF("All");
   }
 
-  function downloadCSV() {
+  function downloadARCSV() {
     const headers = ["Domain","Customer","Account","Status","Business","CS Owner","Payment","0-30d","31-60d","61-90d","90-180d","180+d","Total (USD)","DSO (days)","Sales 3M (USD)"];
     const rows = displayRows.map(r => [
       r.domain, r.customer_name, r.account, r.customer_status, r.business, r.cs_email,
@@ -1869,7 +1869,7 @@ export default function Dashboard() {
               </button>
             )}
             <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
-              <button onClick={downloadCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+              <button onClick={downloadARCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
                 ⬇ CSV (filtered)
               </button>
               <button onClick={downloadDSOCSV} style={{ fontSize: 12, background: "#eff6ff", color: "#2563eb", border: "1px solid #93c5fd", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
