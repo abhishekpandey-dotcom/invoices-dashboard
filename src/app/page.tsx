@@ -2380,7 +2380,14 @@ export default function Dashboard() {
                             <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{r.cs_email?.split("@")[0] || "--"}</span></td>
                             <td style={S.td}>
                               {r.collection_method === "charge_automatically" && r.total > 0
-                                ? <span style={{ background: "#fee2e2", color: "#dc2626", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #fca5a5", whiteSpace: "nowrap" }}>⚠ Paused/Failed</span>
+                                ? (() => {
+                                    const failInv = invs.find((i: InvoiceRowWithUsd) => i.failure_code);
+                                    const topReason = failInv?.decline_code || failInv?.failure_code;
+                                    return <div>
+                                      <span style={{ background: "#fee2e2", color: "#dc2626", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #fca5a5", whiteSpace: "nowrap" }}>⚠ Paused/Failed</span>
+                                      {topReason && <div title={failInv?.failure_message ?? undefined} style={{ fontSize: 10, color: "#dc2626", marginTop: 3, cursor: "help" }}>{topReason.replace(/_/g, " ")}</div>}
+                                    </div>;
+                                  })()
                                 : r.collection_method === "charge_automatically"
                                   ? <span style={{ background: "#ede9fe", color: "#6366f1", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #c4b5fd", whiteSpace: "nowrap" }}>🤖 Auto</span>
                                   : <span style={{ background: "#fef9c3", color: "#92400e", borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, border: "1px solid #fde68a", whiteSpace: "nowrap" }}>📧 Manual</span>}
@@ -2428,6 +2435,7 @@ export default function Dashboard() {
                               <td style={{ ...S.td, fontWeight: 700, fontSize: 13, color: "#4338ca" }} colSpan={8}>
                                 {fmtUSD(inv.amount_usd)}
                                 {inv.currency !== "USD" && <span style={{ fontSize: 11, color: "#94a3b8", marginLeft: 6 }}>{inv.currency} {inv.amount_due.toLocaleString()}</span>}
+                                {inv.failure_code && <span title={inv.failure_message ?? undefined} style={{ marginLeft: 10, background: "#fee2e2", color: "#dc2626", borderRadius: 10, padding: "2px 8px", fontSize: 10, fontWeight: 700, border: "1px solid #fca5a5", cursor: "help" }}>⚠ {(inv.decline_code || inv.failure_code).replace(/_/g, " ")}</span>}
                                 {inv.invoice_pdf && <a href={inv.invoice_pdf} target="_blank" rel="noreferrer" download style={{ marginLeft: 12, color: "#6366f1", fontSize: 12, fontWeight: 600 }}>⬇ Download PDF</a>}
                               </td>
                             </tr>
