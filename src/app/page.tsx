@@ -169,16 +169,26 @@ export default function Dashboard() {
   const [expanded, setExpanded]       = useState<Set<string>>(new Set());
   const [sortCol, setSortCol]         = useState<keyof CustRow>("total");
   const [sortDir, setSortDir]         = useState<"asc" | "desc">("desc");
-  const [activeTab, setActiveTab]     = useState<"all" | "ledger" | "invoiceDump" | "creditNotes">("all");
+  const [activeTab, setActiveTab]     = useState<"all" | "active" | "inactive" | "autopay" | "manual" | "ledger" | "planChanges" | "invoiceDump" | "creditNotes">("all");
   const [pmTabExpanded, setPmTabExpanded] = useState(false);
 
   // ── Admin gate ──────────────────────────────────────────────────────────────
-  const [isAdmin,          setIsAdmin]          = useState(() => {
+  const [isAdmin,        setIsAdmin]        = useState(() => {
     try { return sessionStorage.getItem("dash_admin") === "1"; } catch { return false; }
   });
-  const [showAdminModal,   setShowAdminModal]   = useState(false);
-  const [adminPwInput,     setAdminPwInput]     = useState("");
-  const [adminError,       setAdminError]       = useState("");
+  const [showAdminModal, setShowAdminModal] = useState(false);
+  const [adminPwInput,   setAdminPwInput]   = useState("");
+  const [adminError,     setAdminError]     = useState("");
+
+  // ── Invoice Dump state ──────────────────────────────────────────────────────
+  const [invDump,        setInvDump]        = useState<InvoiceDumpRow[] | null>(null);
+  const [invDumpLoading, setInvDumpLoading] = useState(false);
+  const [invDumpMonth,   setInvDumpMonth]   = useState("");
+
+  // ── Credit Notes state ──────────────────────────────────────────────────────
+  const [cnDump,    setCnDump]    = useState<CnDumpRow[] | null>(null);
+  const [cnLoading, setCnLoading] = useState(false);
+  const [cnMonth,   setCnMonth]   = useState("");
 
   /** "due_date" = use effective due date (autopay falls back to invoice date).
    *  "invoice_date" = always age from invoice creation date. */
@@ -228,17 +238,6 @@ export default function Dashboard() {
   const [revenueMonthsF, setRevenueMonthsF] = useState<Set<string>>(new Set());
   const [revenueMonthPickerOpen, setRevenueMonthPickerOpen] = useState(false);
 
-  // ── Invoice Dump state ──
-  const [invDump,        setInvDump]        = useState<InvoiceDumpRow[] | null>(null);
-  const [invDumpLoading, setInvDumpLoading] = useState(false);
-  const [invDumpMonth,   setInvDumpMonth]   = useState("");
-  const [invGeneratedAt, setInvGeneratedAt] = useState<string | null>(null);
-  // ── Credit Notes state ──
-  const [cnDump,         setCnDump]         = useState<CnDumpRow[] | null>(null);
-  const [cnLoading,      setCnLoading]      = useState(false);
-  const [cnMonth,        setCnMonth]        = useState("");
-  const [cnGeneratedAt,  setCnGeneratedAt]  = useState<string | null>(null);
-
   // ── Data loading ─────────────────────────────────────────────────────────
   const loadData = useCallback((isRefresh = false) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
@@ -280,28 +279,6 @@ export default function Dashboard() {
       .finally(() => setPlanLoading(false));
   }, []);
 
-  const loadInvDump = useCallback(async () => {
-    setInvDumpLoading(true);
-    try {
-      const res  = await fetch("/api/invoice-dump");
-      const json = await res.json();
-      setInvDump(json.data);
-      setInvGeneratedAt(json.generatedAt);
-    } catch (e) { console.error("invoice-dump:", e); }
-    finally { setInvDumpLoading(false); }
-  }, []);
-
-  const loadCnDump = useCallback(async () => {
-    setCnLoading(true);
-    try {
-      const res  = await fetch("/api/credit-notes");
-      const json = await res.json();
-      setCnDump(json.data);
-      setCnGeneratedAt(json.generatedAt);
-    } catch (e) { console.error("credit-notes:", e); }
-    finally { setCnLoading(false); }
-  }, []);
-
   useEffect(() => { loadData(false); }, [loadData]);
 
   // Lazy-load ledger when the tab is first opened
@@ -311,7 +288,51 @@ export default function Dashboard() {
     }
   }, [activeTab, ledgerData, ledgerLoading, loadLedger]);
 
-  // (planChanges tab removed — lazy-load effects removed)
+  // Lazy-load plan changes when the tab is first opened
+  useEffect(() => {
+    if (activeTab === "planChanges" && !planData && !planLoading) {
+      loadPlanChanges();
+    }
+  }, [activeTab, planData, planLoading, loadPlanChanges]);
+
+  // Lazy-load ledger data (reused as the source for the revenue month-over-month view)
+  useEffect(() => {
+    if (activeTab === "planChanges" && planViewMode === "revenue" && !ledgerData && !ledgerLoading) {
+      loadLedger();
+    }
+  }, [activeTab, planViewMode, ledgerData, ledgerLoading, loadLedger]);
+
+  // ── Invoice Dump loader ─────────────────────────────────────────────────────
+  const loadInvDump = useCallback(() => {
+    setInvDumpLoading(true);
+    fetch("/api/invoice-dump")
+      .then(r => r.json()).then((rows: InvoiceDumpRow[]) => { setInvDump(rows); setInvDumpLoading(false); })
+      .catch(() => setInvDumpLoading(false));
+  }, []);
+
+  const loadCnDump = useCallback(() => {
+    setCnLoading(true);
+    fetch("/api/credit-notes")
+      .then(r => r.json()).then((rows: CnDumpRow[]) => { setCnDump(rows); setCnLoading(false); })
+      .catch(() => setCnLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === "invoiceDump" && !invDump && !invDumpLoading) loadInvDump();
+  }, [activeTab, invDump, invDumpLoading, loadInvDump]);
+
+  useEffect(() => {
+    if (activeTab === "creditNotes" && !cnDump && !cnLoading) loadCnDump();
+  }, [activeTab, cnDump, cnLoading, loadCnDump]);
+
+  // 5-min auto-refresh for Invoice Dump and Credit Notes
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (activeTab === "invoiceDump") loadInvDump();
+      if (activeTab === "creditNotes") loadCnDump();
+    }, 5 * 60 * 1000);
+    return () => clearInterval(id);
+  }, [activeTab, loadInvDump, loadCnDump]);
 
   const allInvoices = useMemo(() => data?.invoices ?? [], [data]);
 
@@ -393,8 +414,14 @@ export default function Dashboard() {
         if (![inv.customer_name, inv.customer_email, inv.domain, inv.business, inv.cs_email]
             .some(v => v?.toLowerCase().includes(q))) continue;
       }
-      if (pmF === "auto"   && inv.collection_method !== "charge_automatically") continue;
-      if (pmF === "manual" && inv.collection_method !== "send_invoice")         continue;
+      if (activeTab === "active"   && inv.customer_status !== "Active")              continue;
+      if (activeTab === "inactive" && inv.customer_status === "Active")              continue;
+      if (activeTab === "autopay"  && inv.collection_method !== "charge_automatically") continue;
+      if (activeTab === "manual"   && inv.collection_method !== "send_invoice")      continue;
+      if (activeTab !== "autopay" && activeTab !== "manual") {
+        if (pmF === "auto"   && inv.collection_method !== "charge_automatically") continue;
+        if (pmF === "manual" && inv.collection_method !== "send_invoice")         continue;
+      }
 
       const key = `${inv.account}::${inv.customer_id}`;
       if (!map.has(key)) {
@@ -467,11 +494,57 @@ export default function Dashboard() {
       b0_30F, b31_60F, b61_90F, b90_180F, b180plusF, dsoF, totalF, sortCol, sortDir,
       getBucket]);
 
-  // ── Auto Pay / Manual full customer list (legacy tabs removed – always empty) ─
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const payModeCustRows = useMemo((): CustRow[] => [], []);
+  // ── Auto Pay / Manual full customer list ──────────────────────────────────
+  const payModeCustRows = useMemo((): CustRow[] => {
+    if (activeTab !== "autopay" && activeTab !== "manual") return [];
+    const targetCm = activeTab === "autopay" ? "charge_automatically" : "send_invoice";
+    return (data?.dso ?? [])
+      .filter(d => d.collection_method === targetCm)
+      .filter(d => bizF  === "All" || d.business === bizF)
+      .filter(d => acctF === "All" || d.account  === acctF)
+      .filter(d => statF === "All" || d.customer_status === statF)
+      .filter(d => csF   === "All" || d.cs_email  === csF)
+      .filter(d => {
+        if (!search) return true;
+        const q = search.toLowerCase();
+        return [d.customer_name, d.customer_email, d.domain, d.business, d.cs_email]
+          .some(v => v?.toLowerCase().includes(q));
+      })
+      .map(d => {
+        const key  = `${d.account}::${d.customer_id}`;
+        const open = openInvoiceMap.get(key) ?? { b0_30: 0, b31_60: 0, b61_90: 0, b90_180: 0, b180plus: 0, total: 0, invoice_count: 0 };
+        return {
+          key,
+          customer_name:    d.customer_name,
+          customer_email:   d.customer_email,
+          domain:           d.domain,
+          customer_status:  d.customer_status,
+          business:         d.business,
+          cs_email:         d.cs_email,
+          account:          d.account,
+          b0_30:     open.b0_30,
+          b31_60:    open.b31_60,
+          b61_90:    open.b61_90,
+          b90_180:   open.b90_180,
+          b180plus:  open.b180plus,
+          total:         open.total,
+          invoice_count: open.invoice_count,
+          dso_days:      d.dso_days,
+          total_outstanding_ex_tax:  d.total_outstanding_ex_tax  ?? 0,
+          latest_invoice_amt_ex_tax: d.latest_invoice_amt_ex_tax ?? 0,
+          collection_method: d.collection_method,
+          sales_3m_usd:  d.sales_3m_usd,
+        };
+      })
+      .sort((a, b) => {
+        const av = a[sortCol], bv = b[sortCol];
+        const cmp = typeof av === "number" && typeof bv === "number"
+          ? av - bv : String(av ?? "").localeCompare(String(bv ?? ""));
+        return sortDir === "asc" ? cmp : -cmp;
+      });
+  }, [activeTab, data, bizF, acctF, statF, csF, search, openInvoiceMap, sortCol, sortDir]);
 
-  const displayRows = custRows;
+  const displayRows = (activeTab === "autopay" || activeTab === "manual") ? payModeCustRows : custRows;
 
   const invoicesByKey = useMemo(() => {
     const m = new Map<string, InvoiceRowWithUsd[]>();
@@ -1048,34 +1121,6 @@ export default function Dashboard() {
     return byCurrency;
   }, [revenueEvents]);
 
-  // ── Invoice Dump & Credit Notes: auto-load on mount ──
-  useEffect(() => { loadInvDump(); }, [loadInvDump]);
-  useEffect(() => { loadCnDump();  }, [loadCnDump]);
-
-  // Auto-refresh invoice dump and credit notes every 5 minutes
-  useEffect(() => {
-    const id = setInterval(() => { loadInvDump(); loadCnDump(); }, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, [loadInvDump, loadCnDump]);
-
-  // ── CSV Download helper ──
-  function downloadCSV<T extends object>(
-    rows: T[], headers: string[], fields: string[], filename: string
-  ) {
-    const lines = [headers.join(",")];
-    for (const row of rows) {
-      lines.push(fields.map(f => {
-        const v = String((row as Record<string, unknown>)[f] ?? "").replace(/"/g, '""');
-        return (v.includes(",") || v.includes('"') || v.includes("\n")) ? `"${v}"` : v;
-      }).join(","));
-    }
-    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
-  }
-
   // ── Actions ───────────────────────────────────────────────────────────────
   function toggleSort(k: keyof CustRow) {
     if (sortCol === k) setSortDir(d => d === "asc" ? "desc" : "asc");
@@ -1091,6 +1136,24 @@ export default function Dashboard() {
     setSearch(""); setAcctF("All"); setStatF("All"); setBizF("All"); setCsF("All"); setPmF("All");
     setB0_30F("All"); setB31_60F("All"); setB61_90F("All"); setB90_180F("All"); setB180plusF("All");
     setDsoF("All"); setTotalF("All");
+  }
+
+  // Generic CSV helper for Invoice Dump / Credit Notes tabs
+  function downloadCSV<T extends object>(
+    rows: T[], headers: string[], fields: string[], filename: string
+  ) {
+    const lines = [headers.join(",")];
+    for (const row of rows) {
+      lines.push(fields.map(f => {
+        const v = String((row as Record<string, unknown>)[f] ?? "").replace(/"/g, '""');
+        return (v.includes(",") || v.includes('"') || v.includes("\n")) ? `"${v}"` : v;
+      }).join(","));
+    }
+    const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
   }
 
   function downloadARCSV() {
@@ -1330,86 +1393,101 @@ export default function Dashboard() {
       {msg && <div style={S.toast}>{msg}</div>}
 
       {/* ── TABS ── */}
-      <div style={{ ...S.tabBar, width: "auto", display: "flex", alignItems: "center" }}>
-        {([
-          { key: "all",          label: "Customers with O/S Amount", adminOnly: false },
-          { key: "ledger",       label: "📋 All Customers Data",     adminOnly: false },
-          { key: "invoiceDump",  label: "Invoice Dump",              adminOnly: true  },
-          { key: "creditNotes",  label: "Credit Notes",              adminOnly: true  },
-        ] as const).filter(t => !t.adminOnly || isAdmin).map(({ key, label }) => (
-          <button key={key} onClick={() => { setActiveTab(key as typeof activeTab); setBizF("All"); setPmTabExpanded(false); }}
-            style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
-            {label}
-          </button>
-        ))}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
+        <div style={{ ...S.tabBar, marginBottom: 0, width: "auto" }}>
+          {/* Public tabs — visible to everyone */}
+          {([
+            { key: "all",    label: "Customers with O/S Amount" },
+            { key: "ledger", label: "📋 All Customers Data" },
+          ] as const).map(({ key, label }) => (
+            <button key={key} onClick={() => { setActiveTab(key); setBizF("All"); setPmTabExpanded(false); }}
+              style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
+              {label}
+            </button>
+          ))}
 
-        {/* Admin lock button */}
+          {/* Admin-only tabs — shown only when isAdmin */}
+          {isAdmin && ([
+            { key: "active",      label: "Active" },
+            { key: "inactive",    label: "Inactive" },
+            { key: "autopay",     label: "🤖 Auto Pay" },
+            { key: "manual",      label: "📧 Manual" },
+            { key: "planChanges", label: "📈 Plan Changes" },
+            { key: "invoiceDump", label: "🧾 Invoice Dump" },
+            { key: "creditNotes", label: "📝 Credit Notes" },
+          ] as const).map(({ key, label }) => (
+            <button key={key} onClick={() => { setActiveTab(key as typeof activeTab); setBizF("All"); setPmTabExpanded(false); }}
+              style={{ ...S.tab, ...(activeTab === key ? S.tabActive : {}) }}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* 🔒 Admin toggle button */}
         <button
           onClick={() => {
             if (isAdmin) {
               setIsAdmin(false);
               try { sessionStorage.removeItem("dash_admin"); } catch {}
-              if (activeTab === "invoiceDump" || activeTab === "creditNotes") setActiveTab("all");
+              if (!["all","ledger"].includes(activeTab)) setActiveTab("all");
             } else {
-              setAdminPwInput(""); setAdminError(""); setShowAdminModal(true);
+              setShowAdminModal(true);
             }
           }}
-          title={isAdmin ? "Logged in as Admin — click to log out" : "Admin login"}
-          style={{
-            marginLeft: "auto", background: "none", border: "none", cursor: "pointer",
-            fontSize: 18, padding: "4px 8px", opacity: isAdmin ? 1 : 0.45,
-            color: isAdmin ? "#4f46e5" : "#64748b",
-          }}
-        >
+          title={isAdmin ? "Logout admin" : "Admin login"}
+          style={{ background: isAdmin ? "#fef3c7" : "#f1f5f9", border: `1px solid ${isAdmin ? "#fbbf24" : "#cbd5e1"}`, borderRadius: 8, padding: "8px 14px", cursor: "pointer", fontSize: 16, lineHeight: 1 }}>
           {isAdmin ? "🔓" : "🔒"}
         </button>
       </div>
 
       {/* ── ADMIN LOGIN MODAL ── */}
       {showAdminModal && (
-        <div style={{
-          position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1000,
-          display: "flex", alignItems: "center", justifyContent: "center",
-        }} onClick={() => setShowAdminModal(false)}>
-          <div style={{
-            background: "#fff", borderRadius: 12, padding: "32px 36px", width: 340,
-            boxShadow: "0 20px 60px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column", gap: 16,
-          }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontWeight: 700, fontSize: 17 }}>🔒 Admin Login</div>
-            <div style={{ fontSize: 13, color: "#64748b" }}>Enter the admin password to unlock Invoice Dump and Credit Notes tabs.</div>
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}
+          onClick={e => { if (e.target === e.currentTarget) { setShowAdminModal(false); setAdminError(""); setAdminPwInput(""); } }}>
+          <div style={{ background: "#fff", borderRadius: 14, padding: "32px 36px", boxShadow: "0 8px 40px rgba(0,0,0,0.22)", minWidth: 340 }}>
+            <div style={{ fontSize: 22, fontWeight: 800, marginBottom: 6 }}>🔒 Admin Login</div>
+            <div style={{ fontSize: 13, color: "#64748b", marginBottom: 20 }}>Enter the admin password to unlock all tabs.</div>
             <input
               type="password"
               autoFocus
               placeholder="Password"
               value={adminPwInput}
-              onChange={e => { setAdminPwInput(e.target.value); setAdminError(""); }}
-              onKeyDown={async e => {
+              onChange={e => setAdminPwInput(e.target.value)}
+              onKeyDown={e => {
                 if (e.key === "Enter") {
-                  const res = await fetch("/api/admin-auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: adminPwInput }) });
-                  const { ok } = await res.json();
-                  if (ok) { setIsAdmin(true); try { sessionStorage.setItem("dash_admin", "1"); } catch {} setShowAdminModal(false); }
-                  else setAdminError("Incorrect password.");
+                  fetch("/api/admin-auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: adminPwInput }) })
+                    .then(r => r.json())
+                    .then((res: { ok: boolean }) => {
+                      if (res.ok) {
+                        setIsAdmin(true);
+                        try { sessionStorage.setItem("dash_admin", "1"); } catch {}
+                        setShowAdminModal(false); setAdminError(""); setAdminPwInput("");
+                      } else { setAdminError("Incorrect password. Try again."); }
+                    })
+                    .catch(() => setAdminError("Network error. Try again."));
                 }
               }}
-              style={{
-                border: "1px solid #cbd5e1", borderRadius: 8, padding: "10px 14px",
-                fontSize: 14, outline: "none", width: "100%", boxSizing: "border-box",
-              }}
+              style={{ width: "100%", border: `1px solid ${adminError ? "#ef4444" : "#e2e8f0"}`, borderRadius: 8, padding: "10px 14px", fontSize: 15, outline: "none", boxSizing: "border-box" as const, marginBottom: 8 }}
             />
-            {adminError && <div style={{ color: "#ef4444", fontSize: 13 }}>{adminError}</div>}
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => setShowAdminModal(false)}
-                style={{ padding: "8px 18px", borderRadius: 8, border: "1px solid #cbd5e1", background: "#f8fafc", cursor: "pointer", fontSize: 13 }}>
+            {adminError && <div style={{ color: "#ef4444", fontSize: 13, marginBottom: 8 }}>{adminError}</div>}
+            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 12 }}>
+              <button onClick={() => { setShowAdminModal(false); setAdminError(""); setAdminPwInput(""); }}
+                style={{ padding: "9px 20px", borderRadius: 8, border: "1px solid #e2e8f0", background: "#f8fafc", fontWeight: 600, cursor: "pointer" }}>
                 Cancel
               </button>
-              <button
-                onClick={async () => {
-                  const res = await fetch("/api/admin-auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: adminPwInput }) });
-                  const { ok } = await res.json();
-                  if (ok) { setIsAdmin(true); try { sessionStorage.setItem("dash_admin", "1"); } catch {} setShowAdminModal(false); }
-                  else setAdminError("Incorrect password.");
-                }}
-                style={{ padding: "8px 18px", borderRadius: 8, border: "none", background: "#4f46e5", color: "#fff", cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
+              <button onClick={() => {
+                fetch("/api/admin-auth", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: adminPwInput }) })
+                  .then(r => r.json())
+                  .then((res: { ok: boolean }) => {
+                    if (res.ok) {
+                      setIsAdmin(true);
+                      try { sessionStorage.setItem("dash_admin", "1"); } catch {}
+                      setShowAdminModal(false); setAdminError(""); setAdminPwInput("");
+                    } else { setAdminError("Incorrect password. Try again."); }
+                  })
+                  .catch(() => setAdminError("Network error. Try again."));
+              }}
+                style={{ padding: "9px 20px", borderRadius: 8, border: "none", background: "linear-gradient(135deg,#6366f1,#4338ca)", color: "#fff", fontWeight: 700, cursor: "pointer" }}>
                 Login
               </button>
             </div>
@@ -1667,107 +1745,502 @@ export default function Dashboard() {
         </div>
       )}
 
-      
-        {/* ─── INVOICE DUMP TAB ─── */}
-        {activeTab === "invoiceDump" && (
-          <div style={{ padding: "20px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", flexWrap: "wrap" }}>
-              <h2 style={{ margin: 0 }}>Invoice Dump</h2>
-              <select value={invDumpMonth} onChange={e => setInvDumpMonth(e.target.value)}
-                style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "14px" }}>
-                <option value="">All Months</option>
-                {invDump && Array.from(new Set(invDump.map(r => r.billedMonth))).sort().reverse().map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
-              <button onClick={loadInvDump} disabled={invDumpLoading}
-                style={{ padding: "6px 14px", borderRadius: "6px", background: "#0070f3", color: "#fff", border: "none", cursor: invDumpLoading ? "not-allowed" : "pointer" }}>
-                {invDumpLoading ? "Loading…" : "⟳ Refresh"}
+      {/* ── PLAN CHANGES (UPGRADE/DOWNGRADE) TAB ── */}
+      {activeTab === "planChanges" && (
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", background: "#f1f5f9", borderRadius: 8, padding: 3, gap: 2 }}>
+              <button
+                onClick={() => setPlanViewMode("tier")}
+                style={{ fontSize: 12, fontWeight: 700, padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer",
+                  background: planViewMode === "tier" ? "#6366f1" : "transparent", color: planViewMode === "tier" ? "#fff" : "#64748b" }}>
+                🎚 Subscription Tier
               </button>
-              {invDump && (
-                <button onClick={() => downloadCSV(invDump.filter(r => !invDumpMonth || r.billedMonth === invDumpMonth), ["Sr No", "Entity", "Number", "Month Attributed", "Revenue Type", "SEO/Non SEO", "Amount Due", "Currency", "Stripe Customer ID", "Invoice Status", "Invoice ID", "Customer Name", "Customer Email", "Billed Date", "Billed Month"], ["srNo", "entity", "number", "monthAttributed", "revenueType", "seoNonSeo", "amountDue", "currency", "stripeCustomerId", "invoiceStatus", "invoiceId", "customerName", "customerEmail", "billedDate", "billedMonth"], `invoice_dump_${invDumpMonth||"all"}.csv`)}
-                  style={{ padding: "6px 14px", borderRadius: "6px", background: "#28a745", color: "#fff", border: "none", cursor: "pointer" }}>
+              <button
+                onClick={() => setPlanViewMode("revenue")}
+                style={{ fontSize: 12, fontWeight: 700, padding: "6px 14px", borderRadius: 6, border: "none", cursor: "pointer",
+                  background: planViewMode === "revenue" ? "#6366f1" : "transparent", color: planViewMode === "revenue" ? "#fff" : "#64748b" }}>
+                💰 Monthly Revenue
+              </button>
+            </div>
+            <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>
+              {planViewMode === "tier"
+                ? "Stripe subscription tier changes"
+                : "Month-over-month invoiced revenue"}
+            </div>
+            {planViewMode === "tier" ? (
+              <>
+                <button
+                  onClick={loadPlanChanges}
+                  disabled={planLoading}
+                  style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
+                  {planLoading ? "⟳ Checking..." : "⟳ Check for changes"}
+                </button>
+                <button onClick={downloadPlanCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
                   ⬇ CSV
                 </button>
-              )}
-              {invGeneratedAt && <span style={{ fontSize: "12px", color: "#888" }}>Updated: {new Date(invGeneratedAt).toLocaleString()}</span>}
-            </div>
-            {invDumpLoading && <div style={{ padding: "20px", textAlign: "center" }}>Loading invoices…</div>}
-            {!invDumpLoading && !invDump && (
-              <button onClick={loadInvDump} style={{ padding: "10px 20px", borderRadius: "6px", background: "#0070f3", color: "#fff", border: "none", cursor: "pointer", fontSize: "15px" }}>
-                Load Invoice Data
-              </button>
+                <button onClick={downloadPlanExcel} style={{ fontSize: 12, background: "#f0f9ff", color: "#0369a1", border: "1px solid #7dd3fc", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                  ⬇ Excel (.xlsx)
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  onClick={() => loadLedger(true)}
+                  disabled={ledgerLoading}
+                  style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
+                  {ledgerLoading ? "⟳ Loading..." : "⟳ Refresh"}
+                </button>
+                <button onClick={downloadRevenueCSV} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                  ⬇ CSV
+                </button>
+                <button onClick={downloadRevenueExcel} style={{ fontSize: 12, background: "#f0f9ff", color: "#0369a1", border: "1px solid #7dd3fc", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                  ⬇ Excel (.xlsx)
+                </button>
+              </>
             )}
-            {!invDumpLoading && invDump && (() => {
-              const rows = invDump.filter(r => !invDumpMonth || r.billedMonth === invDumpMonth);
-              return (
-                <div style={{ overflowX: "auto" }}>
-                  <div style={{ marginBottom: "8px", fontSize: "13px", color: "#555" }}>{rows.length} records{invDumpMonth ? ` for ${invDumpMonth}` : ""}</div>
-                  <table style={S.table}>
-                    <thead><tr>{["Sr No", "Entity", "Number", "Month Attributed", "Revenue Type", "SEO/Non SEO", "Amount Due", "Currency", "Stripe Customer ID", "Invoice Status", "Invoice ID", "Customer Name", "Customer Email", "Billed Date", "Billed Month"].map(h => <th key={h} style={{ ...S.td, background: "#f0f0f0", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>)}</tr></thead>
-                    <tbody>{rows.map((row, i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f9f9f9" }}>
-                        {["srNo", "entity", "number", "monthAttributed", "revenueType", "seoNonSeo", "amountDue", "currency", "stripeCustomerId", "invoiceStatus", "invoiceId", "customerName", "customerEmail", "billedDate", "billedMonth"].map(f => <td key={f} style={{ ...S.td, whiteSpace: "nowrap" }}>{String(row[f as keyof typeof row] ?? "")}</td>)}
-                      </tr>
-                    ))}</tbody>
-                  </table>
-                </div>
-              );
-            })()}
           </div>
-        )}
 
-        {/* ─── CREDIT NOTES TAB ─── */}
-        {activeTab === "creditNotes" && (
-          <div style={{ padding: "20px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", flexWrap: "wrap" }}>
-              <h2 style={{ margin: 0 }}>Credit Note Dump</h2>
-              <select value={cnMonth} onChange={e => setCnMonth(e.target.value)}
-                style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid #ccc", fontSize: "14px" }}>
-                <option value="">All Months</option>
-                {cnDump && Array.from(new Set(cnDump.map(r => r.effectiveMonth))).sort().reverse().map(m => (
-                  <option key={m} value={m}>{m}</option>
-                ))}
-              </select>
-              <button onClick={loadCnDump} disabled={cnLoading}
-                style={{ padding: "6px 14px", borderRadius: "6px", background: "#0070f3", color: "#fff", border: "none", cursor: cnLoading ? "not-allowed" : "pointer" }}>
-                {cnLoading ? "Loading…" : "⟳ Refresh"}
-              </button>
-              {cnDump && (
-                <button onClick={() => downloadCSV(cnDump.filter(r => !cnMonth || r.effectiveMonth === cnMonth), ["Sr No", "Credit Note #", "Stripe Customer ID", "Type", "Amount", "CN Status", "Currency", "Invoice ID", "Created Date", "Effective Date", "Effective Month Label", "Invoice Number", "Entity", "Customer Email", "Revenue Type", "SEO/Non SEO", "Invoice Amount", "Attributed Month", "Customer Name", "Memo"], ["srNo", "creditNoteNumber", "stripeCustomerId", "type", "amount", "cnStatus", "currency", "invoiceId", "createdDate", "effectiveDate", "effectiveMonthLabel", "invoiceNumber", "entity", "customerEmail", "revenueType", "seoNonSeo", "invoiceAmount", "attributedMonth", "customerName", "memo"], `credit_notes_${cnMonth||"all"}.csv`)}
-                  style={{ padding: "6px 14px", borderRadius: "6px", background: "#28a745", color: "#fff", border: "none", cursor: "pointer" }}>
-                  ⬇ CSV
-                </button>
-              )}
-              {cnGeneratedAt && <span style={{ fontSize: "12px", color: "#888" }}>Updated: {new Date(cnGeneratedAt).toLocaleString()}</span>}
+          {planViewMode === "tier" && (
+          <>
+          {!planLoading && planData && (
+            <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+              <div style={{ background: "#fff", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 18px" }}>
+                <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700, textTransform: "uppercase" as const }}>⬆ Upgrades</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>{planUpgradeCount}</div>
+              </div>
+              <div style={{ background: "#fff", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px" }}>
+                <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" as const }}>⬇ Downgrades</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "#dc2626" }}>{planDowngradeCount}</div>
+              </div>
             </div>
-            {cnLoading && <div style={{ padding: "20px", textAlign: "center" }}>Loading credit notes…</div>}
-            {!cnLoading && !cnDump && (
-              <button onClick={loadCnDump} style={{ padding: "10px 20px", borderRadius: "6px", background: "#0070f3", color: "#fff", border: "none", cursor: "pointer", fontSize: "15px" }}>
-                Load Credit Note Data
-              </button>
-            )}
-            {!cnLoading && cnDump && (() => {
-              const rows = cnDump.filter(r => !cnMonth || r.effectiveMonth === cnMonth);
-              return (
-                <div style={{ overflowX: "auto" }}>
-                  <div style={{ marginBottom: "8px", fontSize: "13px", color: "#555" }}>{rows.length} records{cnMonth ? ` for ${cnMonth}` : ""}</div>
-                  <table style={S.table}>
-                    <thead><tr>{["Sr No", "Credit Note #", "Stripe Customer ID", "Type", "Amount", "CN Status", "Currency", "Invoice ID", "Created Date", "Effective Date", "Effective Month Label", "Invoice Number", "Entity", "Customer Email", "Revenue Type", "SEO/Non SEO", "Invoice Amount", "Attributed Month", "Customer Name", "Memo"].map(h => <th key={h} style={{ ...S.td, background: "#f0f0f0", fontWeight: 600, whiteSpace: "nowrap" }}>{h}</th>)}</tr></thead>
-                    <tbody>{rows.map((row, i) => (
-                      <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f9f9f9" }}>
-                        {["srNo", "creditNoteNumber", "stripeCustomerId", "type", "amount", "cnStatus", "currency", "invoiceId", "createdDate", "effectiveDate", "effectiveMonthLabel", "invoiceNumber", "entity", "customerEmail", "revenueType", "seoNonSeo", "invoiceAmount", "attributedMonth", "customerName", "memo"].map(f => <td key={f} style={{ ...S.td, whiteSpace: "nowrap" }}>{String(row[f as keyof typeof row] ?? "")}</td>)}
-                      </tr>
-                    ))}</tbody>
-                  </table>
+          )}
+
+          {!planLoading && planData && planData.subscriptions_found === 0 && (
+            <div style={{ background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 10, padding: "14px 20px", color: "#92400e", marginBottom: 16, fontSize: 13 }}>
+              ⚠ Stripe returned <b>0 active/trialing subscription objects</b> across both accounts. This tab tracks changes to Stripe <b>Subscription</b> price/tier — if your customers are invoiced directly (one-off invoices, not attached to a Stripe Subscription), there's nothing here to track and this view will stay empty. The <b>💰 Monthly Revenue</b> view (based on actual invoices) is the one that will show data for that billing setup.
+            </div>
+          )}
+
+          {!planLoading && planData && planCurrentRows.length > 0 && (
+            <div style={{ marginBottom: 20 }}>
+              <div style={S.sectionLabel}>Current Subscriptions (as of last check)</div>
+              <div style={S.tableWrap}>
+                <table style={S.table}>
+                  <thead>
+                    <tr>
+                      {["Domain","Account","Business","CS Owner","Currency","Plan Value","Plan Summary","Status"].map(label => (
+                        <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {planCurrentRows.map((c, i) => {
+                      const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
+                      const statusStyle: React.CSSProperties =
+                        c.status === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
+                        c.status === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
+                        c.status === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
+                        c.status === "Baseline" ? { color: "#075985", background: "#e0f2fe", border: "1px solid #7dd3fc" } :
+                        c.status === "No Change" ? { color: "#64748b", background: "#f1f5f9", border: "1px solid #e2e8f0" } :
+                        { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
+                      return (
+                        <tr key={`${c.account}-${c.customer_id}`} style={{ background: rowBg }}>
+                          <td style={S.td}>
+                            <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{c.domain || "—"}</div>
+                            <div style={{ fontSize: 11, color: "#94a3b8" }}>{c.customer_name}</div>
+                          </td>
+                          <td style={S.td}><span style={acctStyle(c.account)}>{c.account}</span></td>
+                          <td style={S.td}>{c.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
+                          <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{c.cs_email?.split("@")[0] || "—"}</span></td>
+                          <td style={S.td}>{c.currency}</td>
+                          <td style={{ ...S.td, fontWeight: 700 }}>{c.plan_value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                          <td style={{ ...S.td, fontSize: 12, color: "#64748b" }}>{c.plan_summary || "—"}</td>
+                          <td style={S.td}>
+                            <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...statusStyle }}>
+                              {c.status === "Upgrade" ? "⬆ " : c.status === "Downgrade" ? "⬇ " : ""}{c.status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {planLoading && (
+            <div style={S.center}>
+              <div style={S.spin} />
+              <p style={{ marginTop: 16, color: "#64748b", fontSize: 14 }}>Comparing current Stripe subscriptions against the last known snapshot...</p>
+            </div>
+          )}
+
+          {planError && (
+            <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "16px 20px", color: "#dc2626", marginBottom: 16 }}>
+              ⚠ {planError}
+            </div>
+          )}
+
+          {!planLoading && planData && (
+            <>
+              <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                <input
+                  style={S.searchInput}
+                  placeholder="🔍  Search domain, customer, business..."
+                  value={planSearch}
+                  onChange={e => setPlanSearch(e.target.value)}
+                />
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Account</label>
+                  <select style={{ ...sel, width: 100 }} value={planAcctF} onChange={e => setPlanAcctF(e.target.value)}>
+                    <option value="All">All</option>
+                    <option value="India">India</option>
+                    <option value="US">US</option>
+                  </select>
                 </div>
-              );
-            })()}
-          </div>
-        )}
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Type</label>
+                  <select style={{ ...sel, width: 140 }} value={planTypeF} onChange={e => setPlanTypeF(e.target.value as typeof planTypeF)}>
+                    <option value="All">All</option>
+                    <option value="Upgrade">Upgrade</option>
+                    <option value="Downgrade">Downgrade</option>
+                    <option value="Currency Switch">Currency Switch</option>
+                    <option value="Plan Changed">Plan Changed</option>
+                  </select>
+                </div>
+                <div style={{ position: "relative" }}>
+                  <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap", marginRight: 6 }}>Month</label>
+                  <button
+                    onClick={() => setPlanMonthPickerOpen(v => !v)}
+                    style={{ ...sel, width: "auto", minWidth: 140, textAlign: "left", display: "inline-flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    <span>
+                      {planMonthsF.size === 0
+                        ? "All months"
+                        : planMonthsF.size <= 2
+                          ? Array.from(planMonthsF).sort().reverse().map(planMonthLabel).join(", ")
+                          : `${planMonthsF.size} months selected`}
+                    </span>
+                    <span style={{ fontSize: 10 }}>{planMonthPickerOpen ? "▲" : "▼"}</span>
+                  </button>
+                  {planMonthPickerOpen && (
+                    <div style={{
+                      position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 20,
+                      background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8,
+                      boxShadow: "0 4px 16px rgba(0,0,0,0.12)", padding: 10, minWidth: 180, maxHeight: 240, overflowY: "auto",
+                    }}>
+                      {planMonthOptions.length === 0 ? (
+                        <div style={{ fontSize: 12, color: "#94a3b8", padding: "4px 6px" }}>No dated changes yet</div>
+                      ) : planMonthOptions.map(ym => (
+                        <label key={ym} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", padding: "4px 6px", cursor: "pointer", borderRadius: 5 }}>
+                          <input type="checkbox" checked={planMonthsF.has(ym)} onChange={() => togglePlanMonth(ym)} />
+                          {planMonthLabel(ym)}
+                        </label>
+                      ))}
+                      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9" }}>
+                        <button
+                          onClick={() => setPlanMonthsF(new Set())}
+                          style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                          Clear
+                        </button>
+                        <button
+                          onClick={() => setPlanMonthPickerOpen(false)}
+                          style={{ fontSize: 11, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                          Done
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>{planRows.length} changes</span>
+              </div>
+
+              <div style={S.tableWrap}>
+                <table style={S.table}>
+                  <thead>
+                    <tr>
+                      {["Detected","Domain","Account","Business","CS Owner","Currency","Change","Previous Plan","New Plan"].map(label => (
+                        <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {planRows.length === 0 ? (
+                      <tr><td colSpan={9} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
+                        <div style={{ fontSize: 32, marginBottom: 8 }}>📈</div>
+                        <div style={{ fontWeight: 600 }}>No plan changes detected yet</div>
+                      </td></tr>
+                    ) : planRows.map((c, i) => {
+                      const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
+                      const typeStyle: React.CSSProperties =
+                        c.change_type === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
+                        c.change_type === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
+                        c.change_type === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
+                        { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
+                      return (
+                        <tr key={`${c.customer_id}-${c.account}-${c.detected_at}`} style={{ background: rowBg }}>
+                          <td style={{ ...S.td, fontSize: 12, color: "#475569" }}>{fmtDate(c.detected_at.split("T")[0])}</td>
+                          <td style={S.td}>
+                            <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{c.domain || "—"}</div>
+                            <div style={{ fontSize: 11, color: "#94a3b8" }}>{c.customer_name}</div>
+                          </td>
+                          <td style={S.td}><span style={acctStyle(c.account)}>{c.account}</span></td>
+                          <td style={S.td}>{c.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
+                          <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{c.cs_email?.split("@")[0] || "—"}</span></td>
+                          <td style={{ ...S.td, fontWeight: 700, color: "#475569" }}>{c.new_currency || c.previous_currency || "—"}</td>
+                          <td style={S.td}>
+                            <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", ...typeStyle }}>
+                              {c.change_type === "Upgrade" ? "⬆ " : c.change_type === "Downgrade" ? "⬇ " : ""}{c.change_type}
+                            </span>
+                          </td>
+                          <td style={{ ...S.td, fontSize: 12 }}>
+                            <div style={{ color: "#475569" }}>{c.previous_plan || "—"}</div>
+                            <div style={{ color: "#94a3b8" }}>{c.previous_value.toFixed(2)}</div>
+                          </td>
+                          <td style={{ ...S.td, fontSize: 12 }}>
+                            <div style={{ color: "#0f172a", fontWeight: 600 }}>{c.new_plan || "—"}</div>
+                            <div style={{ color: "#94a3b8" }}>{c.new_value.toFixed(2)}</div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+          </>
+          )}
+
+          {planViewMode === "revenue" && (
+            <>
+              {ledgerLoading && (
+                <div style={S.center}>
+                  <div style={S.spin} />
+                  <p style={{ marginTop: 16, color: "#64748b", fontSize: 14 }}>Fetching invoice history from Stripe (this may take 20–40s)...</p>
+                </div>
+              )}
+
+              {ledgerError && (
+                <div style={{ background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 10, padding: "16px 20px", color: "#dc2626", marginBottom: 16 }}>
+                  ⚠ {ledgerError}
+                </div>
+              )}
+
+              {!ledgerLoading && ledgerData && (
+                <>
+                  <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+                    <div style={{ background: "#fff", border: "1px solid #bbf7d0", borderRadius: 10, padding: "12px 18px" }}>
+                      <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 700, textTransform: "uppercase" as const }}>⬆ Net Upsell (selected range)</div>
+                      <div style={{ fontSize: 22, fontWeight: 800, color: "#16a34a" }}>{revenueUpgradeCount}</div>
+                      <div style={{ fontSize: 12, color: "#16a34a", marginTop: 2 }}>
+                        {revenueNetUpsellTotals.size === 0 ? "—" : Array.from(revenueNetUpsellTotals.entries()).map(([cur, amt]) => `+${cur} ${amt.toLocaleString("en-US", { maximumFractionDigits: 0 })}`).join(" · ")}
+                      </div>
+                    </div>
+                    <div style={{ background: "#fff", border: "1px solid #fecaca", borderRadius: 10, padding: "12px 18px" }}>
+                      <div style={{ fontSize: 11, color: "#dc2626", fontWeight: 700, textTransform: "uppercase" as const }}>⬇ Net Downgrade (selected range)</div>
+                      <div style={{ fontSize: 22, fontWeight: 800, color: "#dc2626" }}>{revenueDowngradeCount}</div>
+                      <div style={{ fontSize: 12, color: "#dc2626", marginTop: 2 }}>
+                        {revenueNetDowngradeTotals.size === 0 ? "—" : Array.from(revenueNetDowngradeTotals.entries()).map(([cur, amt]) => `-${cur} ${amt.toLocaleString("en-US", { maximumFractionDigits: 0 })}`).join(" · ")}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+                    <input
+                      style={S.searchInput}
+                      placeholder="🔍  Search domain, customer, business..."
+                      value={planSearch}
+                      onChange={e => setPlanSearch(e.target.value)}
+                    />
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap" }}>Account</label>
+                      <select style={{ ...sel, width: 100 }} value={planAcctF} onChange={e => setPlanAcctF(e.target.value)}>
+                        <option value="All">All</option>
+                        <option value="India">India</option>
+                        <option value="US">US</option>
+                      </select>
+                    </div>
+                    <div style={{ position: "relative" }}>
+                      <label style={{ fontSize: 11, color: "#64748b", fontWeight: 700, whiteSpace: "nowrap", marginRight: 6 }}>Months to compare</label>
+                      <button
+                        onClick={() => setRevenueMonthPickerOpen(v => !v)}
+                        style={{ ...sel, width: "auto", minWidth: 160, textAlign: "left", display: "inline-flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                        <span>
+                          {revenueMonthsF.size === 0
+                            ? "Select months..."
+                            : Array.from(revenueMonthsF).sort().map(planMonthLabel).join(", ")}
+                        </span>
+                        <span style={{ fontSize: 10 }}>{revenueMonthPickerOpen ? "▲" : "▼"}</span>
+                      </button>
+                      {revenueMonthPickerOpen && (
+                        <div style={{
+                          position: "absolute", top: "100%", left: 0, marginTop: 4, zIndex: 20,
+                          background: "#fff", border: "1px solid #e2e8f0", borderRadius: 8,
+                          boxShadow: "0 4px 16px rgba(0,0,0,0.12)", padding: 10, minWidth: 180, maxHeight: 240, overflowY: "auto",
+                        }}>
+                          {revenueMonthOptions.length === 0 ? (
+                            <div style={{ fontSize: 12, color: "#94a3b8", padding: "4px 6px" }}>No invoiced months found</div>
+                          ) : revenueMonthOptions.map(ym => (
+                            <label key={ym} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#374151", padding: "4px 6px", cursor: "pointer", borderRadius: 5 }}>
+                              <input type="checkbox" checked={revenueMonthsF.has(ym)} onChange={() => toggleRevenueMonth(ym)} />
+                              {planMonthLabel(ym)}
+                            </label>
+                          ))}
+                          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 8, paddingTop: 8, borderTop: "1px solid #f1f5f9", gap: 10 }}>
+                            <button
+                              onClick={() => setRevenueMonthsF(new Set(sensibleDefaultMonths))}
+                              style={{ fontSize: 11, color: "#ef4444", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                              Reset to latest 2
+                            </button>
+                            <button
+                              onClick={() => setRevenueMonthsF(new Set(revenueMonthOptions))}
+                              style={{ fontSize: 11, color: "#16a34a", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                              Select all
+                            </button>
+                            <button
+                              onClick={() => setRevenueMonthPickerOpen(false)}
+                              style={{ fontSize: 11, color: "#6366f1", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>
+                              Done
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500 }}>{revenueEvents.length} changes · {revenueRows.length} customers</span>
+                  </div>
+
+                  <div style={S.tableWrap}>
+                    <table style={S.table}>
+                      <thead>
+                        <tr>
+                          {["Domain","Account","Business","CS Owner","Currency","Month","Change","Previous","New","Invoices"].map(label => (
+                            <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {revenueEvents.length === 0 ? (
+                          revenueMonthsF.size === 0 ? (
+                            <tr><td colSpan={10} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
+                              <div style={{ fontSize: 32, marginBottom: 8 }}>💰</div>
+                              <div style={{ fontWeight: 600 }}>Select at least one month above</div>
+                            </td></tr>
+                          ) : planSearch && revenueRows.length > 0 ? (
+                            <tr><td colSpan={10} style={{ padding: 24 }}>
+                              <div style={{ textAlign: "center", color: "#94a3b8", marginBottom: 16 }}>
+                                <div style={{ fontSize: 28, marginBottom: 6 }}>📊</div>
+                                <div style={{ fontWeight: 600, color: "#475569" }}>
+                                  {revenueRows.length} customer{revenueRows.length !== 1 ? "s" : ""} matched &quot;{planSearch}&quot;, but no price change was detected in the selected months
+                                </div>
+                                <div style={{ fontSize: 12, marginTop: 2 }}>Their invoiced amount has been the same every cycle — here&apos;s what they&apos;ve actually been billed:</div>
+                              </div>
+                              {revenueRows.map(r => (
+                                <div key={r.key} style={{ background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 8, padding: "10px 14px", marginBottom: 8 }}>
+                                  <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a", marginBottom: 4 }}>{r.domain || r.customer_name}</div>
+                                  <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+                                    {r.monthCols.map(c => (
+                                      <span key={c.ym} style={{ fontSize: 12, color: "#475569" }}>
+                                        {planMonthLabel(c.ym)}: <b>{c.amount > 0 ? `${c.currency} ${c.amount.toLocaleString("en-US", { maximumFractionDigits: 0 })}` : "—"}</b>
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </td></tr>
+                          ) : (
+                            <tr><td colSpan={10} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
+                              <div style={{ fontSize: 32, marginBottom: 8 }}>💰</div>
+                              <div style={{ fontWeight: 600 }}>No changes detected in the selected months</div>
+                            </td></tr>
+                          )
+                        ) : revenueEvents.map((e, i) => {
+                          const rowBg = i % 2 === 0 ? "#fff" : "#fafbff";
+                          const chipStyle = (t: string): React.CSSProperties =>
+                            t === "Upgrade"   ? { color: "#065f46", background: "#d1fae5", border: "1px solid #6ee7b7" } :
+                            t === "Downgrade" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
+                            t === "Currency Switch" ? { color: "#92400e", background: "#fef3c7", border: "1px solid #fcd34d" } :
+                            t === "New/Reactivated"  ? { color: "#075985", background: "#e0f2fe", border: "1px solid #7dd3fc" } :
+                            t === "Churned" ? { color: "#7f1d1d", background: "#fee2e2", border: "1px solid #fca5a5" } :
+                            { color: "#374151", background: "#f3f4f6", border: "1px solid #d1d5db" };
+                          const showInvoices = (e.change_type === "Upgrade" || e.change_type === "Downgrade") && e.invoices.length > 0;
+                          return (
+                            <tr key={e.key} style={{ background: rowBg }}>
+                              <td style={S.td}>
+                                <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{e.domain || "—"}</div>
+                                <div style={{ fontSize: 11, color: "#94a3b8" }}>{e.customer_name}</div>
+                              </td>
+                              <td style={S.td}><span style={acctStyle(e.account)}>{e.account}</span></td>
+                              <td style={S.td}>{e.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
+                              <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{e.cs_email?.split("@")[0] || "—"}</span></td>
+                              <td style={{ ...S.td, fontWeight: 700, color: "#475569" }}>{e.currency || "—"}</td>
+                              <td style={{ ...S.td, fontSize: 12, color: "#475569" }}>{planMonthLabel(e.month)}</td>
+                              <td style={S.td}>
+                                <span style={{ borderRadius: 20, padding: "3px 10px", fontSize: 11, fontWeight: 700, display: "inline-block", whiteSpace: "nowrap", ...chipStyle(e.change_type) }}>
+                                  {e.change_type === "Upgrade" ? "⬆ " : e.change_type === "Downgrade" ? "⬇ " : ""}{e.change_type}
+                                </span>
+                              </td>
+                              <td style={{ ...S.td, fontSize: 13, color: e.prev_rate > 0 ? "#0f172a" : "#cbd5e1" }}>
+                                {e.prev_rate > 0 ? e.prev_rate.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—"}
+                              </td>
+                              <td style={{ ...S.td, fontSize: 13, fontWeight: 600, color: e.new_rate > 0 ? "#0f172a" : "#cbd5e1" }}>
+                                {e.new_rate > 0 ? e.new_rate.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—"}
+                              </td>
+                              <td style={{ ...S.td, fontSize: 11, color: "#475569" }}>
+                                {showInvoices ? e.invoices.map(iv => `${iv.invoice_number}${iv.status === "paid" ? "✓" : "○"}`).join(", ") : <span style={{ color: "#cbd5e1" }}>—</span>}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div style={{ textAlign: "center", padding: "12px 0", color: "#94a3b8", fontSize: 12 }}>
+                    Revenue booked to the invoice&apos;s period start month · ex-GST/Credit-Note for India · one row per detected change — a customer with 2 upsells shows 2 rows
+                  </div>
+
+                  {revenueUpsellByCustomer.length > 0 && (
+                    <div style={{ marginTop: 8 }}>
+                      <div style={S.sectionLabel}>Total Upsell by Customer</div>
+                      <div style={S.tableWrap}>
+                        <table style={S.table}>
+                          <thead>
+                            <tr>
+                              {["Domain","Account","Business","CS Owner","Currency","Total Upsell","# Upsells"].map(label => (
+                                <th key={label} style={{ ...S.th, color: "#475569" }}>{label}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {revenueUpsellByCustomer.map((u, i) => (
+                              <tr key={u.key} style={{ background: i % 2 === 0 ? "#fff" : "#fafbff" }}>
+                                <td style={S.td}>
+                                  <div style={{ fontWeight: 600, fontSize: 13, color: "#0f172a" }}>{u.domain || "—"}</div>
+                                  <div style={{ fontSize: 11, color: "#94a3b8" }}>{u.customer_name}</div>
+                                </td>
+                                <td style={S.td}><span style={acctStyle(u.account)}>{u.account}</span></td>
+                                <td style={S.td}>{u.business || <span style={{ color: "#cbd5e1" }}>—</span>}</td>
+                                <td style={S.td}><span style={{ fontSize: 12, color: "#475569" }}>{u.cs_email?.split("@")[0] || "—"}</span></td>
+                                <td style={{ ...S.td, fontWeight: 700, color: "#475569" }}>{u.currency || "—"}</td>
+                                <td style={{ ...S.td, fontWeight: 700, color: "#16a34a" }}>{u.total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                                <td style={S.td}>{u.count}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {/* ── All other tabs ── */}
-      {activeTab !== "ledger" && activeTab !== "invoiceDump" && activeTab !== "creditNotes" && (
+      {activeTab !== "ledger" && activeTab !== "planChanges" && (
         <>
           {/* ── TOP STAT CARDS ── */}
           <div style={S.statsRow}>
@@ -1800,7 +2273,87 @@ export default function Dashboard() {
             <AgingModeToggle />
           </div>
 
+          {/* ── TAB QUICK FILTERS (Active / Inactive tabs) ── */}
+          {(activeTab === "active" || activeTab === "inactive") && (
+            <div style={{ marginBottom: 16, display: "flex", alignItems: "center", gap: 16, background: "#fff", padding: "14px 18px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)", flexWrap: "wrap" }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "#64748b", textTransform: "uppercase" as const, letterSpacing: 0.6 }}>Filter:</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Business Type</label>
+                <select style={{ ...sel, width: 160 }} value={bizF} onChange={e => setBizF(e.target.value)}>
+                  <option value="All">All</option>
+                  {bizTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <label style={{ fontSize: 12, color: "#475569", fontWeight: 600, whiteSpace: "nowrap" }}>Payment Mode</label>
+                <select style={{ ...sel, width: 150 }} value={pmF} onChange={e => setPmF(e.target.value)}>
+                  <option value="All">All</option>
+                  <option value="auto">🤖 Auto Pay</option>
+                  <option value="manual">📧 Manual</option>
+                </select>
+              </div>
+              {(bizF !== "All" || pmF !== "All") && (
+                <button onClick={() => { setBizF("All"); setPmF("All"); }}
+                  style={{ fontSize: 12, color: "#ef4444", background: "#fee2e2", border: "1px solid #fca5a5", borderRadius: 20, padding: "5px 14px", cursor: "pointer", fontWeight: 600 }}>✕ Clear</button>
+              )}
+            </div>
+          )}
 
+          {/* ── AUTO PAY / MANUAL SUMMARY CARD ── */}
+          {(activeTab === "autopay" || activeTab === "manual") && (() => {
+            const failed  = displayRows.filter(r => r.total > 0);
+            const healthy = displayRows.filter(r => r.total === 0);
+            const isAuto  = activeTab === "autopay";
+            return (
+              <div style={{ marginBottom: 16, background: "#fff", borderRadius: 12, padding: "20px 24px", boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: isAuto ? "1px solid #c4b5fd" : "1px solid #fde68a" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap", marginBottom: 16 }}>
+                  <div style={{ fontSize: 15, fontWeight: 800, color: "#0f172a" }}>
+                    {isAuto ? "🤖 Auto Pay" : "📧 Manual Pay"} — {displayRows.length} customers
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <div style={{ display: "flex", width: 140, height: 10, borderRadius: 5, overflow: "hidden", gap: 1 }}>
+                      <div style={{ flex: autoPayStats.autoPay, background: "#6366f1", minWidth: 4 }} />
+                      <div style={{ flex: autoPayStats.manual,  background: "#f59e0b", minWidth: 4 }} />
+                    </div>
+                    <span style={{ fontSize: 12, color: "#6366f1", fontWeight: 700 }}>{autoPayStats.autoPayPct}% auto pay</span>
+                    <span style={{ fontSize: 12, color: "#64748b" }}>({autoPayStats.autoPay} of {autoPayStats.total} total customers)</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto" }}>
+                    <label style={{ fontSize: 12, color: "#475569", fontWeight: 600 }}>Business</label>
+                    <select style={{ ...sel, width: 150 }} value={bizF} onChange={e => setBizF(e.target.value)}>
+                      <option value="All">All types</option>
+                      {bizTypeOptions.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
+                  <div style={{ flex: 1, minWidth: 180, background: "#f0fdf4", borderRadius: 10, padding: "14px 18px", border: "1px solid #bbf7d0" }}>
+                    <div style={{ fontSize: 11, fontWeight: 700, color: "#166534", textTransform: "uppercase" as const, letterSpacing: 0.5, marginBottom: 4 }}>
+                      {isAuto ? "✓ Auto Pay Working" : "📧 Manual — Up to date"}
+                    </div>
+                    <div style={{ fontSize: 26, fontWeight: 800, color: "#15803d" }}>{healthy.length}</div>
+                    <div style={{ fontSize: 12, color: "#166534" }}>customers · $0 outstanding</div>
+                  </div>
+                  {failed.length > 0 && (
+                    <div
+                      onClick={() => setPmTabExpanded(v => !v)}
+                      style={{ flex: 1, minWidth: 180, background: "#fef2f2", borderRadius: 10, padding: "14px 18px", border: "1px solid #fecaca", cursor: "pointer" }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#991b1b", textTransform: "uppercase" as const, letterSpacing: 0.5, marginBottom: 4 }}>
+                        {isAuto ? "⚠ Auto Pay Paused / Failed" : "⚠ Outstanding Invoices"}
+                      </div>
+                      <div style={{ fontSize: 26, fontWeight: 800, color: "#dc2626" }}>{failed.length}</div>
+                      <div style={{ fontSize: 12, color: "#991b1b" }}>
+                        customers · {fmtUSD(grandTotal)} outstanding
+                      </div>
+                      <div style={{ fontSize: 11, color: "#6366f1", marginTop: 6, fontWeight: 600 }}>
+                        {pmTabExpanded ? "▲ Collapse list" : "▼ Click to see customer list"}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
 
           {/* ── BUSINESS TYPE BREAKDOWN (All tab only) ── */}
           {activeTab === "all" && <div style={{ marginBottom: 20 }}>
@@ -1853,7 +2406,7 @@ export default function Dashboard() {
           </div>}
 
           {/* ── SEARCH + FILTER BAR + TABLE ── */}
-          {<>
+          {(activeTab !== "autopay" && activeTab !== "manual") || pmTabExpanded ? <>
 
           <div style={{ marginBottom: 12, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", background: "#fff", padding: "12px 16px", borderRadius: 10, boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
             <input style={S.searchInput} placeholder="🔍  Search customer, domain, email..." value={search} onChange={e => setSearch(e.target.value)} />
@@ -1953,13 +2506,14 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {displayRows.filter(r => r.total > 0 || activeTab === "all").length === 0
+                {displayRows.filter(r => r.total > 0 || activeTab === "all" || activeTab === "active" || activeTab === "inactive").length === 0
                   ? <tr><td colSpan={13} style={{ textAlign: "center", padding: 48, color: "#94a3b8" }}>
                       <div style={{ fontSize: 32, marginBottom: 8 }}>🔍</div>
                       <div style={{ fontWeight: 600, marginBottom: 4 }}>No customers match your filters</div>
                       <button onClick={resetFilters} style={{ color: "#6366f1", background: "none", border: "none", cursor: "pointer", textDecoration: "underline", fontSize: 13 }}>Clear all filters</button>
                     </td></tr>
                   : displayRows
+                      .filter(r => (activeTab === "autopay" || activeTab === "manual") ? r.total > 0 : true)
                       .map((r, i) => {
                       const isExp = expanded.has(r.key);
                       const invs  = (invoicesByKey.get(r.key) ?? []).sort((a, b) => b.days_overdue - a.days_overdue);
@@ -2076,8 +2630,176 @@ export default function Dashboard() {
             {agingMode === "due_date"     && <span style={{ marginLeft: 8, color: "#64748b" }}> · Aging from due date (autopay uses invoice date when no due date)</span>}
           </div>
 
-          </>}
+          </> : null}
         </>
+      )}
+
+      {/* ── INVOICE DUMP TAB ── */}
+      {activeTab === "invoiceDump" && (
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>
+              All invoices from Stripe (India + US entities)
+            </div>
+            <select
+              value={invDumpMonth}
+              onChange={e => setInvDumpMonth(e.target.value)}
+              style={{ border: "1px solid #e2e8f0", borderRadius: 8, padding: "7px 12px", fontSize: 13, background: "#fff" }}>
+              <option value="">All months</option>
+              {Array.from(new Set((invDump ?? []).map(r => r.billedMonth))).sort().reverse().map(m => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+            <button onClick={() => loadInvDump()} disabled={invDumpLoading}
+              style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
+              {invDumpLoading ? "⟳ Loading..." : "⟳ Refresh"}
+            </button>
+            {invDump && (
+              <button onClick={() => {
+                const rows = invDump.filter(r => !invDumpMonth || r.billedMonth === invDumpMonth);
+                downloadCSV(rows,
+                  ["Sr No","Entity","Invoice Number","Billed Month","Month Attributed","Revenue Type","SEO/Non-SEO","Amount Due","Currency","Customer ID","Invoice Status","Invoice ID","Customer Name","Customer Email","Billed Date"],
+                  ["srNo","entity","number","billedMonth","monthAttributed","revenueType","seoNonSeo","amountDue","currency","stripeCustomerId","invoiceStatus","invoiceId","customerName","customerEmail","billedDate"],
+                  `invoice-dump${invDumpMonth ? "-" + invDumpMonth : ""}.csv`
+                );
+              }} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                ⬇ CSV
+              </button>
+            )}
+            {invDump && (
+              <div style={{ marginLeft: "auto", fontSize: 13, color: "#94a3b8" }}>
+                {invDump.filter(r => !invDumpMonth || r.billedMonth === invDumpMonth).length} rows
+              </div>
+            )}
+          </div>
+
+          {invDumpLoading && !invDump && (
+            <div style={{ textAlign: "center", padding: 60, color: "#94a3b8" }}>⟳ Loading invoice dump…</div>
+          )}
+          {invDump && (() => {
+            const rows = invDump.filter(r => !invDumpMonth || r.billedMonth === invDumpMonth);
+            return (
+              <div style={S.tableWrap}>
+                <table style={S.table}>
+                  <thead>
+                    <tr>
+                      {["#","Entity","Invoice No.","Billed Month","Month Attributed","Rev Type","SEO","Amount Due","Currency","Customer ID","Status","Invoice ID","Customer Name","Customer Email","Billed Date"].map(h => (
+                        <th key={h} style={S.th}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map(r => (
+                      <tr key={r.invoiceId} style={{ background: "#fff" }}>
+                        <td style={{ ...S.td, color: "#94a3b8", fontSize: 12 }}>{r.srNo}</td>
+                        <td style={S.td}><span style={{ background: r.entity === "India" ? "#eff6ff" : "#f0fdf4", color: r.entity === "India" ? "#2563eb" : "#16a34a", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.entity}</span></td>
+                        <td style={{ ...S.td, fontFamily: "monospace", fontSize: 12 }}>{r.number}</td>
+                        <td style={S.td}>{r.billedMonth}</td>
+                        <td style={S.td}>{r.monthAttributed}</td>
+                        <td style={S.td}><span style={{ background: r.revenueType === "YES" ? "#f0fdf4" : "#f8fafc", color: r.revenueType === "YES" ? "#16a34a" : "#64748b", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.revenueType}</span></td>
+                        <td style={S.td}><span style={{ background: r.seoNonSeo === "SEO" ? "#fefce8" : "#f8fafc", color: r.seoNonSeo === "SEO" ? "#ca8a04" : "#64748b", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.seoNonSeo}</span></td>
+                        <td style={{ ...S.td, fontWeight: 700, textAlign: "right" }}>{r.amountDue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td style={S.td}>{r.currency}</td>
+                        <td style={{ ...S.td, fontFamily: "monospace", fontSize: 11 }}>{r.stripeCustomerId}</td>
+                        <td style={S.td}><span style={{ background: r.invoiceStatus === "paid" ? "#f0fdf4" : "#fef3c7", color: r.invoiceStatus === "paid" ? "#16a34a" : "#b45309", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.invoiceStatus}</span></td>
+                        <td style={{ ...S.td, fontFamily: "monospace", fontSize: 11 }}>{r.invoiceId}</td>
+                        <td style={S.td}>{r.customerName}</td>
+                        <td style={{ ...S.td, fontSize: 12, color: "#64748b" }}>{r.customerEmail}</td>
+                        <td style={{ ...S.td, fontSize: 12 }}>{r.billedDate}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })()}
+        </div>
+      )}
+
+      {/* ── CREDIT NOTES TAB ── */}
+      {activeTab === "creditNotes" && (
+        <div>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <div style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>
+              All credit notes from Stripe (India + US entities)
+            </div>
+            <select
+              value={cnMonth}
+              onChange={e => setCnMonth(e.target.value)}
+              style={{ border: "1px solid #e2e8f0", borderRadius: 8, padding: "7px 12px", fontSize: 13, background: "#fff" }}>
+              <option value="">All months</option>
+              {Array.from(new Set((cnDump ?? []).map(r => r.effectiveMonth))).sort().reverse().map(m => (
+                <option key={m} value={m}>{m}</option>
+              ))}
+            </select>
+            <button onClick={() => loadCnDump()} disabled={cnLoading}
+              style={{ fontSize: 12, background: "rgba(99,102,241,0.08)", color: "#6366f1", border: "1px solid #c7d2fe", borderRadius: 8, padding: "6px 14px", fontWeight: 700, cursor: "pointer" }}>
+              {cnLoading ? "⟳ Loading..." : "⟳ Refresh"}
+            </button>
+            {cnDump && (
+              <button onClick={() => {
+                const rows = cnDump.filter(r => !cnMonth || r.effectiveMonth === cnMonth);
+                downloadCSV(rows,
+                  ["Sr No","Credit Note No.","Customer ID","Type","Amount","Status","Currency","Invoice ID","Created Date","Effective Date","Effective Month","Effective Month Label","Invoice Number","Entity","Customer Email","Revenue Type","SEO/Non-SEO","Invoice Amount","Attributed Month","Customer Name","Memo"],
+                  ["srNo","creditNoteNumber","stripeCustomerId","type","amount","cnStatus","currency","invoiceId","createdDate","effectiveDate","effectiveMonth","effectiveMonthLabel","invoiceNumber","entity","customerEmail","revenueType","seoNonSeo","invoiceAmount","attributedMonth","customerName","memo"],
+                  `credit-notes${cnMonth ? "-" + cnMonth : ""}.csv`
+                );
+              }} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
+                ⬇ CSV
+              </button>
+            )}
+            {cnDump && (
+              <div style={{ marginLeft: "auto", fontSize: 13, color: "#94a3b8" }}>
+                {cnDump.filter(r => !cnMonth || r.effectiveMonth === cnMonth).length} rows
+              </div>
+            )}
+          </div>
+
+          {cnLoading && !cnDump && (
+            <div style={{ textAlign: "center", padding: 60, color: "#94a3b8" }}>⟳ Loading credit notes…</div>
+          )}
+          {cnDump && (() => {
+            const rows = cnDump.filter(r => !cnMonth || r.effectiveMonth === cnMonth);
+            return (
+              <div style={S.tableWrap}>
+                <table style={S.table}>
+                  <thead>
+                    <tr>
+                      {["#","Credit Note No.","Customer ID","Type","Amount","Status","Currency","Invoice ID","Created Date","Effective Date","Eff. Month","Entity","Customer Email","Rev Type","SEO","Inv Amount","Attr Month","Customer Name","Memo"].map(h => (
+                        <th key={h} style={S.th}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {rows.map(r => (
+                      <tr key={r.creditNoteNumber} style={{ background: "#fff" }}>
+                        <td style={{ ...S.td, color: "#94a3b8", fontSize: 12 }}>{r.srNo}</td>
+                        <td style={{ ...S.td, fontFamily: "monospace", fontSize: 12 }}>{r.creditNoteNumber}</td>
+                        <td style={{ ...S.td, fontFamily: "monospace", fontSize: 11 }}>{r.stripeCustomerId}</td>
+                        <td style={S.td}><span style={{ background: r.type === "post_payment" ? "#fef3c7" : "#f0fdf4", color: r.type === "post_payment" ? "#b45309" : "#16a34a", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.type}</span></td>
+                        <td style={{ ...S.td, fontWeight: 700, textAlign: "right", color: "#ef4444" }}>{r.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td style={S.td}><span style={{ background: r.cnStatus === "issued" ? "#f0fdf4" : "#fef2f2", color: r.cnStatus === "issued" ? "#16a34a" : "#ef4444", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.cnStatus}</span></td>
+                        <td style={S.td}>{r.currency}</td>
+                        <td style={{ ...S.td, fontFamily: "monospace", fontSize: 11 }}>{r.invoiceId}</td>
+                        <td style={{ ...S.td, fontSize: 12 }}>{r.createdDate}</td>
+                        <td style={{ ...S.td, fontSize: 12 }}>{r.effectiveDate}</td>
+                        <td style={S.td}>{r.effectiveMonthLabel}</td>
+                        <td style={S.td}><span style={{ background: r.entity === "India" ? "#eff6ff" : "#f0fdf4", color: r.entity === "India" ? "#2563eb" : "#16a34a", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.entity}</span></td>
+                        <td style={{ ...S.td, fontSize: 12, color: "#64748b" }}>{r.customerEmail}</td>
+                        <td style={S.td}><span style={{ background: r.revenueType === "YES" ? "#f0fdf4" : "#f8fafc", color: r.revenueType === "YES" ? "#16a34a" : "#64748b", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.revenueType}</span></td>
+                        <td style={S.td}><span style={{ background: r.seoNonSeo === "SEO" ? "#fefce8" : "#f8fafc", color: r.seoNonSeo === "SEO" ? "#ca8a04" : "#64748b", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.seoNonSeo}</span></td>
+                        <td style={{ ...S.td, textAlign: "right", fontSize: 12 }}>{r.invoiceAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                        <td style={S.td}>{r.attributedMonth}</td>
+                        <td style={S.td}>{r.customerName}</td>
+                        <td style={{ ...S.td, fontSize: 12, color: "#64748b", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.memo}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+          })()}
+        </div>
       )}
     </div>
   );
