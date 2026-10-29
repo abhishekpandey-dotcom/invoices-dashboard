@@ -311,19 +311,7 @@ export default function Dashboard() {
     }
   }, [activeTab, ledgerData, ledgerLoading, loadLedger]);
 
-  // Lazy-load plan changes when the tab is first opened
-  useEffect(() => {
-    if (activeTab === "planChanges" && !planData && !planLoading) {
-      loadPlanChanges();
-    }
-  }, [activeTab, planData, planLoading, loadPlanChanges]);
-
-  // Lazy-load ledger data (reused as the source for the revenue month-over-month view)
-  useEffect(() => {
-    if (activeTab === "planChanges" && planViewMode === "revenue" && !ledgerData && !ledgerLoading) {
-      loadLedger();
-    }
-  }, [activeTab, planViewMode, ledgerData, ledgerLoading, loadLedger]);
+  // (planChanges tab removed — lazy-load effects removed)
 
   const allInvoices = useMemo(() => data?.invoices ?? [], [data]);
 
