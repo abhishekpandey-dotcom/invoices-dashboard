@@ -71,7 +71,8 @@ async function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[
         creditNoteNumber: cn.number || cn.id,
         stripeCustomerId: customerId,
         type: cn.type,
-        amount: cn.amount / 100,
+        // Net of GST and discounts: use subtotal_excluding_tax → subtotal → amount
+        amount: (cn.subtotal_excluding_tax ?? cn.subtotal ?? cn.amount) / 100,
         cnStatus: cn.status,
         currency: cn.currency.toUpperCase(),
         invoiceId: inv?.id ?? (typeof cn.invoice === "string" ? cn.invoice : ""),
@@ -84,7 +85,7 @@ async function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[
         customerEmail,
         revenueType: "",
         seoNonSeo: "",
-        invoiceAmount: inv ? inv.amount_due / 100 : 0,
+        invoiceAmount: inv ? (inv.subtotal_excluding_tax ?? inv.subtotal ?? inv.amount_due) / 100 : 0,
         attributedMonth: attrMonth,
         customerName,
         memo: cn.memo ?? "",
