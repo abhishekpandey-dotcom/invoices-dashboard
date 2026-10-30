@@ -306,14 +306,14 @@ export default function Dashboard() {
   const loadInvDump = useCallback(() => {
     setInvDumpLoading(true);
     fetch("/api/invoice-dump")
-      .then(r => r.json()).then((rows: InvoiceDumpRow[]) => { setInvDump(rows); setInvDumpLoading(false); })
+      .then(r => r.json()).then((res: { data: InvoiceDumpRow[] }) => { setInvDump(res.data ?? []); setInvDumpLoading(false); })
       .catch(() => setInvDumpLoading(false));
   }, []);
 
   const loadCnDump = useCallback(() => {
     setCnLoading(true);
     fetch("/api/credit-notes")
-      .then(r => r.json()).then((rows: CnDumpRow[]) => { setCnDump(rows); setCnLoading(false); })
+      .then(r => r.json()).then((res: { data: CnDumpRow[] }) => { setCnDump(res.data ?? []); setCnLoading(false); })
       .catch(() => setCnLoading(false));
   }, []);
 
