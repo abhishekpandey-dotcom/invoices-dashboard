@@ -58,15 +58,9 @@ async function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[
       const customerName  = cObj?.name  ?? "Unknown";
       const customerEmail = cObj?.email ?? "";
       const customerId    = cObj?.id    ?? (typeof cn.customer === "string" ? cn.customer : "");
-      const entityName    = (cObj?.metadata?.entity as string) || entity;
+      const entityName    = entity === "India" ? "Delfin" : "Regents";
       const isSubscription = !!(inv?.subscription);
-
-      let seoLabel = "Non SEO";
-      if (inv?.lines?.data) {
-        for (const l of inv.lines.data) {
-          if ((l.description ?? "").toLowerCase().includes("seo")) { seoLabel = "SEO"; break; }
-        }
-      }
+      const seoLabel = "";
 
       const createdDate   = new Date(cn.created * 1000);
       const effectiveDate = cn.effective_at ? new Date(cn.effective_at * 1000) : createdDate;
