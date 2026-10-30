@@ -59,8 +59,6 @@ async function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[
       const customerEmail = cObj?.email ?? "";
       const customerId    = cObj?.id    ?? (typeof cn.customer === "string" ? cn.customer : "");
       const entityName    = entity === "India" ? "Delfin" : "Regents";
-      const isSubscription = !!(inv?.subscription);
-      const seoLabel = "";
 
       const createdDate   = new Date(cn.created * 1000);
       const effectiveDate = cn.effective_at ? new Date(cn.effective_at * 1000) : createdDate;
@@ -84,8 +82,8 @@ async function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[
         invoiceNumber: inv?.number ?? "",
         entity: entityName,
         customerEmail,
-        revenueType: isSubscription ? "YES" : "NO",
-        seoNonSeo: seoLabel,
+        revenueType: "",
+        seoNonSeo: "",
         invoiceAmount: inv ? inv.amount_due / 100 : 0,
         attributedMonth: attrMonth,
         customerName,
