@@ -48,10 +48,12 @@ async function fetchInvoiceDump(key: string, entity: string): Promise<InvoiceDum
       const customerEmail = cObj?.email ?? inv.customer_email ?? "";
       const customerId    = cObj?.id    ?? (typeof inv.customer === "string" ? inv.customer : "");
       const entityName    = entity === "India" ? "Delfin" : "Regents";
+      // Net of GST and discounts: use subtotal_excluding_tax → subtotal → amount_due
+      const netAmount = (inv.subtotal_excluding_tax ?? inv.subtotal ?? inv.amount_due) / 100;
       const createdDate  = new Date(inv.created * 1000);
       const billedMonth  = `${createdDate.getFullYear()}-${String(createdDate.getMonth() + 1).padStart(2, "0")}`;
       const monthAttr    = monthLabel(inv.period_end || inv.created);
-      rows.push({ srNo: 0, entity: entityName, number: inv.number || inv.id, billedMonth, monthAttributed: monthAttr, revenueType: "", seoNonSeo: "", amountDue: inv.amount_due / 100, currency: inv.currency.toUpperCase(), stripeCustomerId: customerId, invoiceStatus: inv.status || "unknown", invoiceId: inv.id, customerName, customerEmail, billedDate: createdDate.toISOString().split("T")[0] });
+      rows.push({ srNo: 0, entity: entityName, number: inv.number || inv.id, billedMonth, monthAttributed: monthAttr, revenueType: "", seoNonSeo: "", amountDue: netAmount, currency: inv.currency.toUpperCase(), stripeCustomerId: customerId, invoiceStatus: inv.status || "unknown", invoiceId: inv.id, customerName, customerEmail, billedDate: createdDate.toISOString().split("T")[0] });
     }
     hasMore = page.has_more;
     if (!page.data.length) { hasMore = false; break; }
