@@ -11,6 +11,7 @@ export interface CnDumpRow {
   creditNoteNumber: string;
   stripeCustomerId: string;
   type: string;             // post_payment / pre_payment
+  itemName: string;
   amount: number;
   cnStatus: string;         // issued / void
   currency: string;
@@ -60,6 +61,15 @@ async function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[
       const customerId    = cObj?.id    ?? (typeof cn.customer === "string" ? cn.customer : "");
       const entityName    = entity === "India" ? "Delfin" : "Regents";
 
+      // Product/item name from CN line items (falls back to parent invoice lines)
+      const itemName = (cn.lines?.data ?? [])
+        .map((l: { description?: string | null }) => l.description ?? "")
+        .filter(Boolean)
+        .join(" / ") || (inv?.lines?.data ?? [])
+        .map(l => l.description ?? "")
+        .filter(Boolean)
+        .join(" / ") || "";
+
       const createdDate   = new Date(cn.created * 1000);
       const effectiveDate = cn.effective_at ? new Date(cn.effective_at * 1000) : createdDate;
       const effMonth      = isoMonth(effectiveDate);
@@ -71,6 +81,7 @@ async function fetchCreditNotes(key: string, entity: string): Promise<CnDumpRow[
         creditNoteNumber: cn.number || cn.id,
         stripeCustomerId: customerId,
         type: cn.type,
+        itemName,
         // Net of GST and discounts: use subtotal_excluding_tax → subtotal → amount
         amount: (cn.subtotal_excluding_tax ?? cn.subtotal ?? cn.amount) / 100,
         cnStatus: cn.status,
