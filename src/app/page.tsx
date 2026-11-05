@@ -2651,8 +2651,8 @@ export default function Dashboard() {
               <button onClick={() => {
                 const rows = invDump.filter(r => !invDumpMonth || r.billedMonth === invDumpMonth);
                 downloadCSV(rows,
-                  ["Sr No","Entity","Invoice Number","Billed Month","Month Attributed","Revenue Type","SEO/Non-SEO","Amount Due","Currency","Customer ID","Invoice Status","Invoice ID","Customer Name","Customer Email","Billed Date"],
-                  ["srNo","entity","number","billedMonth","monthAttributed","revenueType","seoNonSeo","amountDue","currency","stripeCustomerId","invoiceStatus","invoiceId","customerName","customerEmail","billedDate"],
+                  ["Sr No","Entity","Invoice Number","Billed Month","Month Attributed","Revenue Type","SEO/Non-SEO","Item/Product Name","Amount Due","Currency","Customer ID","Invoice Status","Invoice ID","Customer Name","Customer Email","Billed Date"],
+                  ["srNo","entity","number","billedMonth","monthAttributed","revenueType","seoNonSeo","itemName","amountDue","currency","stripeCustomerId","invoiceStatus","invoiceId","customerName","customerEmail","billedDate"],
                   `invoice-dump${invDumpMonth ? "-" + invDumpMonth : ""}.csv`
                 );
               }} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
@@ -2676,7 +2676,7 @@ export default function Dashboard() {
                 <table style={S.table}>
                   <thead>
                     <tr>
-                      {["#","Entity","Invoice No.","Billed Month","Month Attributed","Rev Type","SEO","Amount Due","Currency","Customer ID","Status","Invoice ID","Customer Name","Customer Email","Billed Date"].map(h => (
+                      {["#","Entity","Invoice No.","Billed Month","Month Attributed","Rev Type","SEO","Item / Product","Amount Due","Currency","Customer ID","Status","Invoice ID","Customer Name","Customer Email","Billed Date"].map(h => (
                         <th key={h} style={S.th}>{h}</th>
                       ))}
                     </tr>
@@ -2691,6 +2691,7 @@ export default function Dashboard() {
                         <td style={S.td}>{r.monthAttributed}</td>
                         <td style={S.td}><span style={{ background: r.revenueType === "YES" ? "#f0fdf4" : "#f8fafc", color: r.revenueType === "YES" ? "#16a34a" : "#64748b", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.revenueType}</span></td>
                         <td style={S.td}><span style={{ background: r.seoNonSeo === "SEO" ? "#fefce8" : "#f8fafc", color: r.seoNonSeo === "SEO" ? "#ca8a04" : "#64748b", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.seoNonSeo}</span></td>
+                        <td style={{ ...S.td, fontSize: 12, maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={r.itemName}>{r.itemName}</td>
                         <td style={{ ...S.td, fontWeight: 700, textAlign: "right" }}>{r.amountDue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         <td style={S.td}>{r.currency}</td>
                         <td style={{ ...S.td, fontFamily: "monospace", fontSize: 11 }}>{r.stripeCustomerId}</td>
@@ -2733,8 +2734,8 @@ export default function Dashboard() {
               <button onClick={() => {
                 const rows = cnDump.filter(r => !cnMonth || r.effectiveMonth === cnMonth);
                 downloadCSV(rows,
-                  ["Sr No","Credit Note No.","Customer ID","Type","Amount","Status","Currency","Invoice ID","Created Date","Effective Date","Effective Month","Effective Month Label","Invoice Number","Entity","Customer Email","Revenue Type","SEO/Non-SEO","Invoice Amount","Attributed Month","Customer Name","Memo"],
-                  ["srNo","creditNoteNumber","stripeCustomerId","type","amount","cnStatus","currency","invoiceId","createdDate","effectiveDate","effectiveMonth","effectiveMonthLabel","invoiceNumber","entity","customerEmail","revenueType","seoNonSeo","invoiceAmount","attributedMonth","customerName","memo"],
+                  ["Sr No","Credit Note No.","Customer ID","Type","Item/Product Name","Amount","Status","Currency","Invoice ID","Created Date","Effective Date","Effective Month","Effective Month Label","Invoice Number","Entity","Customer Email","Revenue Type","SEO/Non-SEO","Invoice Amount","Attributed Month","Customer Name","Memo"],
+                  ["srNo","creditNoteNumber","stripeCustomerId","type","itemName","amount","cnStatus","currency","invoiceId","createdDate","effectiveDate","effectiveMonth","effectiveMonthLabel","invoiceNumber","entity","customerEmail","revenueType","seoNonSeo","invoiceAmount","attributedMonth","customerName","memo"],
                   `credit-notes${cnMonth ? "-" + cnMonth : ""}.csv`
                 );
               }} style={{ fontSize: 12, background: "#f0fdf4", color: "#16a34a", border: "1px solid #86efac", borderRadius: 8, padding: "5px 12px", cursor: "pointer", fontWeight: 600 }}>
@@ -2758,7 +2759,7 @@ export default function Dashboard() {
                 <table style={S.table}>
                   <thead>
                     <tr>
-                      {["#","Credit Note No.","Customer ID","Type","Amount","Status","Currency","Invoice ID","Created Date","Effective Date","Eff. Month","Entity","Customer Email","Rev Type","SEO","Inv Amount","Attr Month","Customer Name","Memo"].map(h => (
+                      {["#","Credit Note No.","Customer ID","Type","Item / Product","Amount","Status","Currency","Invoice ID","Created Date","Effective Date","Eff. Month","Entity","Customer Email","Rev Type","SEO","Inv Amount","Attr Month","Customer Name","Memo"].map(h => (
                         <th key={h} style={S.th}>{h}</th>
                       ))}
                     </tr>
@@ -2770,6 +2771,7 @@ export default function Dashboard() {
                         <td style={{ ...S.td, fontFamily: "monospace", fontSize: 12 }}>{r.creditNoteNumber}</td>
                         <td style={{ ...S.td, fontFamily: "monospace", fontSize: 11 }}>{r.stripeCustomerId}</td>
                         <td style={S.td}><span style={{ background: r.type === "post_payment" ? "#fef3c7" : "#f0fdf4", color: r.type === "post_payment" ? "#b45309" : "#16a34a", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.type}</span></td>
+                        <td style={{ ...S.td, fontSize: 12, maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} title={r.itemName}>{r.itemName}</td>
                         <td style={{ ...S.td, fontWeight: 700, textAlign: "right", color: "#ef4444" }}>{r.amount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
                         <td style={S.td}><span style={{ background: r.cnStatus === "issued" ? "#f0fdf4" : "#fef2f2", color: r.cnStatus === "issued" ? "#16a34a" : "#ef4444", borderRadius: 20, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{r.cnStatus}</span></td>
                         <td style={S.td}>{r.currency}</td>
